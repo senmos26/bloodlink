@@ -4,6 +4,69 @@
 
 ---
 
+## 👥 Composition de l'Équipe
+
+| # | Prénom | Username | Rôle Semaine 1 | Rôle Semaine 2 | Rôle Semaine 3 | Rôle Semaine 4 | Rôle Semaine 5 | Rôle Semaine 6 |
+|---|--------|----------|----------------|----------------|----------------|----------------|----------------|----------------|
+| 1 | **Assia** | @assia_az | Pair A | Pair A | Solo Review | Pair B | Pair B | Tous |
+| 2 | **Souhaila** | @souhaila_omri | Pair A | Pair B | Pair A | Solo Review | Pair A | Tous |
+| 3 | **Fatoumata** | @fatoumata_sidibe | Solo Review | Pair B | Pair B | Pair A | Pair A | Tous |
+| 4 | **Béni** | @beni_ouendo | Pair B | Solo Review | Pair A | Pair B | Solo Review | Tous |
+| 5 | **Nathanaël** | @nathanael_somali | Pair B | Pair A | Pair A | Pair A | Pair B | Tous |
+
+**Légende** :
+- **Pair A** = Travaille sur les tâches Pair A avec son coéquipier
+- **Pair B** = Travaille sur les tâches Pair B avec son coéquipier  
+- **Solo Review** = Fait les revues de code et aide les autres
+
+---
+
+## 🔄 Tableau de Rotation des Pairs
+
+```
+Semaine 1 (Setup + Auth)
+├── Pair A: Assia 🤝 Souhaila
+├── Pair B: Béni 🤝 Nathanaël
+└── Review: Fatoumata
+
+Semaine 2 (Profils)
+├── Pair A: Assia 🤝 Nathanaël
+├── Pair B: Souhaila 🤝 Fatoumata
+└── Review: Béni
+
+Semaine 3 (Carte & Alertes)
+├── Pair A: Souhaila 🤝 Béni
+├── Pair B: Fatoumata 🤝 Nathanaël
+└── Review: Assia
+
+Semaine 4 (RDV & Notifs)
+├── Pair A: Nathanaël 🤝 Assia
+├── Pair B: Souhaila 🤝 Fatoumata
+└── Review: Béni
+
+Semaine 5 (Dons & Validation)
+├── Pair A: Fatoumata 🤝 Béni
+├── Pair B: Assia 🤝 Souhaila
+└── Review: Nathanaël
+
+Semaine 6 (Tests & Deploy)
+└── Tous ensemble
+```
+
+---
+
+## 📋 Format des Tâches
+
+Chaque tâche contient :
+- **👤 Assignés** : Qui fait la tâche (noms précis)
+- **🎯 Objectif** : Ce qu'on doit accomplir
+- **📅 Durée** : 1 journée complète (3 jours/semaine)
+- **✅ Checklist** : Étapes détaillées à cocher
+- **📚 Ressources** : Liens et docs utiles
+- **⚠️ Blocage** : Quand demander de l'aide
+
+---
+
 ## Semaine 1 : Authentication & Setup
 
 **Objectif** : Les utilisateurs peuvent s'inscrire, se connecter et voir leur profil.
@@ -11,7 +74,8 @@
 ### Jour 1 - Setup & Configuration
 
 #### Tâche 1.1 : Setup Environnement (Tous ensemble)
-**Assigné** : Toute l'équipe (pair programming)
+**👤 Assignés** : **Toute l'équipe** (Assia + Souhaila + Fatoumata + Béni + Nathanaël)
+**🎯 Objectif** : Tout le monde a le projet qui fonctionne sur sa machine
 **Durée** : 1 journée complète
 **Description** : Installer tous les outils nécessaires et configurer les projets.
 
@@ -32,7 +96,8 @@
 ### Jour 2 - Login & Register Mobile
 
 #### Tâche 1.2 : Écrans Login/Register Mobile
-**Assigné** : Pair A (2 personnes)
+**👤 Assignés** : **Pair A** — Assia 🤝 Souhaila
+**🎯 Objectif** : Interface utilisateur pour se connecter et s'inscrire
 **Description** : Créer les écrans d'authentification dans l'app mobile.
 
 **Checklist** :
@@ -61,7 +126,8 @@
 ### Jour 3 - Auth Logique & Supabase
 
 #### Tâche 1.3 : Connecter Supabase Auth
-**Assigné** : Pair B (2 personnes)
+**👤 Assignés** : **Pair B** — Béni 🤝 Nathanaël
+**🎯 Objectif** : Le login/register fonctionne vraiment avec Supabase
 **Description** : Connecter les écrans à Supabase pour l'authentification réelle.
 
 **Checklist** :
@@ -81,7 +147,8 @@
   - [ ] `user`, `isLoggedIn`, `login()`, `logout()`
 
 **Tâche 1.4 : Page Login Admin Web**
-**Assigné** : Personne solo (1 personne)
+**👤 Assignée** : **Solo Review** — Fatoumata Sidibé
+**🎯 Objectif** : Page de connexion pour le dashboard admin web
 **Description** : Créer la page de connexion pour le dashboard admin.
 
 **Checklist** :
@@ -101,8 +168,8 @@
 ### Jour 1 - Profil Donneur Mobile
 
 #### Tâche 2.1 : Écran Profil Mobile
-**Assigné** : Pair A (rotation)
-**Description** : Permettre au donneur de voir et modifier son profil.
+**👤 Assignés** : **Pair A** — Assia 🤝 Nathanaël
+**🎯 Objectif** : Permettre au donneur de voir et modifier son profil
 
 **Checklist** :
 - [ ] Créer `src/app/tabs/profile.tsx`
@@ -123,8 +190,8 @@
 ### Jour 2 - Upload Photo & Storage
 
 #### Tâche 2.2 : Photo de Profil
-**Assigné** : Pair B (rotation)
-**Description** : Permettre l'upload d'une photo de profil.
+**👤 Assignés** : **Pair B** — Souhaila 🤝 Fatoumata
+**🎯 Objectif** : Permettre l'upload d'une photo de profil
 
 **Checklist** :
 - [ ] Configurer Storage Supabase
@@ -145,8 +212,8 @@
 ### Jour 3 - Dashboard Centre (Admin)
 
 #### Tâche 2.3 : Dashboard Centre Web
-**Assigné** : Pair A + Reviewer
-**Description** : Page d'accueil pour les admin de centre.
+**👤 Assignés** : **Pair A + Solo Review** — Assia, Nathanaël & Béni (review)
+**🎯 Objectif** : Page d'accueil pour les admin de centre
 
 **Checklist** :
 - [ ] Créer `src/app/(dashboard)/center/page.tsx`
@@ -168,8 +235,8 @@
 ### Jour 1 - Google Maps Mobile
 
 #### Tâche 3.1 : Intégration Carte
-**Assigné** : Pair A
-**Description** : Afficher une carte avec les centres de transfusion.
+**👤 Assignés** : **Pair A** — Souhaila 🤝 Béni
+**🎯 Objectif** : Afficher une carte avec les centres de transfusion
 
 **Checklist** :
 - [ ] Installer `react-native-maps`
@@ -189,7 +256,7 @@
 ### Jour 2 - Marqueurs & Centres
 
 #### Tâche 3.2 : Afficher Centres sur Carte
-**Assigné** : Pair B
+**👤 Assignés** : **Pair B** — Fatoumata 🤝 Nathanaël
 **Description** : Récupérer et afficher les centres comme marqueurs.
 
 **Checklist** :
@@ -210,8 +277,8 @@
 ### Jour 3 - Création Alertes (Admin)
 
 #### Tâche 3.3 : Formulaire Création Alerte
-**Assigné** : Pair A + Reviewer
-**Description** : Permettre aux centres de créer des alertes de pénurie.
+**👤 Assignés** : **Pair A + Solo Review** — Souhaila, Béni & Assia (review)
+**🎯 Objectif** : Permettre aux centres de créer des alertes de pénurie
 
 **Checklist** :
 - [ ] Créer `src/app/(dashboard)/alerts/new/page.tsx`
@@ -236,8 +303,8 @@
 ### Jour 1 - Prise de RDV Mobile
 
 #### Tâche 4.1 : Écran Prise RDV
-**Assigné** : Pair A
-**Description** : Permettre à un donneur de prendre rendez-vous.
+**👤 Assignés** : **Pair A** — Nathanaël 🤝 Assia
+**🎯 Objectif** : Permettre à un donneur de prendre rendez-vous
 
 **Checklist** :
 - [ ] Créer `src/app/appointment/new.tsx`
@@ -259,8 +326,8 @@
 ### Jour 2 - Liste RDV & Notifications Push
 
 #### Tâche 4.2 : Liste RDV & Notifs
-**Assigné** : Pair B
-**Description** : Voir ses RDV et recevoir des notifications.
+**👤 Assignés** : **Pair B** — Souhaila 🤝 Fatoumata
+**🎯 Objectif** : Voir ses RDV et recevoir des notifications
 
 **Checklist partie 1 - Liste RDV** :
 - [ ] Créer `src/app/tabs/appointments.tsx`
@@ -289,8 +356,8 @@
 ### Jour 3 - Validation RDV (Admin)
 
 #### Tâche 4.3 : Gestion RDV Centre
-**Assigné** : Pair A + Reviewer
-**Description** : Permettre aux centres de confirmer/annuler les RDV.
+**👤 Assignés** : **Pair A + Solo Review** — Nathanaël, Assia & Béni (review)
+**🎯 Objectif** : Permettre aux centres de confirmer/annuler les RDV
 
 **Checklist** :
 - [ ] Créer `src/app/(dashboard)/appointments/page.tsx`
@@ -313,8 +380,8 @@
 ### Jour 1 - QR Code & Scan
 
 #### Tâche 5.1 : Génération QR Code
-**Assigné** : Pair A
-**Description** : Générer un QR code pour valider le don sur place.
+**👤 Assignés** : **Pair A** — Fatoumata 🤝 Béni
+**🎯 Objectif** : Générer un QR code pour valider le don sur place
 
 **Checklist** :
 - [ ] Installer `react-native-qrcode-svg`
@@ -336,8 +403,8 @@
 ### Jour 2 - Validation Don & Stats
 
 #### Tâche 5.2 : Validation & Dashboard
-**Assigné** : Pair B
-**Description** : Valider le don et voir les statistiques.
+**👤 Assignés** : **Pair B** — Assia 🤝 Souhaila
+**🎯 Objectif** : Valider le don et voir les statistiques
 
 **Checklist partie 1 - Validation** :
 - [ ] Page validation admin
@@ -364,8 +431,8 @@
 ### Jour 3 - Admin Dashboard & Rapports
 
 #### Tâche 5.3 : Dashboard Stats Admin
-**Assigné** : Pair A + Reviewer
-**Description** : Dashboard complet pour les super admins.
+**👤 Assignés** : **Pair A + Solo Review** — Fatoumata, Béni & Nathanaël (review)
+**🎯 Objectif** : Dashboard complet pour les super admins
 
 **Checklist** :
 - [ ] Créer `src/app/(dashboard)/stats/page.tsx`
@@ -387,8 +454,8 @@
 ### Jour 1 - Tests & Corrections
 
 #### Tâche 6.1 : Tests End-to-End
-**Assigné** : Tous ensemble
-**Description** : Tester tout le flux et corriger les bugs.
+**👤 Assignés** : **Toute l'équipe** — Assia + Souhaila + Fatoumata + Béni + Nathanaël
+**🎯 Objectif** : Tester tout le flux et corriger les bugs
 
 **Checklist** :
 - [ ] Créer scénarios de test
@@ -410,8 +477,8 @@
 ### Jour 2 - Polish UI/UX
 
 #### Tâche 6.2 : Améliorations Interface
-**Assigné** : Pair A + Pair B
-**Description** : Rendre l'app belle et fluide.
+**👤 Assignés** : **Toute l'équipe** — Pair A + Pair B ensemble
+**🎯 Objectif** : Rendre l'app belle et fluide
 
 **Checklist** :
 - [ ] Animations
@@ -434,8 +501,8 @@
 ### Jour 3 - Déploiement
 
 #### Tâche 6.3 : Mise en Production
-**Assigné** : Tous ensemble
-**Description** : Déployer l'app pour les utilisateurs.
+**👤 Assignés** : **Toute l'équipe** — Assia + Souhaila + Fatoumata + Béni + Nathanaël
+**🎯 Objectif** : Déployer l'app pour les utilisateurs réels
 
 **Checklist Mobile** :
 - [ ] Build production
