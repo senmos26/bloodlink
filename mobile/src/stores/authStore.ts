@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+ 
 interface AuthState {
   user: null | { id: string; email: string };
   isLoading: boolean;
