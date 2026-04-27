@@ -12,35 +12,71 @@ import { Link, router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import SocialAuthButton from "@/components/ui/SocialAuthButton";
+import Toast, { type ToastType } from "@/components/ui/Toast";
 import { supabase } from "@/services/supabase";
+
+const SUCCESS_REDIRECT_DELAY_MS = 1600;
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
+    visible: false,
+    message: "",
+    type: "info",
+  });
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ visible: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, visible: false }));
+  };
+
+  const handleSocialLogin = (provider: "google" | "apple") => {
+    const providerName = provider === "google" ? "Google" : "Apple";
+    showToast(`${providerName} login sera branché juste après la config OAuth Supabase.`, "info");
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError("Veuillez remplir tous les champs");
+      showToast("Veuillez remplir tous les champs", "error");
       return;
     }
+
     setLoading(true);
-    setError("");
+
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
     setLoading(false);
+
     if (authError) {
-      setError(authError.message);
-    } else {
-      router.replace("/(tabs)");
+      showToast(authError.message === "Invalid login credentials"
+        ? "Email ou mot de passe incorrect"
+        : authError.message, "error");
+      return;
     }
+
+    showToast("Connexion réussie !", "success");
+    setTimeout(() => {
+      router.replace("/(tabs)");
+    }, SUCCESS_REDIRECT_DELAY_MS);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-surface">
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onDismiss={hideToast}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -84,10 +120,6 @@ export default function LoginScreen() {
             />
           </View>
 
-          {error ? (
-            <Text className="text-error text-sm text-center mb-4">{error}</Text>
-          ) : null}
-
           <Button
             onPress={handleLogin}
             loading={loading}
@@ -95,6 +127,18 @@ export default function LoginScreen() {
           >
             Se connecter
           </Button>
+
+          <View className="mb-6 gap-3">
+            <View className="flex-row items-center gap-3">
+              <View className="flex-1 h-px bg-surface-container-high" />
+              <Text className="text-xs font-medium uppercase tracking-[1.8px] text-on-surface-variant">
+                ou continuer avec
+              </Text>
+              <View className="flex-1 h-px bg-surface-container-high" />
+            </View>
+            <SocialAuthButton provider="google" onPress={() => handleSocialLogin("google")} />
+            <SocialAuthButton provider="apple" onPress={() => handleSocialLogin("apple")} />
+          </View>
 
           <Link href="/(auth)/register" asChild>
             <Pressable className="items-center py-3">

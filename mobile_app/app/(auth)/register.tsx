@@ -12,10 +12,11 @@ import { Link, router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { supabase, getRedirectUrl } from "@/services/supabase";
-import * as Linking from "expo-linking";
+import Toast, { type ToastType } from "@/components/ui/Toast";
+import { supabase } from "@/services/supabase";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const SUCCESS_REDIRECT_DELAY_MS = 1600;
 
 export default function RegisterScreen() {
   const [step, setStep] = useState(1);
@@ -26,32 +27,44 @@ export default function RegisterScreen() {
   const [lastName, setLastName] = useState("");
   const [bloodGroup, setBloodGroup] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
+    visible: false,
+    message: "",
+    type: "info",
+  });
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ visible: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, visible: false }));
+  };
 
   const validateStep1 = () => {
     if (!email || !password || !confirmPassword || !firstName || !lastName) {
-      setError("Veuillez remplir tous les champs");
+      showToast("Veuillez remplir tous les champs", "error");
       return false;
     }
     if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
+      showToast("Les mots de passe ne correspondent pas", "error");
       return false;
     }
     if (password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
+      showToast("Le mot de passe doit contenir au moins 6 caractères", "error");
       return false;
     }
     return true;
   };
 
   const handleNext = () => {
-    setError("");
+    hideToast();
     if (step === 1) {
       if (!validateStep1()) return;
       setStep(2);
     } else {
       if (!bloodGroup) {
-        setError("Veuillez sélectionner votre groupe sanguin");
+        showToast("Veuillez sélectionner votre groupe sanguin", "error");
         return;
       }
       handleRegister();
@@ -60,8 +73,6 @@ export default function RegisterScreen() {
 
   const handleRegister = async () => {
     setLoading(true);
-    setError("");
-    const redirectTo = Linking.createURL("/(auth)/login");
     const { error: authError, data } = await supabase.auth.signUp({
       email,
       password,
@@ -71,23 +82,34 @@ export default function RegisterScreen() {
           last_name: lastName,
           blood_group: bloodGroup,
         },
-        emailRedirectTo: redirectTo,
       },
     });
     setLoading(false);
     if (authError) {
-      setError(authError.message);
+      showToast(authError.message, "error");
     } else if (data.user?.identities?.length === 0) {
-      setError("Cet email est déjà enregistré. Veuillez vous connecter.");
+      showToast("Cet email est déjà enregistré. Veuillez vous connecter.", "error");
+    } else if (data.session) {
+      showToast("Inscription réussie !", "success");
+      setTimeout(() => {
+        router.replace("/(tabs)");
+      }, SUCCESS_REDIRECT_DELAY_MS);
     } else {
-      setError("");
-      alert("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
-      router.replace("/(auth)/login");
+      showToast(
+        "Compte créé, mais la confirmation email est encore active dans Supabase.",
+        "warning"
+      );
     }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-surface">
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onDismiss={hideToast}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -121,12 +143,6 @@ export default function RegisterScreen() {
               />
             ))}
           </View>
-
-          {error ? (
-            <View className="mb-4 p-3 bg-error/10 rounded-xl">
-              <Text className="text-error text-sm text-center">{error}</Text>
-            </View>
-          ) : null}
 
           {step === 1 ? (
             <View className="gap-4">
@@ -212,7 +228,7 @@ export default function RegisterScreen() {
             <Button
               onPress={handleNext}
               loading={loading}
-              className={step === 1 ? "flex-1" : "flex-1"}
+              className="flex-1"
             >
               {step === 2 ? "S'inscrire" : "Continuer"}
             </Button>
