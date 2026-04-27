@@ -133,9 +133,10 @@ function sanitizePhoneInput(value: string) {
 
 function validateProfileForm(form: ProfileFormState): ProfileFormErrors {
   const nextErrors: ProfileFormErrors = {};
-  const trimmedName = form.fullName.trim();
-  const trimmedPhone = form.phone.trim();
-  const parsedWeight = form.weightKg.trim() ? Number(form.weightKg.replace(",", ".")) : undefined;
+  const trimmedName = (form.fullName ?? "").trim();
+  const trimmedPhone = (form.phone ?? "").trim();
+  const normalizedWeight = (form.weightKg ?? "").trim();
+  const parsedWeight = normalizedWeight ? Number(normalizedWeight.replace(",", ".")) : undefined;
 
   if (!trimmedName) {
     nextErrors.fullName = "Le nom complet est obligatoire.";
@@ -206,7 +207,13 @@ export default function ProfileScreen() {
   };
 
   const handleFormChange = (patch: Partial<ProfileFormState>) => {
-    setForm((prev) => ({ ...prev, ...patch }));
+    const nextPatch: Partial<ProfileFormState> = { ...patch };
+
+    if (patch.phone !== undefined) {
+      nextPatch.phone = sanitizePhoneInput(patch.phone);
+    }
+
+    setForm((prev) => ({ ...prev, ...nextPatch }));
     setFormErrors((prev) => {
       const nextErrors = { ...prev };
       for (const key of Object.keys(patch) as Array<keyof ProfileFormState>) {
@@ -474,12 +481,15 @@ export default function ProfileScreen() {
             form={form}
             errors={formErrors}
             saving={saving}
-            onChange={(patch) =>
-              handleFormChange({
-                ...patch,
-                phone: patch.phone !== undefined ? sanitizePhoneInput(patch.phone) : undefined,
-              })
-            }
+            onChange={(patch) => {
+              const nextPatch: Partial<ProfileFormState> = { ...patch };
+
+              if (patch.phone !== undefined) {
+                nextPatch.phone = sanitizePhoneInput(patch.phone);
+              }
+
+              handleFormChange(nextPatch);
+            }}
             onSave={handleSave}
             onCancel={handleCancelEdit}
           />
