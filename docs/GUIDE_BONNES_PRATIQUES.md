@@ -91,16 +91,27 @@ supabase/
 | Branche | Rôle |
 |---------|------|
 | `main` | Production — protégée |
-| `dev` | Intégration quotidienne — tous les merges ici |
-| `feature/nom-feature` | Une branche par feature |
-| `fix/nom-bug` | Une branche par correction |
+| `pre-prod` | Intégration et validation avant production |
+| `feature/nom-feature` | Une branche par nouvelle fonctionnalité |
+| `fix/nom-bug` | Une branche par correction de bug |
+| `hotfix/nom-correctif` | Correction urgente destinée à être promue rapidement |
+| `chore/nom-tache` | Maintenance technique, dette, tooling |
+| `docs/nom-sujet` | Documentation uniquement |
+
+### Règles de protection
+
+- `main` : aucune modification directe, uniquement via PR validée depuis `pre-prod`
+- `pre-prod` : aucune modification directe, uniquement via PR depuis une branche de travail
+- une tâche = une branche
+- une branche ne doit traiter qu'un seul sujet fonctionnel
+- on supprime la branche après merge
 
 ### Workflow jour après jour
 
 ```bash
 # 1. S'assurer d'être à jour
-git checkout dev
-git pull origin dev
+git checkout pre-prod
+git pull origin pre-prod
 
 # 2. Créer sa branche feature
 git checkout -b feature/alertes-push
@@ -112,8 +123,26 @@ git commit -m "feat(alerts): ajoute écran liste des alertes"
 # 4. Pousser la branche
 git push origin feature/alertes-push
 
-# 5. Ouvrir une Pull Request vers dev sur GitHub
+# 5. Ouvrir une Pull Request vers pre-prod sur GitHub
 # 6. Un autre membre review et merge
+# 7. Quand pre-prod est validée, ouvrir une PR pre-prod -> main
+```
+
+### Règle simple de promotion
+
+- développement quotidien : `feature/*`, `fix/*`, `chore/*`, `docs/*`
+- intégration équipe : `pre-prod`
+- mise en production : `main`
+
+### Exemples de branches
+
+```bash
+feature/mobile-social-login
+feature/admin-centers-map
+fix/mobile-auth-redirect
+hotfix/profile-trigger-null-phone
+chore/mobile-dependencies-cleanup
+docs/git-workflow-update
 ```
 
 ### Conventions de commit (Conventional Commits)
@@ -314,7 +343,7 @@ L'utilisateur doit pouvoir visualiser les centres proches de sa position.
 | Admin Web | Vercel | Push sur `main` → auto-deploy |
 | Supabase | Supabase Cloud | `npx supabase db push` |
 
-**Règle** : on ne merge sur `main` que ce qui a été testé sur `dev`.
+**Règle** : on ne merge sur `main` que ce qui a été validé sur `pre-prod`.
 
 ---
 
@@ -331,7 +360,7 @@ L'utilisateur doit pouvoir visualiser les centres proches de sa position.
 
 Avant de commencer à coder :
 
-- [ ] `git checkout dev && git pull origin dev`
+- [ ] `git checkout pre-prod && git pull origin pre-prod`
 - [ ] Créer une branche feature propre
 - [ ] Lire les PR ouvertes pour ne pas faire doublon
 
