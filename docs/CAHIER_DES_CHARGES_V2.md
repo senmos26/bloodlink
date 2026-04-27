@@ -232,19 +232,19 @@ graph LR
 ```mermaid
 graph TB
     subgraph Clients
-        Mobile[📱 React Native + Expo]
-        Web[💻 Next.js + Tailwind]
+        Mobile[React Native + Expo]
+        Web[Next.js + Tailwind]
     end
     subgraph Supabase
-        Auth[🔐 Auth JWT]
-        DB[(🗄️ PostgreSQL + RLS)]
-        API[🔌 REST API]
-        EF[⚡ Edge Functions]
-        Storage[📦 Storage]
+        Auth[Auth JWT]
+        DB[(PostgreSQL + RLS)]
+        API[REST API]
+        EF[Edge Functions]
+        Storage[Storage]
     end
     subgraph Externe
-        FCM[🔔 FCM]
-        Maps[🗺️ Maps]
+        FCM[FCM]
+        Maps[Maps]
     end
     Mobile --> API
     Mobile --> Auth
@@ -406,16 +406,20 @@ erDiagram
 
 ```mermaid
 sequenceDiagram
-    C=Centre(Web), SB=Supabase, EF=EdgeFn, FCM=Firebase, D=Donneur(Mobile)
-    C->>SB: insert alert
+    participant C as Centre
+    participant SB as Supabase
+    participant EF as EdgeFn
+    participant FCM as Firebase
+    participant D as Donneur
+    C->>SB: Creer alerte
     SB->>EF: match-alerts
-    EF->>FCM: push ciblé
-    FCM-->>D: notif reçue
-    D->>SB: insert appointment
-    C->>SB: update appointment (confirmed)
-    C->>SB: insert donation (validated)
-    SB->>SB: TRIGGER: next_donation_date +56j
-    SB->>FCM: notif donneur
+    EF->>FCM: Push cible
+    FCM-->>D: Notification recue
+    D->>SB: Prendre RDV
+    C->>SB: Confirmer RDV
+    C->>SB: Valider don
+    SB->>SB: Trigger MAJ date
+    SB->>FCM: Notif donneur
 ```
 
 ---
