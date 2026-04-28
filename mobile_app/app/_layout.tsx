@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import "react-native-gesture-handler";
 import { Stack, router, useSegments } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActivityIndicator, View } from "react-native";
 import * as Linking from "expo-linking";
@@ -60,13 +62,15 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <AuthGuard>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="(auth)" />
-        </Stack>
-      </AuthGuard>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AuthGuard>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" />
+          </Stack>
+        </AuthGuard>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

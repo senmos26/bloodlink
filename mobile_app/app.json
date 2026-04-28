@@ -33,6 +33,12 @@
       "expo-router",
       "@react-native-community/datetimepicker",
       [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Autoriser BloodLink à accéder à votre position pour afficher les centres de don près de vous."
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "Autoriser BloodLink à accéder à vos photos pour votre photo de profil.",
