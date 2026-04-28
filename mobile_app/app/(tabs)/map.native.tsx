@@ -18,10 +18,10 @@ import {
 } from "@/services/map";
 
 const DEFAULT_REGION: Region = {
-  latitude: 6.137,
-  longitude: 1.2123,
-  latitudeDelta: 1.8,
-  longitudeDelta: 1.8,
+  latitude: 34.035,
+  longitude: -6.797,
+  latitudeDelta: 0.06,
+  longitudeDelta: 0.06,
 };
 
 type UserLocation = {
@@ -336,25 +336,32 @@ export default function MapScreen() {
               title={center.name}
               description={center.city}
               onPress={() => setSelectedCenterId(center.id)}
+              tracksViewChanges={false}
             >
               <View
                 style={{
+                  width: 52,
+                  height: 52,
                   alignItems: "center",
                   justifyContent: "center",
-                  transform: [{ scale: isSelected ? 1.08 : 1 }],
+                  overflow: "visible",
                 }}
               >
                 <View
                   style={{
-                    minWidth: 48,
-                    height: 48,
-                    borderRadius: 24,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
                     backgroundColor: isSelected ? markerColor : "#ffffff",
-                    borderWidth: 3,
+                    borderWidth: isSelected ? 4 : 3,
                     borderColor: markerColor,
                     alignItems: "center",
                     justifyContent: "center",
-                    paddingHorizontal: 10,
+                    elevation: 4,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.18,
+                    shadowRadius: 4,
                   }}
                 >
                   <MaterialIcons
@@ -367,34 +374,25 @@ export default function MapScreen() {
                   <View
                     style={{
                       position: "absolute",
-                      top: -4,
-                      right: -2,
-                      minWidth: 22,
-                      height: 22,
-                      borderRadius: 11,
+                      top: 0,
+                      right: 0,
+                      minWidth: 20,
+                      height: 20,
+                      borderRadius: 10,
                       backgroundColor: "#101828",
                       alignItems: "center",
                       justifyContent: "center",
-                      paddingHorizontal: 5,
+                      paddingHorizontal: 4,
                       borderWidth: 2,
                       borderColor: "#ffffff",
+                      elevation: 5,
                     }}
                   >
-                    <Text style={{ color: "#ffffff", fontSize: 11, fontWeight: "800" }}>
+                    <Text style={{ color: "#ffffff", fontSize: 10, fontWeight: "800" }}>
                       {center.activeAlertCount}
                     </Text>
                   </View>
                 ) : null}
-                <View
-                  style={{
-                    marginTop: 4,
-                    width: 12,
-                    height: 12,
-                    backgroundColor: markerColor,
-                    transform: [{ rotate: "45deg" }],
-                    borderBottomRightRadius: 3,
-                  }}
-                />
               </View>
             </Marker>
             );
