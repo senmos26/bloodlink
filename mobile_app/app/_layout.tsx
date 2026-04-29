@@ -6,6 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ActivityIndicator, View } from "react-native";
 import * as Linking from "expo-linking";
 import { supabase } from "@/services/supabase";
+import { registerPushToken, onNotificationResponse } from "@/services/push";
 import "./global.css";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -41,11 +42,27 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       if (!session && !isAuthGroup) {
         router.replace("/(auth)/login");
       }
+
+      // Register push token on sign-in
+      if (session?.user) {
+        registerPushToken(session.user.id).catch(() => {});
+      }
+    });
+
+    // Listen for notification taps
+    const responseListener = onNotificationResponse((response) => {
+      const data = response.notification.request.content.data;
+      if (data?.type === "appointment") {
+        router.push("/appointments" as any);
+      } else if (data?.type === "alert") {
+        router.push("/map");
+      }
     });
 
     return () => {
       subscription.remove();
       authSubscription.unsubscribe();
+      responseListener.remove();
     };
   }, [segments]);
 
@@ -68,6 +85,8 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="(auth)" />
+            <Stack.Screen name="booking" options={{ presentation: "modal", headerShown: false }} />
+            <Stack.Screen name="notifications" options={{ presentation: "modal", headerShown: false }} />
           </Stack>
         </AuthGuard>
       </SafeAreaProvider>
