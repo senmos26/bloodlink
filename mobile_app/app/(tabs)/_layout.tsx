@@ -40,11 +40,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="donations"
+        name="appointments"
         options={{
-          title: "Dons",
+          title: "RDV",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <MaterialIcons name="favorite" size={size} color={color} />
+            <MaterialIcons name="event" size={size} color={color} />
           ),
         }}
       />
