@@ -1,9 +1,21 @@
+import { useState, useEffect } from "react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
+import { getUnreadCount } from "@/services/notifications";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    getUnreadCount(user.id).then(setUnreadCount).catch(() => {});
+  }, [user?.id]);
+
   return (
     <SafeAreaView className="flex-1 bg-surface">
       {/* Header */}
@@ -14,8 +26,18 @@ export default function HomeScreen() {
             Blood<Text className="text-on-surface">Link</Text>
           </Text>
         </View>
-        <Pressable className="p-2 rounded-full bg-surface-container-low">
+        <Pressable
+          className="p-2 rounded-full bg-surface-container-low relative"
+          onPress={() => router.push("/notifications" as any)}
+        >
           <MaterialIcons name="notifications" size={22} color="#5c3f40" />
+          {unreadCount > 0 && (
+            <View className="absolute -top-0.5 -right-0.5 bg-primary rounded-full items-center justify-center min-w-[18px] min-h-[18px] px-1">
+              <Text className="text-white text-[9px] font-bold">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </Text>
+            </View>
+          )}
         </Pressable>
       </View>
 
@@ -70,27 +92,32 @@ export default function HomeScreen() {
           Actions rapides
         </Text>
         <View className="flex-row gap-3 mb-4">
-          <Link href="/map" asChild>
-            <Pressable className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low">
-              <View className="w-10 h-10 bg-primary/10 rounded-xl items-center justify-center mb-2">
-                <MaterialIcons name="location-on" size={20} color="#b80035" />
-              </View>
-              <Text className="text-xs font-semibold text-on-surface">Centres</Text>
-            </Pressable>
-          </Link>
-          <Link href="/donations" asChild>
-            <Pressable className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low">
-              <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
-                <MaterialIcons name="history" size={20} color="#006847" />
-              </View>
-              <Text className="text-xs font-semibold text-on-surface">Historique</Text>
-            </Pressable>
-          </Link>
-          <Pressable className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low">
+          <Pressable
+            className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
+            onPress={() => router.push("/map")}
+          >
+            <View className="w-10 h-10 bg-primary/10 rounded-xl items-center justify-center mb-2">
+              <MaterialIcons name="location-on" size={20} color="#b80035" />
+            </View>
+            <Text className="text-xs font-semibold text-on-surface">Centres</Text>
+          </Pressable>
+          <Pressable
+            className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
+            onPress={() => router.push("/appointments" as any)}
+          >
             <View className="w-10 h-10 bg-secondary/10 rounded-xl items-center justify-center mb-2">
               <MaterialIcons name="event" size={20} color="#006591" />
             </View>
             <Text className="text-xs font-semibold text-on-surface">RDV</Text>
+          </Pressable>
+          <Pressable
+            className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
+            onPress={() => router.push("/notifications" as any)}
+          >
+            <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
+              <MaterialIcons name="notifications" size={20} color="#006847" />
+            </View>
+            <Text className="text-xs font-semibold text-on-surface">Alertes</Text>
           </Pressable>
         </View>
 
@@ -137,9 +164,12 @@ export default function HomeScreen() {
                 Dernier don: 14 oct. 2025
               </Text>
             </View>
-            <View className="w-12 h-12 bg-white/20 rounded-full items-center justify-center">
+            <Pressable
+              className="w-12 h-12 bg-white/20 rounded-full items-center justify-center"
+              onPress={() => router.push("/booking" as any)}
+            >
               <MaterialIcons name="calendar-today" size={24} color="#ffffff" />
-            </View>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

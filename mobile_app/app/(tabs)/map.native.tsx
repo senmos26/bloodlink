@@ -18,10 +18,10 @@ import {
 } from "@/services/map";
 
 const DEFAULT_REGION: Region = {
-  latitude: 6.137,
-  longitude: 1.2123,
-  latitudeDelta: 1.8,
-  longitudeDelta: 1.8,
+  latitude: 34.035,
+  longitude: -6.797,
+  latitudeDelta: 0.06,
+  longitudeDelta: 0.06,
 };
 
 type UserLocation = {
@@ -328,75 +328,18 @@ export default function MapScreen() {
           {visibleCenters.map((center) => {
             const isSelected = center.id === selectedCenterId;
             const markerColor = getUrgencyColor(center.topUrgency);
+            const hasAlerts = center.activeAlertCount > 0;
 
             return (
-            <Marker
-              key={center.id}
-              coordinate={{ latitude: center.latitude, longitude: center.longitude }}
-              title={center.name}
-              description={center.city}
-              onPress={() => setSelectedCenterId(center.id)}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transform: [{ scale: isSelected ? 1.08 : 1 }],
-                }}
-              >
-                <View
-                  style={{
-                    minWidth: 48,
-                    height: 48,
-                    borderRadius: 24,
-                    backgroundColor: isSelected ? markerColor : "#ffffff",
-                    borderWidth: 3,
-                    borderColor: markerColor,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingHorizontal: 10,
-                  }}
-                >
-                  <MaterialIcons
-                    name={center.activeAlertCount > 0 ? "emergency" : "local-hospital"}
-                    size={22}
-                    color={isSelected ? "#ffffff" : markerColor}
-                  />
-                </View>
-                {center.activeAlertCount > 0 ? (
-                  <View
-                    style={{
-                      position: "absolute",
-                      top: -4,
-                      right: -2,
-                      minWidth: 22,
-                      height: 22,
-                      borderRadius: 11,
-                      backgroundColor: "#101828",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      paddingHorizontal: 5,
-                      borderWidth: 2,
-                      borderColor: "#ffffff",
-                    }}
-                  >
-                    <Text style={{ color: "#ffffff", fontSize: 11, fontWeight: "800" }}>
-                      {center.activeAlertCount}
-                    </Text>
-                  </View>
-                ) : null}
-                <View
-                  style={{
-                    marginTop: 4,
-                    width: 12,
-                    height: 12,
-                    backgroundColor: markerColor,
-                    transform: [{ rotate: "45deg" }],
-                    borderBottomRightRadius: 3,
-                  }}
-                />
-              </View>
-            </Marker>
+              <Marker
+                key={center.id}
+                coordinate={{ latitude: center.latitude, longitude: center.longitude }}
+                title={center.name}
+                description={center.city}
+                onPress={() => setSelectedCenterId(center.id)}
+                pinColor={markerColor}
+                opacity={isSelected ? 1 : 0.9}
+              />
             );
           })}
         </MapView>
