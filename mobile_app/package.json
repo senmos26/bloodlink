@@ -12,7 +12,6 @@
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5.2.10",
     "@react-native-community/datetimepicker": "^8.4.4",
-    "@react-navigation/native": "^7.1.8",
     "@rneui/themed": "^5.0.0",
     "@supabase/supabase-js": "^2.104.1",
     "expo": "~54.0.33",

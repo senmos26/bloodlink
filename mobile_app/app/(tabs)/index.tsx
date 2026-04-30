@@ -174,7 +174,10 @@ export default function HomeScreen() {
                     Je donne
                   </Text>
                 </Pressable>
-                <Pressable className="flex-1 bg-secondary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-secondary/20">
+                <Pressable 
+              className="flex-1 bg-secondary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-secondary/20 active:bg-secondary/20"
+              onPress={() => router.push("/share-alert")}
+            >
                   <MaterialIcons name="share" size={16} color="#006591" />
                   <Text className="text-[10px] font-bold text-secondary uppercase">
                     Partager
