@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,6 +19,7 @@ import {
   getUnreadCount,
   timeAgo,
   getNotificationIcon,
+  sendTestPush,
   type AppNotification,
   type NotificationType,
 } from "@/services/notifications";
@@ -40,6 +42,7 @@ export default function NotificationsScreen() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [sendingPush, setSendingPush] = useState(false);
 
   const load = useCallback(async (showRefresh = false) => {
     if (!user?.id) return;
@@ -73,6 +76,35 @@ export default function NotificationsScreen() {
       setUnreadCount(0);
     } catch {
       // silent
+    }
+  };
+
+  const handleSendTestPush = async () => {
+    if (!user?.id || sendingPush) return;
+
+    setSendingPush(true);
+    try {
+      const result = await sendTestPush({
+        title: "Test push BloodLink",
+        body: "Si tu vois ceci, la vraie push distante fonctionne.",
+        type: "system",
+      });
+
+      if (!result.success) {
+        Alert.alert(
+          "Push non envoyée",
+          result.hint ?? result.error ?? "Impossible d'envoyer la push de test.",
+        );
+        return;
+      }
+
+      Alert.alert("Push envoyée", "Vérifie la notification système sur ton appareil.");
+      await load(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erreur inconnue";
+      Alert.alert("Erreur push", message);
+    } finally {
+      setSendingPush(false);
     }
   };
 
@@ -122,11 +154,22 @@ export default function NotificationsScreen() {
             )}
           </View>
         </View>
-        {unreadCount > 0 && (
-          <Pressable onPress={handleMarkAllRead} className="px-3 py-1.5 rounded-full bg-primary/10">
-            <Text className="text-xs font-bold text-primary">Tout lire</Text>
+        <View className="flex-row items-center gap-2">
+          <Pressable
+            onPress={handleSendTestPush}
+            className={`px-3 py-1.5 rounded-full ${sendingPush ? "bg-secondary/10" : "bg-secondary/15"}`}
+            disabled={sendingPush}
+          >
+            <Text className="text-xs font-bold text-secondary">
+              {sendingPush ? "Envoi..." : "Test push"}
+            </Text>
           </Pressable>
-        )}
+          {unreadCount > 0 && (
+            <Pressable onPress={handleMarkAllRead} className="px-3 py-1.5 rounded-full bg-primary/10">
+              <Text className="text-xs font-bold text-primary">Tout lire</Text>
+            </Pressable>
+          )}
+        </View>
       </View>
 
       {/* Content */}
