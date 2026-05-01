@@ -115,7 +115,7 @@ export default function HomeScreen() {
           </Pressable>
           <Pressable
             className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
-            onPress={() => router.push("/notifications" as any)}
+            onPress={() => router.push("/alerts")}
           >
             <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
               <MaterialIcons name="notifications" size={20} color="#006847" />
