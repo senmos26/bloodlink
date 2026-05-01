@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.color {
+  background-color: #d53131;
+  color: var(--on-primary);
+}
