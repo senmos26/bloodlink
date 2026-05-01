@@ -24,6 +24,14 @@ export interface TimeSlot {
   available: boolean;
 }
 
+export interface AppointmentSlot {
+  id: string;
+  date: string;
+  time: string;
+  available: boolean;
+  centerId: string;
+}
+
 export interface CreateAppointmentParams {
   centerId: string;
   scheduledDate: string;

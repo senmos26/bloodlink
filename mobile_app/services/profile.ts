@@ -12,6 +12,7 @@ export interface ProfileRecord {
   blood_type: BloodType | null;
   date_of_birth: string | null;
   weight_kg: number | null;
+  gender: "male" | "female" | null;
   role: "donor" | "center_admin" | "super_admin";
   is_active: boolean;
   next_donation_date: string | null;
@@ -104,8 +105,8 @@ export async function getMyProfileDashboard(): Promise<ProfileDashboard> {
   return data as ProfileDashboard;
 }
 
-export async function updateMyProfile(payload: UpdateMyProfilePayload): Promise<ProfileRecord> {
-  const { data, error } = await supabase.rpc("update_my_profile", {
+export async function updateMyProfile(payload: UpdateMyProfilePayload): Promise<void> {
+  const { error } = await supabase.rpc("update_my_profile", {
     p_full_name: payload.fullName ?? null,
     p_phone: payload.phone ?? null,
     p_blood_type: payload.bloodType ?? null,
@@ -116,8 +117,6 @@ export async function updateMyProfile(payload: UpdateMyProfilePayload): Promise<
   if (error) {
     throw toAppError(error, "Impossible de mettre à jour le profil.");
   }
-
-  return data as ProfileRecord;
 }
 
 export async function updateMyProfileAvatar(avatarPath: string | null): Promise<ProfileRecord> {

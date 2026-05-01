@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/services/supabase";
-import type { User } from "@supabase/supabase-js";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+
+export interface User extends SupabaseUser {
+  blood_type?: string;
+  gender?: "male" | "female";
+  next_donation_date?: string;
+}
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);

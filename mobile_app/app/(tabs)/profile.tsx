@@ -285,7 +285,7 @@ export default function ProfileScreen() {
     setSaving(true);
 
     try {
-      const updatedProfile = await updateMyProfile({
+      await updateMyProfile({
         fullName: form.fullName.trim(),
         phone: form.phone.trim(),
         bloodType: form.bloodType ?? undefined,
@@ -293,7 +293,9 @@ export default function ProfileScreen() {
         weightKg: parsedWeight,
       });
 
-      applyProfileToDashboard(updatedProfile);
+      // Recharger le profil après la mise à jour
+      const dashboard = await getMyProfileDashboard();
+      setDashboard(dashboard);
       setEditMode(false);
       setFormErrors(EMPTY_ERRORS);
       showToast("Profil mis à jour avec succès.", "success");
