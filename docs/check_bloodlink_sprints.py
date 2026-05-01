@@ -3,7 +3,7 @@ Vérifie les tâches dans BloodLink Sprints
 """
 import requests
 
-TOKEN = 'pk_62609552_8BIJ588Z0UV5HKDRIJI2NK0E05WN8W2O'
+TOKEN = 'pk_62609552_W0VHYV65R3DEGPFPGDKN3XIJAFHOI2DF'
 LIST_ID = '901523010438'
 headers = {'Authorization': TOKEN}
 

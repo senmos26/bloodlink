@@ -1,7 +1,7 @@
 """Affiche les tâches d'un Sprint ClickUp"""
 import requests, json, sys
 
-TOKEN = 'pk_62609552_8BIJ588Z0UV5HKDRIJI2NK0E05WN8W2O'
+TOKEN = 'pk_62609552_W0VHYV65R3DEGPFPGDKN3XIJAFHOI2DF'
 headers = {'Authorization': TOKEN, 'Content-Type': 'application/json'}
 
 SPRINT_LISTS = {
