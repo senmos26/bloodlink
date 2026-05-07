@@ -567,6 +567,18 @@ export default function ProfileScreen() {
 
         <View className="px-4">
           <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-black/5">
+            <Pressable 
+              onPress={() => router.push("/my-qr")}
+              className="flex-row items-center justify-between p-4 border-b border-surface-container-high/20 active:bg-surface-container-low"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="qr-code-2" size={20} color="#b80035" />
+                <Text className="text-sm font-semibold text-on-surface">
+                  Mon QR Code
+                </Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color="#906f70" />
+            </Pressable>
             <Pressable className="flex-row items-center justify-between p-4 border-b border-surface-container-high/20 active:bg-surface-container-low">
               <View className="flex-row items-center gap-3">
                 <MaterialIcons name="notifications-active" size={20} color="#5c3f40" />
@@ -583,7 +595,7 @@ export default function ProfileScreen() {
               <View className="flex-row items-center gap-3">
                 <MaterialIcons name="edit" size={20} color="#5c3f40" />
                 <Text className="text-sm font-semibold text-on-surface">
-                  {editMode ? "Fermer l’édition" : "Modifier profil"}
+                  {editMode ? "Fermer l'édition" : "Modifier profil"}
                 </Text>
               </View>
               <MaterialIcons name="chevron-right" size={20} color="#906f70" />
