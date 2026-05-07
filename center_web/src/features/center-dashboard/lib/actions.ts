@@ -17,12 +17,13 @@ export async function getTodayStats(): Promise<TodayStats> {
 
   if (error) throw new Error(error.message);
 
+  const row = Array.isArray(data) ? data[0] : data;
   return {
-    todayAppointmentsCount: data.today_appointments_count ?? 0,
-    pendingAppointmentsCount: data.pending_appointments_count ?? 0,
-    validatedDonationsCount: data.validated_donations_count ?? 0,
-    activeAlertsCount: data.active_alerts_count ?? 0,
-    centerName: data.center_name ?? "Mon centre",
+    todayAppointmentsCount: row?.today_appointments_count ?? 0,
+    pendingAppointmentsCount: row?.pending_appointments_count ?? 0,
+    validatedDonationsCount: row?.validated_donations_count ?? 0,
+    activeAlertsCount: row?.active_alerts_count ?? 0,
+    centerName: row?.center_name ?? "Mon centre",
   };
 }
 

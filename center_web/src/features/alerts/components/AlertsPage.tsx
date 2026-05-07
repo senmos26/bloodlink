@@ -25,6 +25,8 @@ import {
   useCreateAlert,
   useCloseAlert,
   useEscalateAlert,
+  useRelaunchAlert,
+  useShareAlert,
 } from "@/features/alerts/lib/hooks";
 import type { AlertStats } from "@/features/alerts/lib/actions";
 import type { Alert, UrgencyLevel, AlertStatus } from "@/entities";
@@ -70,6 +72,8 @@ export default function AlertsPage() {
   const createAlertMutation = useCreateAlert();
   const closeAlertMutation = useCloseAlert();
   const escalateAlertMutation = useEscalateAlert();
+  const relaunchAlertMutation = useRelaunchAlert();
+  const shareAlertMutation = useShareAlert();
 
   const handlers: AlertFilterHandlers = {
     handleSearchChange: (val) => setFilters((f) => ({ ...f, searchTerm: val })),
@@ -116,12 +120,23 @@ export default function AlertsPage() {
     });
   };
 
-  const handleRelaunch = (_id: string) => {
-    toast.success("Notification relancée aux donneurs proches");
+  const handleRelaunch = (id: string) => {
+    relaunchAlertMutation.mutate(id, {
+      onSuccess: () => toast.success("Notification relancée aux donneurs proches"),
+      onError: () => toast.error("Erreur lors de la relance"),
+    });
   };
 
-  const handleShare = (_id: string) => {
-    toast.success("Lien de partage copié");
+  const handleShare = (id: string) => {
+    shareAlertMutation.mutate(id, {
+      onSuccess: (res) => {
+        if (res.url) {
+          navigator.clipboard.writeText(res.url);
+          toast.success("Lien de partage copié");
+        }
+      },
+      onError: () => toast.error("Erreur lors du partage"),
+    });
   };
 
   return (

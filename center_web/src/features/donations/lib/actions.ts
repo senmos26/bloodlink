@@ -82,3 +82,34 @@ export async function createDonation(formData: FormData) {
   revalidatePath("/(dashboard)");
   return { success: true };
 }
+
+export interface QRVerificationResult {
+  success: boolean;
+  donor?: {
+    full_name: string;
+    blood_type: string;
+  };
+  donation_id?: string;
+  error?: string;
+  message?: string;
+}
+
+export async function verifyDonationQR(
+  donorId: string,
+  timestamp: number
+): Promise<QRVerificationResult> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.functions.invoke(
+    "verify-donation-qr",
+    {
+      body: { donor_id: donorId, timestamp },
+    }
+  );
+
+  if (error) {
+    return { success: false, error: error.message ?? "Erreur de vérification" };
+  }
+
+  return data as QRVerificationResult;
+}

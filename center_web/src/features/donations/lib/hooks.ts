@@ -3,6 +3,8 @@ import {
   getTodayDonations,
   getCompletedAppointments,
   createDonation,
+  verifyDonationQR,
+  type QRVerificationResult,
 } from "@/features/donations/lib/actions";
 import type { Donation } from "@/entities";
 
@@ -42,6 +44,26 @@ export function useCreateDonation() {
       queryClient.invalidateQueries({ queryKey: ["donations"] });
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
       queryClient.invalidateQueries({ queryKey: ["center", "today-stats"] });
+    },
+  });
+}
+
+export function useVerifyDonationQR() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    QRVerificationResult,
+    Error,
+    { donorId: string; timestamp: number }
+  >({
+    mutationFn: async ({ donorId, timestamp }) =>
+      verifyDonationQR(donorId, timestamp),
+    onSuccess: (result) => {
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["donations"] });
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+        queryClient.invalidateQueries({ queryKey: ["center", "today-stats"] });
+      }
     },
   });
 }

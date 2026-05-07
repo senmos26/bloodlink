@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { HeartPulse, CheckCircle2, Droplets, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { HeartPulse, CheckCircle2, Droplets, Search, QrCode } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function DonationsPage() {
+  const router = useRouter();
   const [selectedAppt, setSelectedAppt] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
@@ -63,14 +65,23 @@ export default function DonationsPage() {
             {donations?.length ?? 0} dons validés aujourd'hui
           </p>
         </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            placeholder="Rechercher..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 w-56"
-          />
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => router.push("/donations/scan")}
+            className="bg-rose-600 hover:bg-rose-700 gap-2"
+          >
+            <QrCode className="h-4 w-4" />
+            <span className="hidden sm:inline">Scanner</span>
+          </Button>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Input
+              placeholder="Rechercher..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 w-56"
+            />
+          </div>
         </div>
       </div>
 

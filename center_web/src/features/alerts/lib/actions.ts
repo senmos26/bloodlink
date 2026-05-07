@@ -44,9 +44,12 @@ export async function getActiveAlerts(): Promise<Alert[]> {
   if (!centerId) return [];
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_center_alerts", {
+  const { data, error } = await supabase.rpc("get_filtered_center_alerts", {
     p_center_id: centerId,
     p_status_filter: "active",
+    p_blood_type: null,
+    p_urgency_level: null,
+    p_search_term: null,
   });
   if (error) {
     console.error("Error fetching alerts:", error);
@@ -61,7 +64,7 @@ export async function getFilteredAlerts(filters: AlertFilters): Promise<Alert[]>
   if (!centerId) return [];
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_center_alerts", {
+  const { data, error } = await supabase.rpc("get_filtered_center_alerts", {
     p_center_id: centerId,
     p_status_filter: filters.status && filters.status !== "all" ? filters.status : null,
     p_blood_type: filters.bloodType && filters.bloodType !== "all" ? filters.bloodType : null,
@@ -81,8 +84,12 @@ export async function getAllAlerts(): Promise<Alert[]> {
   if (!centerId) return [];
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_center_alerts", {
+  const { data, error } = await supabase.rpc("get_filtered_center_alerts", {
     p_center_id: centerId,
+    p_status_filter: null,
+    p_blood_type: null,
+    p_urgency_level: null,
+    p_search_term: null,
   });
 
   if (error) throw new Error(error.message);
@@ -116,11 +123,11 @@ export async function getAlertStats(): Promise<AlertStats> {
 
   const row = Array.isArray(data) ? data[0] : data;
   return {
-    totalActive: Number(row?.total_active ?? 0),
-    criticalCount: Number(row?.critical_count ?? 0),
+    totalActive: Number(row?.active_alerts ?? 0),
+    criticalCount: Number(row?.critical_alerts ?? 0),
     responseRate: Number(row?.response_rate ?? 0),
-    avgResponseTime: Number(row?.avg_response_hours ?? 0),
-    expiredToday: Number(row?.expired_today ?? 0),
+    avgResponseTime: 0,
+    expiredToday: Number(row?.expired_alerts ?? 0),
     donorsResponded: Number(row?.total_donors_responded ?? 0),
   };
 }
@@ -173,6 +180,89 @@ export async function escalateAlert(id: string) {
   revalidatePath("/alerts");
   revalidatePath("/");
   return { success: true };
+}
+
+export interface AlertResponse {
+  responseId: string;
+  alertId: string;
+  donorId: string;
+  donorFullName: string;
+  donorBloodType: string | null;
+  respondedAt: string;
+  status: string;
+}
+
+export async function getAlertResponses(alertId?: string): Promise<AlertResponse[]> {
+  const { center } = await requireCenterAdmin();
+  const centerId = center?.id;
+  if (!centerId) return [];
+
+  const supabase = await createClient();
+  let query = supabase.rpc("get_center_alert_responses", {
+    p_center_id: centerId,
+  });
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching alert responses:", error);
+    return [];
+  }
+
+  const rows = (data ?? []).filter((r: Record<string, unknown>) =>
+    alertId ? r.alert_id === alertId : true
+  );
+
+  return rows.map((r: Record<string, unknown>) => ({
+    responseId: r.response_id as string,
+    alertId: r.alert_id as string,
+    donorId: r.donor_id as string,
+    donorFullName: r.donor_full_name as string,
+    donorBloodType: r.donor_blood_type as string | null,
+    respondedAt: r.responded_at as string,
+    status: r.status as string,
+  }));
+}
+
+export async function relaunchAlert(id: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("relaunch_center_alert", {
+    p_alert_id: id,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/alerts");
+  return { success: true, newAlertId: data as string };
+}
+
+function generateShortCode(length = 8): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+export async function shareAlert(id: string) {
+  const supabase = await createClient();
+  const shortCode = generateShortCode();
+  const { data, error } = await supabase
+    .from("alert_shares")
+    .insert({
+      short_code: shortCode,
+      original_url: `/alert/${id}`,
+      share_data: { alert_id: id },
+    })
+    .select("short_code")
+    .single();
+
+  if (error) return { error: error.message };
+
+  const returnedCode = (data as { short_code?: string })?.short_code;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://bloodlink.app";
+  return { success: true, url: `${baseUrl}/s/${returnedCode}` };
 }
 
 export async function getActiveAlertsCount(): Promise<number> {

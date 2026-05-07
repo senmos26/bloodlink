@@ -4,12 +4,16 @@ import {
   getFilteredAlerts,
   getAllAlerts,
   getAlertStats,
+  getAlertResponses,
   createAlert,
   closeAlert,
   escalateAlert,
+  relaunchAlert,
+  shareAlert,
   getActiveAlertsCount,
   type AlertFilters,
   type AlertStats,
+  type AlertResponse,
 } from "@/features/alerts/lib/actions";
 import type { Alert, UrgencyLevel, AlertStatus } from "@/entities";
 
@@ -93,6 +97,33 @@ export function useEscalateAlert() {
     mutationFn: async (id: string) => escalateAlert(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["alerts"] });
+      queryClient.invalidateQueries({ queryKey: ["alerts", "stats"] });
     },
+  });
+}
+
+export function useAlertResponses(alertId?: string) {
+  return useQuery<AlertResponse[]>({
+    queryKey: ["alerts", "responses", alertId ?? "all"],
+    queryFn: () => getAlertResponses(alertId),
+    staleTime: 1000 * 30,
+    refetchInterval: 1000 * 60,
+  });
+}
+
+export function useRelaunchAlert() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => relaunchAlert(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["alerts"] });
+    },
+  });
+}
+
+export function useShareAlert() {
+  return useMutation({
+    mutationFn: async (id: string) => shareAlert(id),
   });
 }
