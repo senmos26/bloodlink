@@ -1,0 +1,71 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+
+# Next.js build output
+/.next/
+/out/
+/build
+
+# Testing & Coverage
+/coverage
+/test-results
+/.playwright
+/.pytest_cache
+/.vitest
+
+# Env files (NEVER COMMIT THESE)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# Allow example templates
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+*.pem
+
+# Python / AI Service artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.venv
+**/venv
+**/env
+**/.python-version
+**/.ruff_cache
+**/.mypy_cache
+
+# IDE settings
+.vscode/
+.idea/
+.cursor/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Documentation
+# Allow README and docs folder, but ignore temporary notes if needed
+!README.md
+!docs/
+!SPEC_*.md
+
+# Images
+# If you use a CDN, keep these. If you have local assets, uncomment the lines below.
+# public/img_landingpage/
+# public/**/*.jpg
+# public/**/*.jpeg
+# public/**/*.png
+# public/**/*.svg

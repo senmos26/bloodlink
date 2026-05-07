@@ -1,0 +1,3840 @@
+{
+  "common": {
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "create": "Crear",
+      "update": "Actualizar",
+      "view": "Ver",
+      "search": "Buscar",
+      "filter": "Filtrar",
+      "export": "Exportar",
+      "import": "Importar",
+      "download": "Descargar",
+      "upload": "Subir",
+      "like": "Me gusta",
+      "dislike": "No me gusta",
+      "liked": "Me gustó",
+      "feedbackSent": "Comentario enviado"
+    },
+    "feedback": {
+      "title": "Enviar comentario",
+      "description": "Ayúdanos a mejorar compartiendo qué salió mal con esta respuesta.",
+      "placeholder": "¿Cuál fue el problema con esta respuesta?",
+      "submit": "Enviar comentario"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "pending": "Pendiente",
+      "completed": "Completado",
+      "cancelled": "Cancelado",
+      "archived": "Archivado",
+      "all": "Todos",
+      "filter": "Filtrar por estado..."
+    },
+    "labels": {
+      "name": "Nombre",
+      "description": "Descripción",
+      "date": "Fecha",
+      "amount": "Monto",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "navigation": {
+      "dashboard": "Panel de control",
+      "properties": "Propiedades",
+      "tenants": "Inquilinos",
+      "charges": "Cargos",
+      "documents": "Documentos",
+      "contacts": "Contactos",
+      "settings": "Configuración",
+      "account": {
+        "myAccount": "Mi Cuenta",
+        "settings": "Configuración",
+        "logout": "Cerrar Sesión"
+      }
+    },
+    "language": {
+      "switch": "Cambiar idioma",
+      "current": "Idioma actual",
+      "chooseLanguage": "Elegir idioma"
+    },
+    "search": {
+      "placeholder": "Buscar propiedades, inquilinos, documentos...",
+      "placeholderShort": "Buscar...",
+      "title": "Búsqueda global",
+      "description": "Escriba para buscar en sus propiedades, inquilinos, documentos y más.",
+      "noResults": "No hay resultados para \"{query}\"",
+      "tryOtherKeywords": "Intente con otras palabras clave",
+      "shortcuts": {
+        "open": "para abrir",
+        "navigate": "navegar",
+        "select": "seleccionar",
+        "close": "cerrar"
+      },
+      "categories": {
+        "properties": "Propiedades inmobiliarias",
+        "tenants": "Inquilinos",
+        "documents": "Documentos",
+        "finances": "Finanzas",
+        "navigation": "Navegación"
+      }
+    }
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error",
+    "notFound": "Página no encontrada",
+    "unauthorized": "No autorizado",
+    "serverError": "Error del servidor",
+    "networkError": "Error de red",
+    "global": {
+      "toast": {
+        "title": "¡Ups! Ocurrió un error inesperado.",
+        "description": "Hemos sido notificados y estamos trabajando para resolver el problema."
+      },
+      "heading": "¡Ups, ha ocurrido un error!",
+      "description": "Algo salió mal de nuestro lado. Puede intentar actualizar la página o volver más tarde.",
+      "button": "Reintentar"
+    }
+  },
+  "unauthorized": {
+    "title": "Acceso no autorizado",
+    "description": "No tienes permisos suficientes para acceder a esta página.",
+    "message": "Si crees que se trata de un error, contacta con tu administrador o vuelve al panel de control.",
+    "goHome": "Volver al panel de control"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Correo electrónico inválido",
+    "invalidPhone": "Número de teléfono inválido",
+    "minLength": "Longitud mínima no alcanzada",
+    "maxLength": "Longitud máxima excedida",
+    "invalidFormat": "Formato inválido"
+  },
+  "dashboard": {
+    "welcome": {
+      "title": "Bienvenido a BloodLink. ¡Comience con su primera propiedad!",
+      "createButton": "Crear su primera propiedad",
+      "dismissButton": "Ignorar"
+    },
+    "kpis": {
+      "totalRevenue": {
+        "title": "Ingresos totales",
+        "description": "El total de alquileres y otros ingresos percibidos para el período seleccionado.",
+        "delta": "+12,5% comparado con el mes pasado"
+      },
+      "occupancyRate": {
+        "title": "Tasa de ocupación",
+        "description": "El porcentaje de unidades alquiladas en relación con el número total de unidades disponibles.",
+        "delta": "+2,1% en comparación con el mes pasado",
+        "unitSingular": "unidad",
+        "unitPlural": "unidades"
+      },
+      "activeTenants": {
+        "title": "Inquilinos activos",
+        "description": "El número total de inquilinos con un contrato de arrendamiento actualmente en curso.",
+        "delta": "+1 este mes",
+        "tenantLabel": "inquilinos"
+      },
+      "avgRepairTime": {
+        "title": "Tiempo promedio de reparación",
+        "description": "El tiempo promedio necesario para resolver las solicitudes de mantenimiento reportadas.",
+        "delta": "+5%"
+      },
+      "turnoverRate": {
+        "title": "Tasa de rotación",
+        "description": "El porcentaje de inquilinos que han abandonado su vivienda durante el último período.",
+        "delta": "-2%"
+      },
+      "unpaid": {
+        "title": "Pagos recibidos",
+        "description": "Número de alquileres pagados sobre el total de alquileres esperados este mes.",
+        "delta": "+1 este mes",
+        "paidLabel": "pagados"
+      }
+    },
+    "cashflow": {
+      "title": "Flujo de caja",
+      "revenue": "Ingresos",
+      "expenses": "Gastos",
+      "balance": "Saldo",
+      "currency": "MAD",
+      "months": {
+        "jan": "Ene",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Abr",
+        "may": "May",
+        "jun": "Jun"
+      }
+    },
+    "quickActions": {
+      "title": "Acciones rápidas",
+      "subtitle": "Tareas comunes y atajos",
+      "addTenant": "Añadir un inquilino",
+      "createProperty": "Crear una propiedad",
+      "addCharge": "Añadir un cargo",
+      "addContact": "Añadir un contacto",
+      "openEvents": "Gestionar eventos",
+      "openBlog": "Gestionar entradas del blog",
+      "openTeam": "Gestionar el equipo",
+      "openComments": "Gestionar comentarios"
+    },
+    "alerts": {
+      "title": "Alertas y notificaciones",
+      "subtitle": "Elementos importantes que requieren atención",
+      "overdueRents": {
+        "title": "3 alquileres atrasados",
+        "subtitle": "Total: 4 850 MAD",
+        "action": "Ver"
+      },
+      "expiringLeases": {
+        "title": "2 contratos expiran pronto",
+        "subtitle": "En 30 días",
+        "action": "Revisar"
+      },
+      "maintenanceUpToDate": {
+        "title": "Mantenimiento al día",
+        "subtitle": "Ninguna solicitud pendiente"
+      }
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "performance": "Rendimiento de propiedades",
+      "activities": "Actividades recientes",
+      "overviewShort": "Resumen",
+      "performanceShort": "Rendimiento",
+      "activitiesShort": "Actividades",
+      "ariaLabel": "Secciones del panel de control",
+      "sectionsLabel": "Secciones del panel de control"
+    },
+    "activities": {
+      "title": "Actividades recientes",
+      "subtitle": "Últimas actualizaciones y transacciones",
+      "empty": "No hay actividades recientes",
+      "emptyHint": "Las actividades aparecerán aquí cuando agregues o modifiques elementos",
+      "tags": {
+        "created": "Agregado",
+        "updated": "Modificado",
+        "archived": "Archivado"
+      },
+      "items": {
+        "payment": "Pago de 1 850 MAD para Apto 3B",
+        "maintenance": "Fuga de grifo en Apto 1A",
+        "lease": "Contrato firmado para Salle 1",
+        "inquiry": "Solicitud de información para Apto 2C",
+        "time1": "hace 2 horas",
+        "time2": "hace 4 horas",
+        "time3": "hace 1 día",
+        "time4": "hace 2 días",
+        "tag1": "completado",
+        "tag2": "pendiente",
+        "tag3": "firmado",
+        "tag4": "respondido"
+      }
+    },
+    "properties": {
+      "title": "Rendimiento de propiedades",
+      "subtitle": "Visión general de las propiedades y sus indicadores clave",
+      "units": "unidades",
+      "occupancy": "Ocupación",
+      "revenue": "Ingresos",
+      "viewAll": "Ver todo",
+      "trends": {
+        "up": "Excelente",
+        "down": "A mejorar",
+        "stable": "Satisfactorio"
+      }
+    },
+    "sidebar": {
+      "dashboard": "Panel de control",
+      "properties": "Propiedades",
+      "tenancies": "Alquileres",
+      "charges": "Cargos",
+      "regularisations": "Regularizaciones",
+      "contacts": "Contactos",
+      "documents": "Documentos",
+      "finance": "Finanzas",
+      "banking": "Banco",
+      "messaging": "Mensajería",
+      "aiChat": "Test Chat IA",
+      "settings": "Configuración"
+    }
+  },
+  "auth": {
+    "common": {
+      "brandName": "BLOODLINK",
+      "loading": "Cargando...",
+      "copyright": "© {year} BloodLink Engineering. Todos los derechos reservados."
+    },
+    "testimonials": {
+      "slides": [
+        {
+          "alt": "Gestión moderna vía aplicación móvil.",
+          "quote": "Gestionar mis propiedades se vuelve fluido: comunicaciones, seguimiento, mantenimiento — todo está centralizado.",
+          "author": "Fatima Alami",
+          "title": "Gestora Inmobiliaria"
+        },
+        {
+          "alt": "Panel de control analítico inmobiliario.",
+          "quote": "La visibilidad global sobre mi rendimiento me permite actuar rápido y decidir mejor.",
+          "author": "Youssef Benjelloun",
+          "title": "Inversor Inmobiliario"
+        }
+      ]
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Acceda a su panel de control.",
+      "labels": {
+        "email": "Correo electrónico",
+        "password": "Contraseña"
+      },
+      "placeholders": {
+        "email": "nombre@ejemplo.com",
+        "password": "••••••••"
+      },
+      "buttons": {
+        "submit": "Iniciar sesión",
+        "submitting": "Iniciando sesión...",
+        "google": "Continuar con Google",
+        "divider": "O"
+      },
+      "links": {
+        "forgotPassword": "¿Olvidó?",
+        "noAccount": "¿Aún no tiene cuenta?",
+        "signUp": "Regístrese"
+      },
+      "aria": {
+        "showPassword": "Mostrar contraseña",
+        "hidePassword": "Ocultar contraseña"
+      },
+      "toast": {
+        "errorTitle": "Error al iniciar sesión",
+        "emailConfirmedTitle": "Correo confirmado exitosamente",
+        "passwordUpdatedTitle": "Contraseña actualizada"
+      },
+      "errors": {
+        "invalidCredentials": "Las credenciales son incorrectas.",
+        "fieldsRequired": "El correo electrónico y la contraseña son obligatorios."
+      }
+    },
+    "signup": {
+      "title": "Crear su cuenta",
+      "subtitle": "Gestione sus propiedades inmobiliarias en pocos minutos.",
+      "labels": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña"
+      },
+      "placeholders": {
+        "firstName": "Oussama",
+        "lastName": "El Amrani",
+        "email": "usted@ejemplo.com",
+        "password": "••••••••"
+      },
+      "passwordRules": {
+        "minLength": "Al menos 8 caracteres",
+        "upperLower": "Una mayúscula y una minúscula",
+        "digit": "Al menos un número"
+      },
+      "passwordMatch": {
+        "match": "Las contraseñas coinciden",
+        "noMatch": "Las contraseñas no coinciden"
+      },
+      "terms": {
+        "prefix": "Acepto los",
+        "linkText": "Términos de uso",
+        "suffix": "."
+      },
+      "buttons": {
+        "submit": "Crear una cuenta",
+        "submitting": "Creando cuenta...",
+        "google": "Continuar con Google"
+      },
+      "links": {
+        "hasAccount": "¿Ya tiene una cuenta?",
+        "login": "Iniciar sesión"
+      },
+      "aria": {
+        "showPassword": "Mostrar contraseña",
+        "hidePassword": "Ocultar contraseña"
+      },
+      "footer": {
+        "copyright": "© {year} BloodLink. Todos los derechos reservados."
+      },
+      "success": {
+        "title": "Registro exitoso. ¡Bienvenido!",
+        "emailConfirm": "Verifique su correo electrónico para confirmar su cuenta."
+      },
+      "errors": {
+        "fixErrors": "Por favor corrija los errores del formulario.",
+        "emailExists": "Este correo electrónico ya está en uso.",
+        "passwordInsecure": "La contraseña no cumple con los criterios de seguridad.",
+        "rateLimited": "Demasiados intentos. Por favor intente más tarde.",
+        "generic": "Ha ocurrido un error. Por favor intente nuevamente."
+      }
+    },
+    "resetPassword": {
+      "title": "¿Olvidó su contraseña?",
+      "description": "Ingrese su correo electrónico para recibir un enlace de restablecimiento.",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "submitButton": "Enviar enlace de restablecimiento",
+      "loadingButton": "Enviando...",
+      "successButton": "Correo enviado ✓",
+      "backToLogin": "← Volver al inicio de sesión",
+      "noAccount": "¿Aún no tiene cuenta?",
+      "signUpLink": "Regístrese",
+      "validation": {
+        "emailRequired": "Correo electrónico obligatorio",
+        "emailInvalid": "Formato de correo electrónico inválido"
+      },
+      "error": {
+        "generic": "Ha ocurrido un error. Por favor intente nuevamente."
+      }
+    },
+    "newPassword": {
+      "title": "Nueva contraseña",
+      "description": "Defina su nueva contraseña segura.",
+      "passwordLabel": "Nueva contraseña",
+      "passwordPlaceholder": "Ingrese su nueva contraseña",
+      "confirmPasswordLabel": "Confirmar contraseña",
+      "confirmPasswordPlaceholder": "Confirme su nueva contraseña",
+      "submitButton": "Actualizar contraseña",
+      "submittingButton": "Actualizando...",
+      "backToLogin": "← Volver al inicio de sesión",
+      "error": {
+        "generic": "Ha ocurrido un error"
+      }
+    },
+    "emailSent": {
+      "title": "Correo enviado",
+      "description": "Revise su bandeja de entrada para restablecer su contraseña",
+      "cardTitle": "Enlace de restablecimiento enviado",
+      "cardDescription": "Hemos enviado un enlace de restablecimiento a:",
+      "instructions": {
+        "clickLink": "Haga clic en el enlace del correo para crear una nueva contraseña.",
+        "emailDelay": "El correo puede tardar unos minutos en llegar."
+      },
+      "resendButton": {
+        "resending": "Enviando...",
+        "resend": "Reenviar correo",
+        "countdown": "Reenviar en {seconds}s"
+      },
+      "backToReset": "← Volver al restablecimiento",
+      "error": {
+        "resend": "Error al reenviar:"
+      }
+    },
+    "validation": {
+      "required": "Este campo es obligatorio.",
+      "firstNameRequired": "El nombre es obligatorio.",
+      "lastNameRequired": "El apellido es obligatorio.",
+      "emailInvalid": "Correo electrónico inválido.",
+      "passwordMinLength": "La contraseña debe contener al menos 8 caracteres.",
+      "passwordUpperLower": "La contraseña debe contener al menos una mayúscula y una minúscula.",
+      "passwordDigit": "La contraseña debe contener al menos un número.",
+      "passwordsMismatch": "Las contraseñas no coinciden.",
+      "termsRequired": "Debe aceptar los Términos de uso.",
+      "currentPasswordInvalid": "Contraseña actual inválida.",
+      "phoneInvalid": "Número de teléfono inválido (formato E.164)."
+    },
+    "serverErrors": {
+      "invalidCredentials": "Las credenciales son incorrectas.",
+      "fieldsRequired": "El correo electrónico y la contraseña son obligatorios.",
+      "emailAlreadyExists": "Este correo electrónico ya está en uso.",
+      "weakPassword": "La contraseña no cumple con los criterios de seguridad.",
+      "rateLimited": "Demasiados intentos. Por favor intente más tarde.",
+      "resetEmailFailed": "No se pudo enviar el correo de restablecimiento.",
+      "invalidResetLink": "Enlace inválido o expirado.",
+      "updatePasswordFailed": "No se pudo actualizar la contraseña.",
+      "allFieldsRequired": "Todos los campos son obligatorios.",
+      "passwordTooShort": "La contraseña debe contener al menos 6 caracteres.",
+      "passwordsMismatch": "Las contraseñas no coinciden.",
+      "unknownError": "Ha ocurrido un error. Por favor intente nuevamente."
+    },
+    "success": {
+      "loginSuccess": "Inicio de sesión exitoso. ¡Bienvenido!",
+      "signupSuccess": "Registro exitoso. ¡Bienvenido!",
+      "emailConfirmRequired": "Verifique su correo electrónico para confirmar su cuenta.",
+      "emailConfirmed": "Su dirección de correo electrónico ha sido confirmada exitosamente. Ahora puede iniciar sesión.",
+      "resetEmailSent": "Se ha enviado un enlace de restablecimiento a su correo electrónico.",
+      "passwordUpdated": "Contraseña actualizada con éxito."
+    }
+  },
+  "terms": {
+    "metadata": {
+      "title": "Términos de uso - BloodLink",
+      "description": "Consulte los términos de uso de la plataforma BloodLink. Información legal sobre el uso de nuestros servicios de gestión inmobiliaria."
+    },
+    "navigation": {
+      "back": "Volver",
+      "backAriaLabel": "Volver a la página anterior",
+      "skip": "Ir al contenido principal"
+    },
+    "header": {
+      "title": "Términos de uso",
+      "lastUpdated": "Última actualización",
+      "effectiveDate": "8 de octubre de 2025"
+    },
+    "sections": {
+      "introduction": {
+        "title": "Introducción",
+        "content": "Estos términos rigen su acceso y uso de la aplicación BloodLink. Al utilizar nuestros servicios, acepta estar sujeto a estos términos. Por favor léalos cuidadosamente."
+      },
+      "accounts": {
+        "title": "Cuentas de usuario",
+        "content": "Usted es responsable de la confidencialidad de su cuenta y contraseña. Acepta no divulgar su contraseña a terceros y notificarnos inmediatamente sobre cualquier uso no autorizado de su cuenta."
+      },
+      "acceptableUse": {
+        "title": "Uso aceptable",
+        "content": "Se compromete a no utilizar nuestros servicios de manera abusiva, ilegal o no autorizada. Debe cumplir con todas las leyes locales, nacionales e internacionales aplicables al usar nuestros servicios."
+      },
+      "privacy": {
+        "title": "Confidencialidad y protección de datos",
+        "content": "Tratamos sus datos personales de conformidad con nuestra Política de privacidad y el Reglamento General de Protección de Datos (RGPD). Sus datos se almacenan de forma segura y nunca se venden a terceros."
+      },
+      "liability": {
+        "title": "Limitación de responsabilidad",
+        "content": "Los servicios se proporcionan «tal cual» sin garantía de ningún tipo. En la medida permitida por la ley, excluimos todas las garantías, expresas o implícitas, relacionadas con nuestros servicios."
+      },
+      "modifications": {
+        "title": "Modificaciones de los términos",
+        "content": "Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios importantes se comunicarán por correo electrónico o mediante una notificación en la aplicación. Su uso continuado de nuestros servicios después de tales modificaciones constituye su aceptación de los nuevos términos."
+      },
+      "termination": {
+        "title": "Terminación",
+        "content": "Nos reservamos el derecho de suspender o terminar su cuenta en cualquier momento, con o sin previo aviso, en caso de violación de estos términos o por cualquier otra razón que se considere necesaria."
+      },
+      "contact": {
+        "title": "Contáctenos",
+        "content": "Para cualquier pregunta sobre estos términos de uso, por favor contáctenos en: support@pamgroupmaroc.com"
+      }
+    },
+    "footer": {
+      "login": "Inicio de sesión",
+      "signup": "Registro",
+      "separator": "•",
+      "copyright": "© {year} BloodLink. Todos los derechos reservados."
+    }
+  },
+  "properties": {
+    "header": {
+      "title": "Gestión de Propiedades",
+      "subtitle": "Gestione sus propiedades, unidades y rendimiento",
+      "addButton": "+ Añadir una propiedad",
+      "searchPlaceholder": "Buscar por nombre...",
+      "refreshing": "Actualizando datos...",
+      "refreshSuccess": "Los datos se han actualizado con éxito.",
+      "refreshError": "Error al actualizar los datos."
+    },
+    "filters": {
+      "all": "Todas",
+      "residential": "Residencial",
+      "commercial": "Comercial",
+      "land": "Terreno"
+    },
+    "viewModes": {
+      "grid": "Cuadrícula",
+      "table": "Tabla"
+    },
+    "empty": {
+      "title": "No se encontraron propiedades",
+      "subtitle": "Comience añadiendo su primera propiedad para gestionarla aquí.",
+      "addButton": "+ Añadir una propiedad"
+    },
+    "categories": {
+      "residential": "Residencial",
+      "commercial": "Comercial",
+      "land": "Terreno"
+    },
+    "types": {
+      "building": "Edificio",
+      "house": "Casa / Villa",
+      "office": "Oficina",
+      "retail": "Tienda",
+      "warehouse": "Almacén",
+      "land": "Terreno",
+      "other": "Otro"
+    },
+    "actions": {
+      "viewDetails": "Ver detalles",
+      "edit": "Editar",
+      "archive": "Archivar",
+      "unarchive": "Desarchivar",
+      "archiving": "Archivando...",
+      "unarchiving": "Desarchivando...",
+      "archiveDialog": {
+        "title": "¿Estás absolutamente seguro?",
+        "withUnits": "Esta propiedad contiene {count} unidad(es).",
+        "unitsWillBeArchived": "Archivar también archivará todas las unidades asociadas.",
+        "noUnits": "Esta acción marcará la propiedad como archivada.",
+        "description": "Ya no será visible en la lista principal pero se puede acceder en los archivos.",
+        "cancel": "Cancelar",
+        "confirm": "Sí, archivar"
+      },
+      "unarchiveDialog": {
+        "title": "¿Desarchivar esta propiedad?",
+        "withUnits": "Esta propiedad contiene {count} unidad(es).",
+        "unitsWillBeUnarchived": "Desarchivar también desarchivará todas las unidades asociadas.",
+        "noUnits": "Esta acción reactivará la propiedad.",
+        "description": "Volverá a ser visible en la lista principal.",
+        "cancel": "Cancelar",
+        "confirm": "Sí, desarchivar"
+      }
+    },
+    "card": {
+      "units": "unidad(es)",
+      "viewDetails": "Ver detalles",
+      "showUnits": "Ver unidades",
+      "hideUnits": "Ocultar unidades",
+      "noUnits": "Ninguna unidad añadida",
+      "avgRent": "Alquiler promedio",
+      "createdYear": "Construido en",
+      "details": "Detalles",
+      "edit": "Editar",
+      "archive": "Archivar",
+      "delete": "Eliminar"
+    },
+    "table": {
+      "title": "Lista de Propiedades",
+      "property": "Propiedad",
+      "category": "Categoría",
+      "type": "Tipo",
+      "units": "Unidades",
+      "actions": "Acciones",
+      "loadMore": "Cargar más",
+      "showLess": "Mostrar menos",
+      "allDisplayed": "Todas las propiedades están mostradas."
+    },
+    "wizard": {
+      "title": "Añadir una nueva propiedad",
+      "stepDescription": "Paso {current} de {total}: Siga los pasos para añadir los detalles de su propiedad.",
+      "successMessage": "¡Propiedad añadida con éxito!",
+      "errorMessage": "Error: {error}",
+      "defaultError": "No se pudo crear la propiedad.",
+      "genericError": "Ha ocurrido un error.",
+      "previousButton": "Anterior",
+      "nextButton": "Siguiente",
+      "addPropertyButton": "Añadir la propiedad",
+      "addingButton": "Añadiendo...",
+      "step": "Paso",
+      "of": "de",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "submit": "Crear la propiedad",
+      "creating": "Creando...",
+      "cancel": "Cancelar",
+      "step1": {
+        "title": "Tipo de propiedad",
+        "subtitle": "Elija el tipo de propiedad que desea añadir",
+        "categoryLabel": "Categoría",
+        "categoryDescription": "Seleccione la categoría principal de su propiedad.",
+        "typeLabel": "Tipo específico",
+        "typeDescription": "Especifique el tipo exacto de propiedad inmobiliaria.",
+        "categories": {
+          "residential": {
+            "label": "Residencial",
+            "description": "Casas, apartamentos y villas."
+          },
+          "commercial": {
+            "label": "Comercial",
+            "description": "Oficinas, tiendas y almacenes."
+          },
+          "land": {
+            "label": "Terreno",
+            "description": "Parcelas de terreno sin desarrollar."
+          }
+        },
+        "types": {
+          "residential": {
+            "building": {
+              "label": "Edificio",
+              "description": "Edificio multi-unidad con varios apartamentos o pisos."
+            },
+            "house": {
+              "label": "Casa / Villa",
+              "description": "Propiedad residencial unifamiliar."
+            },
+            "other": {
+              "label": "Otro (Residencial)",
+              "description": "Otros tipos de propiedades residenciales."
+            }
+          },
+          "commercial": {
+            "office": {
+              "label": "Oficina",
+              "description": "Espacio de oficina para actividades profesionales."
+            },
+            "retail": {
+              "label": "Tienda / Comercio",
+              "description": "Local comercial para venta al por menor."
+            },
+            "warehouse": {
+              "label": "Almacén",
+              "description": "Espacio de almacenamiento o industrial."
+            },
+            "other": {
+              "label": "Otro (Comercial)",
+              "description": "Otros tipos de propiedades comerciales."
+            }
+          },
+          "land": {
+            "land": {
+              "label": "Terreno",
+              "description": "Terreno sin construir listo para desarrollo."
+            }
+          }
+        }
+      },
+      "step2": {
+        "title": "Información de la propiedad",
+        "subtitle": "Complete los detalles de la propiedad",
+        "nameLabel": "Nombre de la propiedad",
+        "nameDescription": "Elija un nombre descriptivo que ayude a identificar fácilmente esta propiedad",
+        "namePlaceholder": "Ej: Residencia Al Houda, Edificio Centro...",
+        "addressLabel": "Dirección completa",
+        "addressDescription": "¿Dónde se encuentra esta propiedad? Cuanto más precisa sea la dirección, mejor.",
+        "addressLine1Label": "Dirección línea 1",
+        "addressLine1Placeholder": "123 Calle Mohammed V",
+        "addressLine2Label": "Dirección línea 2 (opcional)",
+        "addressLine2Placeholder": "Apartamento, piso, edificio...",
+        "cityLabel": "Ciudad",
+        "cityPlaceholder": "Casablanca",
+        "stateLabel": "Región / Provincia",
+        "statePlaceholder": "Casablanca-Settat",
+        "countryLabel": "País",
+        "countryPlaceholder": "Marruecos",
+        "countryHint": "Use el código ISO de 2 letras (MA para Marruecos)",
+        "postalCodeLabel": "Código postal",
+        "postalCodePlaceholder": "20000",
+        "postalCodeHint": "Opcional para Marruecos",
+        "helperTitle": "Consejo",
+        "helperDescription": "Una dirección completa facilita la gestión de alquileres y mejora la visibilidad de su propiedad en plataformas de búsqueda."
+      },
+      "step3": {
+        "title": "Unidades",
+        "subtitle": "Añada las unidades de esta propiedad",
+        "landMessage": {
+          "title": "Los terrenos no tienen unidades",
+          "description": "Las propiedades de tipo 'Terreno' no requieren configuración de unidades. Pase al siguiente paso para finalizar."
+        },
+        "emptyState": {
+          "title": "Ninguna unidad añadida",
+          "description": "Añada unidades para esta propiedad (apartamentos, pisos, habitaciones, etc.)",
+          "addButton": "+ Añadir una unidad"
+        },
+        "addButton": "+ Añadir otra unidad",
+        "unitCard": {
+          "title": "Unidad #{number}",
+          "unitNumber": "Número de unidad",
+          "unitNumberPlaceholder": "Ej: A1, PB, 101...",
+          "unitType": "Tipo de unidad",
+          "selectPlaceholder": "Seleccionar...",
+          "area": "Superficie",
+          "type": "Tipo de unidad",
+          "typePlaceholder": "Seleccione un tipo",
+          "size": "Superficie (m²)",
+          "sizePlaceholder": "Ej: 85",
+          "rooms": "Número de habitaciones",
+          "roomsPlaceholder": "Ej: 3",
+          "remove": "Eliminar unidad"
+        },
+        "unitTypes": {
+          "apartment": "Apartamento",
+          "studio": "Estudio",
+          "floor": "Piso completo",
+          "room": "Habitación",
+          "commercial": "Comercial",
+          "other": "Otro"
+        }
+      },
+      "step4": {
+        "title": "¿Listo para finalizar?",
+        "subtitle": "Verifique cuidadosamente la información antes de crear la propiedad.",
+        "propertyInfo": "Información de la propiedad",
+        "category": "Categoría",
+        "type": "Tipo",
+        "name": "Nombre",
+        "address": "Dirección",
+        "country": "País",
+        "unitsSection": "Unidades ({count})",
+        "noUnits": "Ninguna unidad añadida",
+        "unitNumber": "Número",
+        "unitType": "Tipo",
+        "size": "Superficie",
+        "rooms": "Habitaciones",
+        "na": "N/A",
+        "categoryLabels": {
+          "residential": "Residencial",
+          "commercial": "Comercial",
+          "land": "Terreno"
+        },
+        "unitTypeLabels": {
+          "studio": "Estudio",
+          "apartment": "Apartamento",
+          "floor": "Piso completo",
+          "room": "Habitación",
+          "commercial": "Comercial",
+          "other": "Otro"
+        }
+      },
+      "validation": {
+        "name": {
+          "required": "El nombre de la propiedad es obligatorio",
+          "max": "El nombre no debe exceder 150 caracteres"
+        },
+        "addressLine1": {
+          "required": "La dirección es obligatoria"
+        },
+        "city": {
+          "required": "La ciudad es obligatoria"
+        },
+        "postalCode": {
+          "required": "El código postal no puede estar vacío"
+        },
+        "country": {
+          "required": "El país es obligatorio",
+          "invalid": "El país debe ser un código ISO de 2 letras"
+        },
+        "type": {
+          "invalid": "Combinación categoría/tipo inválida"
+        },
+        "unitNumber": {
+          "required": "El número de unidad es obligatorio"
+        }
+      }
+    },
+    "details": {
+      "backToList": "Volver a la lista de propiedades",
+      "editButton": "Editar",
+      "addUnitButton": "Añadir una unidad",
+      "tabs": {
+        "overview": "Resumen",
+        "units": "Unidades",
+        "documents": "Documentos",
+        "financials": "Finanzas",
+        "maintenance": "Mantenimiento"
+      },
+      "overview": {
+        "propertyDetails": "Detalles de la propiedad",
+        "keyStats": "Estadísticas Clave",
+        "category": "Categoría",
+        "type": "Tipo",
+        "yearBuilt": "Año de construcción",
+        "address": "Dirección",
+        "stats": {
+          "title": "Estadísticas",
+          "totalUnits": "Unidades totales",
+          "occupied": "Ocupadas",
+          "occupancy": "Tasa de ocupación",
+          "vacant": "Libres",
+          "revenue": "Ingreso mensual"
+        }
+      },
+      "units": {
+        "listTitle": "Lista de Unidades",
+        "emptyMessage": "Esta propiedad aún no tiene unidades. Añada una para comenzar.",
+        "addFirstUnit": "Añadir la primera unidad",
+        "title": "Unidades de esta propiedad",
+        "count": "{count} unidad(es)",
+        "addButton": "+ Añadir una unidad",
+        "empty": "Ninguna unidad por el momento"
+      }
+    },
+    "addUnit": {
+      "title": "Añadir una unidad",
+      "description": "Complete la información para crear una nueva unidad en su propiedad",
+      "unitNumber": "Número de unidad",
+      "unitNumberPlaceholder": "Ej: 1A, 2B, 101",
+      "unitType": "Tipo de unidad",
+      "unitTypePlaceholder": "Elegir el tipo",
+      "area": "Superficie",
+      "areaPlaceholder": "Ej: 75",
+      "areaUnit": "en m²",
+      "rooms": "Número de habitaciones",
+      "roomsPlaceholder": "Ej: 3",
+      "roomsHint": "Número entero",
+      "addButton": "Añadir la unidad",
+      "adding": "Añadiendo...",
+      "cancel": "Cancelar",
+      "unitTypes": {
+        "apartment": "Apartamento",
+        "studio": "Estudio",
+        "floor": "Piso completo",
+        "room": "Habitación",
+        "office": "Oficina",
+        "commercial": "Comercial",
+        "other": "Otro"
+      },
+      "errors": {
+        "unauthorized": "Acción no autorizada.",
+        "validationError": "Por favor corrija los errores en el formulario de la unidad.",
+        "databaseError": "Error de base de datos: No se pudo añadir la unidad.",
+        "unitNumberRequired": "El número de unidad es obligatorio.",
+        "unitTypeRequired": "El tipo de unidad es obligatorio.",
+        "sizeInvalid": "La superficie debe ser un número positivo.",
+        "roomsInvalid": "El número de habitaciones debe ser un entero positivo."
+      },
+      "success": "¡Unidad añadida con éxito!"
+    },
+    "units": {
+      "title": "Gestión de Unidades",
+      "listTitle": "Lista de Unidades",
+      "count": "{count} unidad(es) en total",
+      "searchPlaceholder": "Buscar una unidad...",
+      "filters": "Filtros",
+      "addButton": "Añadir",
+      "editAction": "Editar",
+      "deleteAction": "Eliminar",
+      "empty": {
+        "title": "No se encontraron unidades",
+        "subtitle": "Comience añadiendo su primera unidad para gestionarla aquí.",
+        "addButton": "Añadir una unidad"
+      },
+      "table": {
+        "unit": "Unidad",
+        "type": "Tipo",
+        "size": "Superficie",
+        "rooms": "Habitaciones",
+        "status": "Estado",
+        "tenant": "Inquilino",
+        "rent": "Alquiler",
+        "actions": "Acciones"
+      },
+      "status": {
+        "occupied": "Ocupada",
+        "vacant": "Libre",
+        "maintenance": "Mantenimiento",
+        "reserved": "Reservada"
+      },
+      "types": {
+        "studio": "Estudio",
+        "apartment": "Apartamento",
+        "floor": "Piso completo",
+        "room": "Habitación",
+        "commercial": "Comercial",
+        "other": "Otro"
+      },
+      "edit": {
+        "dialog": {
+          "title": "Editar unidad",
+          "description": "Modifique la información de su unidad. Los campos marcados con un asterisco (*) son obligatorios.",
+          "loading": "Cargando información...",
+          "loadError": "No se puede cargar la unidad.",
+          "notFound": "Unidad no encontrada"
+        },
+        "form": {
+          "nonEditableSection": "Información no editable",
+          "nonEditableNote": "Esta unidad pertenece a la propiedad principal y no se puede mover.",
+          "unitNumber": "Número de unidad",
+          "unitNumberPlaceholder": "ej: A1, Oficina 205, Estacionamiento 12",
+          "unitNumberDescription": "Debe ser único dentro de esta propiedad",
+          "unitType": "Tipo de unidad",
+          "selectType": "Seleccionar un tipo",
+          "types": {
+            "studio": "Estudio",
+            "apartment": "Apartamento",
+            "office": "Oficina",
+            "shop": "Comercio",
+            "warehouse": "Almacén",
+            "parking": "Estacionamiento",
+            "storage": "Almacenamiento",
+            "other": "Otro"
+          },
+          "area": "Superficie (pies cuadrados)",
+          "areaPlaceholder": "ej: 1200",
+          "rooms": "Número de habitaciones",
+          "roomsPlaceholder": "ej: 3",
+          "optional": "Opcional",
+          "tip": "Consejo:",
+          "tipMessage": "Los campos \"Superficie\" y \"Número de habitaciones\" son opcionales. Déjelos vacíos para estacionamientos o espacios de almacenamiento.",
+          "cancel": "Cancelar",
+          "saving": "Guardando...",
+          "save": "Guardar cambios"
+        }
+      }
+    },
+    "documents": {
+      "title": "Documentos de la propiedad",
+      "uploadButton": "Subir un documento",
+      "tabs": {
+        "active": "Activos",
+        "archived": "Archivados"
+      },
+      "filters": {
+        "property": "Propiedad",
+        "unit": "Unidad"
+      },
+      "viewModes": {
+        "grid": "Cuadrícula",
+        "list": "Lista"
+      },
+      "searchPlaceholder": "Buscar un documento...",
+      "empty": {
+        "title": "Ningún documento",
+        "description": "Comience subiendo su primer documento.",
+        "loading": "Cargando documentos..."
+      },
+      "card": {
+        "viewedOn": "Visto el",
+        "neverViewed": "Nunca visto",
+        "actions": {
+          "view": "Ver",
+          "download": "Descargar",
+          "archive": "Archivar",
+          "restore": "Restaurar"
+        }
+      },
+      "upload": {
+        "title": "Subir un documento",
+        "dragDrop": "Arrastre y suelte un archivo o haga clic para seleccionar",
+        "fileSelected": "Archivo seleccionado",
+        "uploading": "Subiendo...",
+        "uploadButton": "Subir",
+        "cancel": "Cancelar"
+      },
+      "archive": {
+        "title": "Archivar el documento",
+        "message": "¿Está seguro de que desea archivar « {name} » ?",
+        "confirm": "Sí, archivar",
+        "cancel": "Cancelar"
+      },
+      "restore": {
+        "title": "Restaurar el documento",
+        "message": "¿Está seguro de que desea restaurar « {name} » ?",
+        "confirm": "Sí, restaurar",
+        "cancel": "Cancelar"
+      }
+    },
+    "edit": {
+      "dialog": {
+        "title": "Editar propiedad",
+        "description": "Modifique la información de su propiedad. Los campos marcados con un asterisco (*) son obligatorios.",
+        "loading": "Cargando información...",
+        "loadError": "No se puede cargar la propiedad.",
+        "notFound": "Propiedad no encontrada"
+      },
+      "form": {
+        "nonEditableSection": "Información no editable",
+        "category": "Categoría",
+        "type": "Tipo",
+        "categoryTypeNote": "La categoría y el tipo no se pueden modificar después de la creación.",
+        "propertyName": "Nombre de la propiedad",
+        "propertyNamePlaceholder": "ej: Residencia Al Amal",
+        "propertyNameDescription": "Nombre único para identificar esta propiedad",
+        "addressSection": "Dirección",
+        "address": "Dirección",
+        "addressPlaceholder": "ej: 123 Avenida Mohammed V",
+        "addressLine2": "Complemento de dirección",
+        "addressLine2Placeholder": "ej: Apartamento 5, 2º piso",
+        "optional": "Opcional",
+        "city": "Ciudad",
+        "cityPlaceholder": "ej: Casablanca",
+        "region": "Región/Provincia",
+        "regionPlaceholder": "ej: Casablanca-Settat",
+        "postalCode": "Código postal",
+        "postalCodePlaceholder": "ej: 20000",
+        "country": "País (código ISO)",
+        "countryPlaceholder": "MA",
+        "countryDescription": "Código de país de 2 letras (ej: MA para Marruecos)",
+        "cancel": "Cancelar",
+        "saving": "Guardando...",
+        "save": "Guardar cambios"
+      }
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "tabs": {
+      "profile": "Información personal",
+      "email": "Modificar email",
+      "phone": "Modificar teléfono",
+      "password": "Modificar contraseña",
+      "language": "Idioma",
+      "currency": "Moneda",
+      "team": "Gestión de usuarios"
+    },
+    "profile": {
+      "title": "Información de perfil",
+      "description": "Actualice su información personal aquí.",
+      "avatar": {
+        "change": "Modificar",
+        "upload": "Cargar avatar"
+      },
+      "fields": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "street": "Calle",
+        "houseNumber": "Número de casa",
+        "postalCode": "Código postal",
+        "city": "Ciudad",
+        "country": "País"
+      },
+      "buttons": {
+        "save": "Guardar cambios",
+        "saving": "Guardando..."
+      },
+      "errors": {
+        "loadError": "No se pudieron cargar los datos del perfil."
+      }
+    },
+    "email": {
+      "title": "Cambiar email",
+      "description": "Su email actual: {email}",
+      "descriptionUnknown": "Su email actual: desconocido",
+      "fields": {
+        "newEmail": "Nuevo email",
+        "confirmEmail": "Confirmar el nuevo email"
+      },
+      "buttons": {
+        "submit": "Enviar confirmación",
+        "submitting": "Enviando..."
+      }
+    },
+    "password": {
+      "title": "Modificar contraseña",
+      "description": "Elija una contraseña segura.",
+      "fields": {
+        "current": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "confirm": "Confirmar la nueva contraseña"
+      },
+      "buttons": {
+        "update": "Actualizar",
+        "updating": "Guardando..."
+      }
+    },
+    "phone": {
+      "title": "Cambiar teléfono",
+      "description": "Número actual: {phone}. Ingrese el nuevo número (formato +212...).",
+      "descriptionEmpty": "Número actual: —. Ingrese el nuevo número (formato +212...).",
+      "fields": {
+        "newPhone": "Nuevo número"
+      },
+      "buttons": {
+        "update": "Actualizar",
+        "updating": "Guardando..."
+      }
+    },
+    "language": {
+      "title": "Idioma y región",
+      "description": "Seleccione su idioma preferido. Los cambios se aplican de inmediato.",
+      "browserDetected": {
+        "title": "Idioma del navegador detectado",
+        "description": "Detectamos que su navegador está configurado en {language}. ¿Desea cambiar?",
+        "apply": "Aplicar"
+      },
+      "info": {
+        "title": "Acerca de los cambios de idioma",
+        "description": "Su preferencia de idioma se guarda automáticamente. Todos los textos, la navegación y los elementos de la interfaz se actualizarán inmediatamente."
+      },
+      "toast": {
+        "changed": "Idioma cambiado a {language}",
+        "changedDescription": "Todos los elementos de la interfaz se han actualizado en su idioma preferido.",
+        "reverted": "Cambio de idioma cancelado",
+        "revertedDescription": "Volver a {language}",
+        "undo": "Deshacer"
+      }
+    },
+    "currency": {
+      "title": "Preferencia de moneda",
+      "description": "Seleccione su moneda preferida para mostrar los montos financieros en la aplicación.",
+      "label": "Moneda preferida",
+      "preview": "Vista previa:",
+      "previewNote": "Así es como se mostrarán los montos en su moneda seleccionada.",
+      "infoTitle": "Formato de moneda",
+      "infoDescription": "El formato de moneda se adaptará a su idioma seleccionado. Los números, separadores decimales y ubicación del símbolo monetario seguirán las convenciones regionales.",
+      "save": "Guardar preferencia de moneda",
+      "saving": "Guardando...",
+      "success": "¡Preferencia de moneda actualizada!",
+      "successDescription": "Su moneda preferida se ha establecido en {currency}. La página se recargará para aplicar los cambios.",
+      "error": "Error al guardar la preferencia de moneda",
+      "errorDescription": "Por favor intente nuevamente o contacte al soporte si el problema persiste."
+    },
+    "actions": {
+      "errors": {
+        "authError": "Error de autenticación: Usuario no encontrado.",
+        "storageError": "Error de almacenamiento: {message}",
+        "validationError": "Error de validación: Por favor verifique su entrada.",
+        "invalidEmail": "Email inválido.",
+        "emailSame": "El nuevo email es idéntico al email actual.",
+        "emailUpdateError": "No se pudo modificar el email: {message}",
+        "invalidPassword": "Contraseña inválida.",
+        "currentPasswordIncorrect": "La contraseña actual es incorrecta.",
+        "passwordUpdateError": "No se pudo actualizar la contraseña: {message}",
+        "invalidPhone": "Número de teléfono inválido.",
+        "phoneUpdateError": "No se pudo modificar el número: {message}",
+        "unexpectedError": "Ha ocurrido un error inesperado."
+      },
+      "success": {
+        "profileUpdated": "Perfil actualizado con éxito.",
+        "emailConfirmationSent": "Email de confirmación enviado. Por favor valide mediante el enlace recibido.",
+        "passwordUpdated": "Contraseña actualizada con éxito.",
+        "phoneUpdated": "Número de teléfono actualizado con éxito."
+      }
+    }
+  },
+  "charges": {
+    "title": "Gestión de Cargos",
+    "description": "Rastree, gestione y analice todos sus cargos inmobiliarios.",
+    "addButton": "Añadir un Cargo",
+    "pagination": {
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "wizardDialog": {
+      "title": "Añadir un Nuevo Cargo (Paso {step}/4)",
+      "description": "Complete los pasos para añadir un nuevo cargo.",
+      "back": "Atrás",
+      "next": "Siguiente",
+      "confirm": "Confirmar y Añadir",
+      "retry": "Reintentar",
+      "errorRequired": "Se requiere al menos un documento de prueba.",
+      "successAdded": "¡Cargo añadido con éxito!",
+      "errorFailed": "Error al añadir el cargo",
+      "errorUnexpected": "Ha ocurrido un error inesperado."
+    },
+    "emptyState": {
+      "title": "Ningún cargo por el momento",
+      "description": "Haga clic en el botón en la parte superior derecha para añadir un cargo."
+    },
+    "bulkActions": {
+      "selected": "{count} elemento seleccionado",
+      "selectedPlural": "{count} elementos seleccionados",
+      "archive": "Archivar",
+      "archiving": "Archivando...",
+      "unarchive": "Desarchivar",
+      "unarchiving": "Desarchivando..."
+    },
+    "actions": {
+      "openMenu": "Abrir el menú",
+      "menuTitle": "Acciones",
+      "edit": "Editar el cargo",
+      "archive": "Archivar el cargo",
+      "archiving": "Archivando...",
+      "unarchive": "Desarchivar el cargo",
+      "unarchiving": "Desarchivando..."
+    },
+    "card": {
+      "selectCharge": "Seleccionar el cargo",
+      "document": "{count} Documento",
+      "documents": "{count} Documentos",
+      "noDocuments": "Ningún documento",
+      "error": "Error"
+    },
+    "archiveDialog": {
+      "archiveTitle": "¿Está absolutamente seguro?",
+      "archiveDescription": "Esta acción marcará el cargo como archivado. Ya no será visible en la lista principal pero podrá consultarse en los archivos.",
+      "unarchiveTitle": "¿Desarchivar este cargo?",
+      "unarchiveDescription": "Esta acción restaurará el cargo en la lista principal.",
+      "cancel": "Cancelar",
+      "confirmArchive": "Sí, archivar",
+      "confirmUnarchive": "Sí, desarchivar",
+      "archiving": "Archivando...",
+      "unarchiving": "Desarchivando..."
+    },
+    "wizard": {
+      "step1": {
+        "title": "Elija una categoría general para su cargo.",
+        "chooseCategory": "Elija una categoría general para su cargo.",
+        "loading": "Cargando categorías...",
+        "error": "Error al cargar las categorías",
+        "selectSubtype": "Seleccione un subtipo para continuar.",
+        "back": "Atrás",
+        "noSubtypes": "Ningún subtipo disponible",
+        "subtypesAvailable": "{count} subtipo disponible",
+        "subtypesAvailablePlural": "{count} subtipos disponibles",
+        "categories": {
+          "factures": "Facturas",
+          "services": "Servicios y Mantenimiento",
+          "reparations": "Reparaciones",
+          "taxes": "Impuestos y Seguro"
+        }
+      },
+      "step2": {
+        "title": "Ahora, ingrese los detalles financieros del cargo.",
+        "amount": "Monto (MAD)",
+        "amountPlaceholder": "ej: 250.00",
+        "amountDescription": "Ingrese el monto total del cargo en Dirham Marroquí.",
+        "labelLocal": "Etiqueta personalizada",
+        "optional": "(Opcional)",
+        "labelLocalPlaceholder": "ej: Factura Redal Enero",
+        "labelLocalDescription": "Dé un nombre único a este cargo (ej: Factura de agua Enero).",
+        "period": "Período de facturación",
+        "periodPlaceholder": "Elija un período",
+        "periodDescription": "Seleccione la fecha de inicio y fin del cargo.",
+        "lastMonth": "Último Mes",
+        "last3Months": "Últimos 3 Meses",
+        "last6Months": "Últimos 6 Meses",
+        "last12Months": "Últimos 12 Meses",
+        "document": "Documento de prueba",
+        "documentDescription": "Cargue una copia de la factura u otro documento que justifique el cargo."
+      },
+      "step3": {
+        "title": "¿A quién debe aplicarse este cargo?",
+        "property": "Una Propiedad",
+        "tenant": "Un Inquilino",
+        "propertyLabel": "Propiedad",
+        "propertyPlaceholder": "Seleccione una propiedad",
+        "propertyDescription": "El cargo se aplicará a todas las unidades de esta propiedad.",
+        "tenantLabel": "Inquilino",
+        "tenantPlaceholder": "Seleccione un inquilino",
+        "tenantDescription": "El cargo solo se aplicará a este inquilino específico.",
+        "noPropertiesTitle": "No se encontraron propiedades",
+        "noPropertiesDescription": "Por favor añada primero una propiedad antes de poder asignarle un cargo.",
+        "noTenantsTitle": "No se encontraron inquilinos",
+        "noTenantsDescription": "Por favor añada primero un inquilino antes de poder asignarle un cargo."
+      },
+      "step4": {
+        "title": "Por favor verifique su nuevo cargo",
+        "category": "Categoría",
+        "unknown": "Desconocida",
+        "amount": "Monto",
+        "period": "Período",
+        "periodFrom": "Del",
+        "periodTo": "al",
+        "allocatedTo": "Asignado a",
+        "property": "Propiedad:",
+        "tenant": "Inquilino:",
+        "customLabel": "Etiqueta personalizada",
+        "documents": "Documento(s) de prueba ({count})",
+        "hide": "Ocultar",
+        "showMore": "Ver {count} otro(s) documento(s)"
+      }
+    },
+    "table": {
+      "selectAll": "Seleccionar todo",
+      "selectRow": "Seleccionar la fila",
+      "columns": {
+        "charge": "Cargo",
+        "amount": "Monto",
+        "period": "Período",
+        "status": "Estado"
+      },
+      "status": {
+        "draft": "Borrador",
+        "final": "Finalizado",
+        "archived": "Archivado"
+      }
+    },
+    "filters": {
+      "show": "Mostrar filtros",
+      "hide": "Ocultar filtros",
+      "reset": "Reiniciar",
+      "resetAll": "Reiniciar filtros",
+      "results": "resultado",
+      "resultsPlural": "resultados",
+      "apply": "Aplicar",
+      "filterButton": "Filtrar los cargos",
+      "search": {
+        "label": "Búsqueda rápida",
+        "placeholder": "Buscar por etiqueta o tipo...",
+        "aria": "Búsqueda (etiqueta o tipo)",
+        "tooltip": "Buscar por etiqueta o tipo"
+      },
+      "property": {
+        "label": "Propiedad",
+        "placeholder": "Filtrar por propiedad...",
+        "tooltip": "Filtrar por propiedad"
+      },
+      "tenant": {
+        "label": "Inquilino",
+        "placeholder": "Filtrar por inquilino...",
+        "tooltip": "Filtrar por inquilino"
+      },
+      "type": {
+        "label": "Tipo de cargo",
+        "placeholder": "Filtrar por tipo...",
+        "tooltip": "Filtrar por tipo"
+      },
+      "status": {
+        "label": "Estado rápido",
+        "placeholder": "Filtrar por estado...",
+        "tooltip": "Filtrar por estado",
+        "all": "Todos",
+        "draft": "Borrador",
+        "final": "Finalizado",
+        "archived": "Archivado"
+      },
+      "period": {
+        "label": "Período",
+        "placeholder": "Elija un período",
+        "tooltip": "Elegir un período"
+      }
+    },
+    "edit": {
+      "dialog": {
+        "title": "Editar Cargo",
+        "description": "Modifique la información del cargo seleccionado."
+      },
+      "form": {
+        "customLabel": "Etiqueta personalizada",
+        "customLabelPlaceholder": "ej: Factura Redal Enero",
+        "customLabelDescription": "Dé un nombre único a este cargo.",
+        "amount": "Importe (MAD)",
+        "amountPlaceholder": "ej: 250.00",
+        "amountDescription": "Ingrese el importe total del cargo en Dirham Marroquí.",
+        "billingPeriod": "Período de facturación",
+        "choosePeriod": "Elija un período",
+        "periodDescription": "Seleccione la fecha de inicio y fin del cargo.",
+        "allocation": "Asignación",
+        "allocationProperty": "Una Propiedad",
+        "allocationTenant": "Un Inquilino",
+        "property": "Propiedad",
+        "selectProperty": "Seleccione una propiedad",
+        "tenant": "Inquilino",
+        "selectTenant": "Seleccione un inquilino",
+        "documents": "Documentos",
+        "addDocuments": "Añadir documentos",
+        "existingDocuments": "Documentos existentes:",
+        "toDelete": "(A eliminar)",
+        "restore": "Restaurar",
+        "noDocuments": "No hay documentos adjuntos a este cargo.",
+        "newDocuments": "Nuevos documentos:",
+        "new": "(Nuevo)",
+        "saveChanges": "Guardar cambios",
+        "errors": {
+          "uploadError": "Error de carga: {error}",
+          "uploadFailed": "Error al cargar el archivo"
+        }
+      }
+    }
+  },
+  "contacts": {
+    "title": "Gestión de Contactos",
+    "description": "Gestione todos sus contactos en un solo lugar.",
+    "addButton": "Añadir un contacto",
+    "table": {
+      "columns": {
+        "name": "Nombre",
+        "email": "Email",
+        "phone": "Teléfono",
+        "category": "Categoría"
+      },
+      "actions": {
+        "label": "Acciones",
+        "view": "Ver detalles",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "empty": "Ningún contacto encontrado"
+    },
+    "form": {
+      "createTitle": "Añadir un nuevo contacto",
+      "editTitle": "Editar el contacto",
+      "tabs": {
+        "individual": "Particular",
+        "company": "Empresa"
+      },
+      "fields": {
+        "category": "Categoría",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "companyName": "Nombre de la empresa",
+        "email": "Email",
+        "phone": "Teléfono",
+        "whatsapp": "WhatsApp",
+        "cin": "CIN",
+        "ice": "ICE",
+        "rc": "RC",
+        "if": "Identificador Fiscal",
+        "street": "Calle",
+        "city": "Ciudad",
+        "postalCode": "Código Postal",
+        "country": "País",
+        "rib": "RIB",
+        "bankName": "Nombre del banco"
+      },
+      "sections": {
+        "contactInfo": "Información de contacto",
+        "address": "Dirección",
+        "financial": "Información financiera",
+        "companyInfo": "Información de la empresa"
+      },
+      "placeholders": {
+        "selectCategory": "Seleccione una categoría",
+        "enterFirstName": "Ingrese el nombre",
+        "enterLastName": "Ingrese el apellido",
+        "enterCompanyName": "Ingrese el nombre de la empresa",
+        "enterEmail": "ejemplo@email.com",
+        "enterPhone": "+212 6XX XXX XXX",
+        "enterWhatsapp": "+212 6XX XXX XXX",
+        "enterCIN": "AB123456",
+        "enterICE": "000000000000000",
+        "enterRC": "123456",
+        "enterIF": "12345678",
+        "enterStreet": "Número y nombre de calle",
+        "enterCity": "Ciudad",
+        "enterPostalCode": "Código postal",
+        "enterCountry": "País",
+        "enterRIB": "RIB",
+        "enterBankName": "Nombre del banco"
+      },
+      "buttons": {
+        "submit": "Guardar",
+        "cancel": "Cancelar",
+        "create": "Crear el contacto",
+        "update": "Actualizar"
+      }
+    },
+    "details": {
+      "tabs": {
+        "contact": "Detalles del Contacto",
+        "financial": "Detalles Financieros"
+      },
+      "actions": {
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "sendMessage": "Enviar Mensaje"
+      },
+      "labels": {
+        "contactInfo": "Información de contacto",
+        "address": "Dirección",
+        "financialInfo": "Información financiera",
+        "companyInfo": "Información de la empresa",
+        "email": "Email",
+        "phone": "Teléfono",
+        "whatsapp": "WhatsApp",
+        "cin": "CIN",
+        "ice": "ICE",
+        "rc": "RC",
+        "if": "Identificador Fiscal",
+        "street": "Calle",
+        "city": "Ciudad",
+        "postalCode": "Código Postal",
+        "country": "País",
+        "rib": "RIB",
+        "bankName": "Nombre del banco",
+        "notAvailable": "N/A"
+      }
+    },
+    "categories": {
+      "TENANT": "Inquilino",
+      "OWNER": "Propietario",
+      "SERVICE_PROVIDER": "Proveedor",
+      "AGENT": "Agente inmobiliario",
+      "SYNDIC": "Síndico",
+      "OTHER": "Otro"
+    },
+    "toast": {
+      "deleteInProgress": "Eliminación en curso...",
+      "deleteSuccess": "Contacto eliminado con éxito.",
+      "deleteError": "Error al eliminar el contacto.",
+      "createSuccess": "¡Contacto añadido con éxito!",
+      "updateSuccess": "¡Contacto modificado con éxito!",
+      "genericError": "Ha ocurrido un error."
+    },
+    "validation": {
+      "invalidEmail": "La dirección de correo electrónico no es válida.",
+      "firstNameRequired": "El nombre y apellido son obligatorios.",
+      "lastNameRequired": "El nombre y apellido son obligatorios.",
+      "companyNameRequired": "El nombre de la empresa es obligatorio."
+    }
+  },
+  "chat": {
+    "interface": {
+      "ariaLabel": "Interfaz de chat",
+      "messagesLabel": "Mensajes del chat",
+      "welcome": {
+        "title": "¿Cómo puedo ayudarle hoy?",
+        "subtitle": "Hágame todas sus preguntas sobre gestión inmobiliaria"
+      },
+      "suggestions": [
+        "Ayúdame a crear un contrato de arrendamiento",
+        "¿Cuáles son los indicadores clave?",
+        "Explícame las buenas prácticas",
+        "Genera una plantilla de calendario"
+      ],
+      "offline": {
+        "title": "Conexión a internet interrumpida",
+        "message": "No puede enviar mensajes en este momento.",
+        "instructions": "Para continuar:",
+        "steps": {
+          "wifi": "Verifique que su WiFi esté activado",
+          "connection": "Verifique su conexión a internet",
+          "retry": "Intente nuevamente en unos momentos"
+        }
+      },
+      "error": {
+        "title": "Error de conexión",
+        "instructions": "Acciones posibles:",
+        "steps": {
+          "checkConnection": "Verifique su conexión a internet",
+          "clickRetry": "Haga clic en \"Reintentar\" a continuación",
+          "refresh": "Si el problema persiste, actualice la página"
+        },
+        "retryButton": "Reintentar ahora"
+      },
+      "input": {
+        "label": "Mensaje al Asistente IA",
+        "placeholder": "Enviar un mensaje...",
+        "placeholderOffline": "Sin conexión - Verifique su conexión...",
+        "ariaLabel": "Área de entrada del mensaje",
+        "disclaimer": "La IA puede cometer errores. Verifique la información importante.",
+        "charCount": "{count} / 4000"
+      },
+      "actions": {
+        "send": "Enviar el mensaje",
+        "stop": "Detener la generación",
+        "scrollToBottom": "Desplazar hacia abajo",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "regenerate": "Regenerar"
+      }
+    },
+    "message": {
+      "userLabel": "Mensaje del usuario",
+      "assistantLabel": "Mensaje del Asistente IA",
+      "streaming": "La IA está escribiendo...",
+      "actions": {
+        "copyCode": "Copiar el código",
+        "codeCopied": "Código copiado",
+        "copyMessage": "Copiar el mensaje",
+        "messageCopied": "Mensaje copiado",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "regenerate": "Regenerar la respuesta"
+      }
+    },
+    "error": {
+      "boundary": {
+        "title": "Algo salió mal",
+        "message": "La interfaz de chat encontró un error inesperado. Puede intentar actualizar la página o contactar al soporte si el problema persiste.",
+        "tryAgain": "Intentar de nuevo",
+        "reloadPage": "Recargar página",
+        "support": "Si este problema continúa, por favor contacte al soporte con los detalles del error anteriores."
+      }
+    },
+    "serverErrors": {
+      "auth": "Debe iniciar sesión para enviar mensajes",
+      "apiError": "No se pudo obtener la respuesta de IA",
+      "timeout": "La solicitud al servicio de IA agotó el tiempo de espera. Por favor, inténtelo de nuevo.",
+      "validationError": "Formato de mensaje inválido",
+      "networkError": "No se puede conectar al servicio de IA. Verifique su conexión.",
+      "unexpectedError": "Ocurrió un error inesperado. Por favor, inténtelo de nuevo."
+    },
+    "toolResults": {
+      "exportSuccess": "Datos exportados exitosamente",
+      "exportFailed": "Exportación fallida",
+      "exportError": "Ocurrió un error al exportar los datos",
+      "adaptationError": "No se pudo mostrar el resultado de la herramienta",
+      "adaptationErrorMessage": "La IA devolvió datos en un formato inesperado. Por favor, reformule su pregunta.",
+      "noResults": "No hay resultados para mostrar",
+      "viewDetails": "Ver detalles",
+      "exportCSV": "Exportar CSV",
+      "rowsExported": "{count} fila(s) exportada(s) exitosamente"
+    }
+  },
+  "documents": {
+    "navigation": {
+      "title": "Tipos de documentos",
+      "description": "Elija un tipo para filtrar sus archivos.",
+      "categories": {
+        "inbox": {
+          "label": "Todos",
+          "description": "Consulte todos sus documentos en un solo lugar."
+        },
+        "properties": {
+          "label": "Propiedades",
+          "description": "Consulte contratos, planos y documentos relacionados con sus propiedades inmobiliarias."
+        },
+        "units": {
+          "label": "Unidades",
+          "description": "Consulte documentos relacionados con las unidades (apartamentos, locales, …)."
+        },
+        "tenants": {
+          "label": "Inquilinos",
+          "description": "Consulte expedientes de inquilinos, CIN y recibos firmados."
+        },
+        "charges": {
+          "label": "Cargos",
+          "description": "Consulte facturas de agua, electricidad y cargos compartidos."
+        }
+      }
+    },
+    "filters": {
+      "search": {
+        "placeholder": "Buscar documentos…",
+        "label": "Búsqueda"
+      },
+      "chargeType": {
+        "label": "Tipo de cargo",
+        "placeholder": "Todos los tipos de cargos",
+        "loading": "Cargando…",
+        "all": "Todos los tipos de cargos"
+      },
+      "dateRange": {
+        "label": "Período",
+        "placeholder": "Elija un período",
+        "clear": "Borrar",
+        "apply": "Aplicar"
+      },
+      "property": {
+        "label": "Propiedad",
+        "placeholder": "Todas las propiedades",
+        "loading": "Cargando…",
+        "all": "Todas las propiedades"
+      },
+      "unit": {
+        "label": "Unidad",
+        "placeholder": "Todas las unidades",
+        "loading": "Cargando…",
+        "all": "Todas las unidades"
+      },
+      "tenant": {
+        "label": "Inquilino",
+        "placeholder": "Todos los inquilinos",
+        "loading": "Cargando…",
+        "all": "Todos los inquilinos"
+      },
+      "actions": {
+        "showFilters": "Mostrar filtros",
+        "hideFilters": "Ocultar filtros",
+        "filterDocuments": "Filtrar documentos",
+        "reset": "Reiniciar",
+        "refresh": "Actualizar",
+        "refreshing": "Actualizando…",
+        "refreshTitle": "Actualizar documentos"
+      },
+      "results": {
+        "count": "{count} resultado",
+        "countPlural": "{count} resultados",
+        "resetFilters": "Reiniciar filtros"
+      }
+    },
+    "viewModes": {
+      "table": "Lista",
+      "grid": "Cuadrícula"
+    },
+    "messages": {
+      "loading": "Cargando la página…",
+      "inboxDescription": "Consulte todos sus documentos en un solo lugar. Use los filtros para refinar su búsqueda.",
+      "categoryDescription": "Seleccione la {category} objetivo para mostrar solo sus documentos.",
+      "categorySelected": "Documentos de la {category} seleccionada.",
+      "categoryNotSelected": "Seleccione una {category} para mostrar solo sus documentos."
+    },
+    "table": {
+      "columns": {
+        "name": "Nombre",
+        "type": "Tipo",
+        "size": "Tamaño",
+        "date": "Fecha",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "view": "Ver",
+        "download": "Descargar",
+        "delete": "Eliminar",
+        "archive": "Archivar",
+        "openMenu": "Abrir el menú",
+        "open": "Abrir",
+        "opening": "Abriendo…"
+      },
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página"
+      },
+      "notifications": {
+        "updateSuccess": "Datos actualizados con éxito",
+        "refreshing": "Actualizando datos..."
+      },
+      "empty": {
+        "title": "Ningún documento",
+        "description": "Ningún documento encontrado para los criterios seleccionados.",
+        "noResults": "Ningún resultado encontrado"
+      }
+    }
+  },
+  "propertyManagement": {
+    "documents": {
+      "property": {
+        "title": "Documentos de la Propiedad",
+        "panelTitle": "Documentos - {propertyName} (Propiedad)",
+        "tabs": {
+          "active": "Activos",
+          "archived": "Archivados"
+        },
+        "headers": {
+          "activeDocuments": "Documentos activos",
+          "archivedDocuments": "Documentos archivados"
+        }
+      },
+      "unit": {
+        "title": "Documentos de las Unidades",
+        "panelTitle": "Documentos - Unidad {unitName}",
+        "selectLabel": "Seleccionar una unidad",
+        "selectPlaceholder": "Elegir una unidad...",
+        "tableHeaders": {
+          "name": "Nombre",
+          "size": "Tamaño",
+          "date": "Fecha",
+          "actions": "Acciones"
+        }
+      },
+      "common": {
+        "search": {
+          "placeholder": "Buscar un documento"
+        },
+        "actions": {
+          "add": "Añadir un documento",
+          "adding": "Añadiendo...",
+          "upload": "Subir...",
+          "view": "Ver el documento",
+          "archive": "Archivar",
+          "restore": "Restaurar",
+          "unarchive": "Desarchivar",
+          "cancel": "Cancelar",
+          "selectFile": "Seleccionar un archivo",
+          "gridView": "Cuadrícula",
+          "loading": "Cargando..."
+        },
+        "upload": {
+          "title": "Añadir Documentos",
+          "dragDrop": "Arrastre y suelte o haga clic para seleccionar archivos",
+          "fileTypes": "JPG, PNG, PDF, DOCX (máx 50MB)",
+          "addDocuments": "Añadir 1 documento(s)"
+        },
+        "messages": {
+          "loading": "Cargando documentos...",
+          "noActiveDocuments": "Ningún documento activo",
+          "noArchivedDocuments": "Ningún documento archivado",
+          "clickToUpload": "Haga clic en \"Añadir\" para subir un documento",
+          "archivedOn": "Archivado el",
+          "fileTypeNotAllowed": "Tipo de archivo no autorizado (PDF, JPG, PNG, DOC, DOCX, XLS, XLSX, TXT)",
+          "fileTooLarge": "Archivo demasiado grande (máx 50MB)"
+        },
+        "dialogs": {
+          "archive": {
+            "title": "Archivar el documento",
+            "description": "El documento será movido a los archivos y podrá ser restaurado.",
+            "confirm": "Archivar"
+          },
+          "restore": {
+            "title": "Restaurar el documento",
+            "description": "El documento volverá a estar activo inmediatamente.",
+            "confirm": "Restaurar"
+          }
+        }
+      }
+    }
+  },
+  "landing": {
+    "nav": {
+      "home": "Inicio",
+      "advantages": "Ventajas",
+      "why": "Por qué BloodLink",
+      "features": "Funcionalidades",
+      "about": "Acerca de",
+      "contact": "Contacto",
+      "cta": "Agendar Cita"
+    },
+    "hero": {
+      "title1": "Transforme su gestión inmobiliaria",
+      "with": "con nuestra",
+      "words": {
+        "platform": "plataforma",
+        "solution": "solución",
+        "system": "sistema",
+        "technology": "tecnología"
+      },
+      "title2": "impulsada por IA",
+      "cta1": "Comenzar ahora",
+      "cta2": "Ver la demo"
+    },
+    "problems": {
+      "badge": "Problema",
+      "title": "Los límites de una gestión inmobiliaria sin BloodLink",
+      "cards": {
+        "calculation": {
+          "title": "Cálculo de cargos manual",
+          "description": "Excel, errores y pérdida de tiempo para las distribuciones y regularizaciones."
+        },
+        "documents": {
+          "title": "Documentos dispersos",
+          "description": "Contratos, actas y facturas dispersas — seguimiento de versiones y conformidad complicados."
+        },
+        "communication": {
+          "title": "Comunicación lenta",
+          "description": "Solicitudes de inquilinos y validaciones internas sin flujo de trabajo centralizado."
+        },
+        "tracking": {
+          "title": "Seguimiento ineficaz",
+          "description": "Retrasos en pagos y mantenimiento sin alertas automáticas."
+        }
+      }
+    },
+    "why": {
+      "title": "¿Por qué elegir nuestra plataforma?",
+      "subtitle": "Una solución completa que revoluciona la gestión inmobiliaria gracias a la inteligencia artificial",
+      "cards": {
+        "automation": {
+          "title": "Inmobiliaria aumentada por IA",
+          "description": "Distribución de cargos, recordatorios, conformidad — impulsada por IA."
+        },
+        "managers": {
+          "title": "Gestión inmobiliaria profesional",
+          "description": "Paneles en tiempo real, flujos de organización, control documental."
+        },
+        "users": {
+          "title": "Gestión de alquileres completa",
+          "description": "Portal unificado: pagos, tickets, documentos, rendimiento."
+        },
+        "security": {
+          "title": "Seguridad y conformidad",
+          "description": "Cifrado, registro de auditorías, roles y accesos granulares."
+        },
+        "analytics": {
+          "title": "Análisis e Informes",
+          "description": "Paneles inteligentes, previsiones IA, informes automatizados."
+        },
+        "support": {
+          "title": "Soporte 24/7",
+          "description": "Asistencia técnica continua, formación personalizada, mantenimiento proactivo."
+        },
+        "integration": {
+          "title": "Integración completa",
+          "description": "API robusta, sincronización bancaria, conectores de terceros."
+        },
+        "scalability": {
+          "title": "Escalabilidad garantizada",
+          "description": "Arquitectura cloud nativa, escalado automático, rendimiento optimizado."
+        }
+      }
+    },
+    "features": {
+      "title": "Descubra nuestras",
+      "titleHighlight": "funcionalidades",
+      "subtitle": "Una plataforma completa que simplifica cada aspecto de su gestión inmobiliaria",
+      "tabs": {
+        "dashboard": {
+          "title": "Panel de control inteligente",
+          "description": "Centralice todos sus datos inmobiliarios en un panel moderno e intuitivo. Siga sus KPIs en tiempo real con visualizaciones avanzadas y métricas personalizables.",
+          "badge": "Nuevo"
+        },
+        "properties": {
+          "title": "Gestión de propiedades",
+          "description": "Centralice sus propiedades, tipos y características. Cree, modifique y siga sus propiedades en pocos clics con un flujo de trabajo claro."
+        },
+        "tenants": {
+          "title": "Gestión de inquilinos",
+          "description": "Simplifique la gestión de sus inquilinos con herramientas dedicadas: seguimiento de pagos, comunicación directa, gestión de solicitudes de mantenimiento e historial completo."
+        },
+        "documents": {
+          "title": "Gestión de documentos",
+          "description": "Sistema completo de gestión documental con firma electrónica, archivo automático y conformidad normativa. Acceso seguro desde cualquier lugar."
+        },
+        "ai": {
+          "title": "Chat IA",
+          "description": "Un asistente inteligente integrado para responder sus preguntas, acelerar sus tareas y guiarle en la plataforma."
+        }
+      },
+      "points": {
+        "intuitive": "Interfaz intuitiva y moderna",
+        "realtime": "Sincronización en tiempo real",
+        "security": "Seguridad y conformidad garantizadas"
+      }
+    },
+    "textReveal": {
+      "text": "Gestione su patrimonio inmobiliario con toda simplicidad. Automatice, asegure, prospere."
+    },
+    "journey": {
+      "title": "Proceso de",
+      "titleHighlight": "adopción",
+      "subtitle": "Comience en 4 pasos simples y transforme su gestión inmobiliaria",
+      "cta": "Comenzar ahora",
+      "steps": {
+        "step1": {
+          "number": "01",
+          "title": "Conecte sus propiedades",
+          "description": "Importe fácilmente todos sus edificios, unidades de alquiler, contratos de arrendamiento y cargos comunes en la plataforma. Una sincronización rápida que centraliza todos sus datos inmobiliarios en pocos clics.",
+          "features": {
+            "feature1": "Importación automática",
+            "feature2": "Sincronización rápida",
+            "feature3": "Centralización de datos"
+          }
+        },
+        "step2": {
+          "number": "02",
+          "title": "Active la IA",
+          "description": "Deje que la inteligencia artificial optimice su gestión: asignación automática de cargos, notificaciones inteligentes y respuestas asistidas para ahorrar tiempo en tareas repetitivas.",
+          "features": {
+            "feature1": "Asignación automática",
+            "feature2": "Notificaciones inteligentes",
+            "feature3": "Respuestas asistidas"
+          }
+        },
+        "step3": {
+          "number": "03",
+          "title": "Colabore",
+          "description": "Cree un portal colaborativo en tiempo real donde propietarios, gestores, inquilinos y proveedores puedan interactuar eficientemente. Comunicación fluida y transparencia garantizada para todos los actores.",
+          "features": {
+            "feature1": "Portal colaborativo",
+            "feature2": "Comunicación en tiempo real",
+            "feature3": "Transparencia total"
+          }
+        },
+        "step4": {
+          "number": "04",
+          "title": "Mida y optimice",
+          "description": "Analice su rendimiento con KPIs detallados, genere informes automatizados y reciba recomendaciones personalizadas para reducir costos y maximizar su rentabilidad.",
+          "features": {
+            "feature1": "KPIs detallados",
+            "feature2": "Informes automatizados",
+            "feature3": "Recomendaciones IA"
+          }
+        }
+      }
+    },
+    "faq": {
+      "title1": "Preguntas",
+      "title2": "Frecuentes",
+      "subtitle": "Encuentre respuestas a las preguntas más comunes sobre nuestra plataforma de gestión inmobiliaria, nuestras funcionalidades y nuestro acompañamiento.",
+      "questions": {
+        "q1": {
+          "category": "Gestión Inmobiliaria",
+          "question": "¿Cómo BloodLink simplifica la gestión de mis propiedades inmobiliarias?",
+          "answer": "BloodLink centraliza todos sus procesos: gestión de inquilinos, seguimiento de pagos, mantenimiento preventivo, documentos digitales y comunicación unificada. No más malabarismos entre varias herramientas, todo es accesible desde una sola plataforma intuitiva."
+        },
+        "q2": {
+          "category": "Digitalización",
+          "question": "¿Puedo digitalizar mis documentos en papel existentes?",
+          "answer": "¡Absolutamente! Nuestro sistema permite importar y organizar todos sus documentos existentes. Escaneo automático, reconocimiento OCR, clasificación inteligente por propiedad e inquilino. Adiós a las carpetas y documentos perdidos."
+        },
+        "q3": {
+          "category": "Automatización",
+          "question": "¿Cómo funciona la automatización de recordatorios de alquiler?",
+          "answer": "El sistema detecta automáticamente los retrasos en el pago y envía recordatorios personalizados por email/SMS según sus parámetros. Escalamiento progresivo, seguimiento de respuestas y generación automática de informes de cobro."
+        },
+        "q4": {
+          "category": "Mantenimiento",
+          "question": "¿El mantenimiento predictivo realmente puede reducir mis costos?",
+          "answer": "Sí, ¡en promedio 30% de ahorro! Nuestra IA analiza el historial de sus equipos, predice averías y planifica intervenciones preventivas. Red de artesanos asociados con tarifas negociadas incluida."
+        },
+        "q5": {
+          "category": "Comunicación",
+          "question": "¿Cómo gestionar eficientemente la comunicación con mis inquilinos?",
+          "answer": "Hub de comunicación centralizado con mensajería integrada, portal del inquilino, notificaciones automáticas e historial completo. Sus inquilinos pueden reportar problemas, consultar sus documentos y comunicarse en tiempo real."
+        },
+        "q6": {
+          "category": "Seguridad",
+          "question": "¿Están seguros mis datos en la plataforma?",
+          "answer": "Seguridad bancaria garantizada: cifrado AES-256, alojamiento certificado ISO 27001, copias de seguridad automáticas, acceso multifactor y conformidad RGPD. Sus datos están más seguros que en su computadora local."
+        },
+        "q7": {
+          "category": "Integración",
+          "question": "¿BloodLink se integra con mis herramientas contables existentes?",
+          "answer": "Integración nativa con los principales software contables (Sage, Ciel, EBP) y bancos marroquíes. Exportación automática de asientos, conciliación bancaria y generación de estados financieros conformes a la legislación marroquí."
+        },
+        "q8": {
+          "category": "Soporte",
+          "question": "¿Qué acompañamiento ofrecen para la adopción?",
+          "answer": "Formación completa incluida: onboarding personalizado, migración de sus datos, formación de sus equipos y soporte técnico 6d/7. Nuestro equipo de expertos le acompaña hasta su autonomía completa."
+        }
+      }
+    },
+    "footer": {
+      "tagline1": "Gestión inmobiliaria",
+      "tagline2": "simplificada y moderna",
+      "heading": "Todo lo que necesita para su gestión inmobiliaria",
+      "company": {
+        "title": "Empresa",
+        "whyUs": "Por qué nosotros",
+        "faq": "FAQ",
+        "privacy": "Política de privacidad",
+        "terms": "Términos de uso"
+      },
+      "features": {
+        "title": "Funcionalidades",
+        "dashboard": "Panel de control",
+        "properties": "Gestión de propiedades",
+        "tenants": "Gestión de inquilinos",
+        "documents": "Documentos e IA"
+      },
+      "contact": {
+        "title": "Contacto",
+        "phone": "+212 537 76 17 43",
+        "email": "info@hub4digi.com",
+        "address": "Jean Jaures 7 Les Orange, Rabat, Marruecos"
+      },
+      "hiring": "¡Estamos contratando!",
+      "copyright": "Todos los derechos reservados.",
+      "contactForm": {
+        "title": "¿Listo para transformar su gestión inmobiliaria?",
+        "subtitle": "Contáctenos para una demostración personalizada de nuestra plataforma",
+        "cta": "Contáctenos",
+        "button": "Contáctenos",
+        "formTitle": "Hablemos de su proyecto",
+        "formSubtitle": "Complete este formulario y nuestro equipo le contactará en 24h para discutir sus necesidades",
+        "name": "Nombre",
+        "email": "Email",
+        "phone": "Tel",
+        "message": "Mensaje",
+        "send": "Enviar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
+  "tenantManagement": {
+    "page": {
+      "title": "Gestión de Alquileres",
+      "subtitle": "Gestione la información, contratos y comunicaciones de los inquilinos",
+      "addButton": "Añadir un inquilino",
+      "addButtonShort": "Nuevo"
+    },
+    "header": {
+      "title": "Inquilinos",
+      "subtitle": "{count} de {total} inquilinos mostrados",
+      "addButton": "Nuevo Inquilino",
+      "archivedButton": "Archivados",
+      "refreshing": "Actualizando datos...",
+      "refreshTitle": "Actualizar datos",
+      "refreshSuccess": "Datos actualizados con éxito",
+      "refreshError": "Error al actualizar los datos"
+    },
+    "dashboard": {
+      "totalTenants": "Total Inquilinos",
+      "activeTenants": "Inquilinos Activos",
+      "monthlyRevenue": "Ingresos Mensuales",
+      "expiringLeases": "Contratos por Vencer",
+      "pendingTenants": "Pendientes",
+      "lateTenants": "Atrasados",
+      "occupancyRate": "Tasa de Ocupación"
+    },
+    "search": {
+      "placeholder": "Buscar por nombre, email, teléfono...",
+      "clear": "Borrar"
+    },
+    "filters": {
+      "title": "Filtros",
+      "status": "Estado",
+      "city": "Ciudad",
+      "profession": "Profesión",
+      "searchFields": "Campos de búsqueda",
+      "reset": "Reiniciar",
+      "activeFilters": "{count} filtro(s) activo(s)"
+    },
+    "viewModes": {
+      "grid": "Cuadrícula",
+      "list": "Lista"
+    },
+    "sort": {
+      "label": "Ordenar por",
+      "nameAsc": "Nombre (A-Z)",
+      "nameDesc": "Nombre (Z-A)",
+      "statusAsc": "Estado (A-Z)",
+      "statusDesc": "Estado (Z-A)",
+      "cityAsc": "Ciudad (A-Z)",
+      "cityDesc": "Ciudad (Z-A)",
+      "dateAsc": "Fecha (antiguos)",
+      "dateDesc": "Fecha (recientes)"
+    },
+    "status": {
+      "active": "Activo",
+      "pending": "Pendiente",
+      "late": "Atrasado",
+      "suspended": "Suspendido",
+      "terminated": "Terminado",
+      "archived": "Archivado"
+    },
+    "bulk": {
+      "selected": "{count} inquilino(s) seleccionado(s)",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "archive": "Archivar ({count})",
+      "archiveConfirm": "¿Archivar {count} inquilino(s)?",
+      "archiveSuccess": "Inquilinos archivados con éxito",
+      "archiveError": "Error al archivar los inquilinos",
+      "restoreAll": "Restaurar todo",
+      "restoring": "Restaurando...",
+      "restoreSuccess": "{count} inquilino(s) restaurado(s) con éxito",
+      "restoreError": "Error al restaurar en lote",
+      "cancel": "Cancelar"
+    },
+    "card": {
+      "phone": "Teléfono",
+      "email": "Email",
+      "city": "Ciudad",
+      "profession": "Profesión",
+      "viewDetails": "Ver detalles",
+      "edit": "Editar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "delete": "Eliminar",
+      "archived": "Archivado",
+      "archivedOn": "Archivado el {date}",
+      "restoring": "Restaurando...",
+      "notProvided": "No especificado",
+      "addedOn": "Añadido el {date}",
+      "archiving": "Archivando...",
+      "archiveSuccess": "Inquilino archivado con éxito",
+      "archiveError": "Error al archivar el inquilino"
+    },
+    "empty": {
+      "title": "Ningún inquilino encontrado",
+      "subtitle": "Comience añadiendo su primer inquilino",
+      "addButton": "Añadir un inquilino"
+    },
+    "emptyState": {
+      "title": "Ningún inquilino encontrado",
+      "description": "Intente modificar sus criterios de búsqueda o filtro, o añada un nuevo inquilino."
+    },
+    "refresh": {
+      "button": "Actualizar",
+      "success": "Datos actualizados con éxito",
+      "error": "Error al actualizar los datos"
+    },
+    "pagination": {
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "archived": {
+      "title": "Inquilinos Archivados",
+      "subtitle": "{count} inquilino(s) archivado(s)",
+      "backButton": "Volver a los inquilinos",
+      "searchPlaceholder": "Buscar en archivados...",
+      "archivedOn": "Archivado el",
+      "restoreSuccess": "Inquilino restaurado con éxito",
+      "restoreError": "Error al restaurar el inquilino",
+      "empty": {
+        "title": "Ningún inquilino archivado",
+        "subtitle": "Los inquilinos archivados aparecerán aquí"
+      }
+    },
+    "lease": {
+      "statusActive": "Contrato activo",
+      "statusDraft": "Borrador",
+      "statusTerminated": "Terminado",
+      "statusCancelled": "Cancelado"
+    },
+    "documents": {
+      "categoryIdentity": "Identidad",
+      "categoryLease": "Contrato",
+      "categoryGeneral": "General",
+      "openDocument": "Abrir el documento",
+      "downloadDocument": "Descargar el documento",
+      "download": "Descargar",
+      "delete": "Eliminar"
+    },
+    "archivedDocs": {
+      "title": "Documentos Archivados",
+      "count": "{count} documento(s) archivado(s)",
+      "noDocuments": "Ningún documento archivado",
+      "noDocumentsHint": "Los documentos archivados aparecerán aquí",
+      "categoryTenant": "Inquilino",
+      "categoryLease": "Contrato",
+      "categoryIdentity": "Identidad",
+      "categoryOther": "Otro",
+      "unknownSize": "Tamaño desconocido",
+      "undefinedType": "Tipo no definido",
+      "openDocument": "Abrir el documento",
+      "downloadDocument": "Descargar el documento",
+      "openError": "Error al abrir el documento",
+      "downloadError": "Error al descargar el documento",
+      "restore": "Restaurar",
+      "createdOn": "Creado el",
+      "archivedOn": "Archivado el {date}",
+      "pageInfo": "Página {current} de {total}",
+      "previous": "Anterior",
+      "prev": "Ant.",
+      "next": "Siguiente",
+      "nextShort": "Sig."
+    },
+    "archivedGuarantors": {
+      "title": "Garantes Archivados",
+      "count": "{count} garante(s) archivado(s)",
+      "noGuarantors": "Ningún garante archivado",
+      "noGuarantorsHint": "Los garantes archivados aparecerán aquí",
+      "restore": "Restaurar",
+      "archivedOn": "Archivado el {date}",
+      "pageInfo": "Página {current} de {total}",
+      "previous": "Anterior",
+      "prev": "Ant.",
+      "next": "Siguiente",
+      "nextShort": "Sig."
+    },
+    "archiveDocDialog": {
+      "title": "Archivar el documento",
+      "description": "¿Está seguro de que desea archivar este documento? Será movido a los archivos y podrá ser restaurado más tarde.",
+      "cancel": "Cancelar",
+      "archiving": "Archivando...",
+      "archive": "Archivar"
+    },
+    "archiveGuarantorDialog": {
+      "title": "Archivar el garante",
+      "confirmMessage": "¿Está seguro de que desea archivar al garante \"{name}\"?",
+      "reversibleTitle": "Esta acción es reversible",
+      "reversibleMessage": "El garante será ocultado de la lista pero podrá ser restaurado en cualquier momento desde los archivos.",
+      "cancel": "Cancelar",
+      "archiving": "Archivando...",
+      "archive": "Archivar"
+    },
+    "bulkArchiveDialog": {
+      "title": "Archivar {count} inquilino(s)",
+      "subtitle": "Esta acción archivará definitivamente los inquilinos seleccionados. Ya no aparecerán",
+      "confirmTitle": "Confirmación de archivo en lote",
+      "confirmMessage": "Está a punto de archivar {count} inquilino(s):",
+      "andOthers": "... y {count} otro(s)",
+      "warning": "en la lista principal. Podrá encontrarlos en la sección \"Archivados\". y ya no aparecerán en la lista principal.",
+      "cancel": "Cancelar",
+      "archiving": "Archivando...",
+      "archiveButton": "Archivar {count} inquilino(s)"
+    },
+    "bulkRestoreDialog": {
+      "title": "Restaurar {count} inquilino(s)",
+      "subtitle": "Esta acción reactivará los inquilinos seleccionados",
+      "confirmTitle": "Confirmación de restauración en lote",
+      "confirmMessage": "Está a punto de restaurar {count} inquilino(s):",
+      "andOthers": "... y {count} otro(s)",
+      "warning": "Todos estos inquilinos volverán a estar activos y aparecerán en la lista principal.",
+      "cancel": "Cancelar",
+      "restoring": "Restaurando...",
+      "restoreButton": "Restaurar {count} inquilino(s)"
+    },
+    "changeStatusModal": {
+      "title": "Modificar el estado del inquilino",
+      "success": "¡Estado modificado con éxito!",
+      "successDesc": "{name} ahora es \"{status}\"",
+      "autoActions": "Acciones automáticas realizadas",
+      "error": "Error al cambiar el estado",
+      "errorDesc": "Ha ocurrido un error inesperado"
+    },
+    "generateContract": {
+      "title": "Generar el contrato de alquiler - {name}",
+      "loadError": "Error al cargar los datos del contrato",
+      "addressRequired": "Por favor complete la dirección de la empresa",
+      "infoTitle": "Información",
+      "infoMessage": "El nombre del gestor y su email se recuperarán automáticamente desde su perfil Property Manager.",
+      "companyName": "Nombre de la empresa",
+      "phone": "Teléfono",
+      "address": "Dirección de la empresa",
+      "addressPlaceholder": "Dirección completa de la sede social",
+      "cancel": "Cancelar",
+      "generating": "Generando...",
+      "generate": "Generar el contrato",
+      "contractNumber": "Contrato n° {number}",
+      "hide": "Ocultar",
+      "preview": "Vista previa",
+      "downloadPDF": "Descargar PDF",
+      "modifyInfo": "Modificar la información",
+      "close": "Cerrar"
+    },
+    "renewLease": {
+      "title": "Renovar el contrato",
+      "description": "Renovación del contrato de {tenant} para la unidad {property} - {unit}",
+      "success": "¡Contrato renovado con éxito!",
+      "error": "Error al renovar: {message}",
+      "unknownError": "Error desconocido",
+      "currentLease": "Contrato actual",
+      "currentEndDate": "Fin del contrato actual",
+      "currentRent": "Alquiler actual",
+      "currentDeposit": "Depósito actual",
+      "newPeriod": "Nuevo período",
+      "newPeriodDesc": "Defina el período del nuevo contrato",
+      "newStartDate": "Nueva fecha de inicio",
+      "newEndDate": "Nueva fecha de fin",
+      "selectDate": "Seleccionar una fecha",
+      "financialTerms": "Condiciones financieras",
+      "financialTermsDesc": "Ajuste los montos si es necesario",
+      "newRent": "Nuevo alquiler mensual",
+      "newDeposit": "Nuevo depósito de garantía",
+      "cancel": "Cancelar",
+      "renewing": "Renovando...",
+      "renew": "Renovar el contrato"
+    },
+    "restoreDialog": {
+      "title": "Restaurar el inquilino",
+      "subtitle": "Esta acción reactivará el inquilino",
+      "confirmTitle": "Confirmación de restauración",
+      "confirmMessage": "¿Está seguro de que desea restaurar a {name}?",
+      "warning": "El inquilino volverá a estar activo y aparecerá en la lista principal.",
+      "cancel": "Cancelar",
+      "restoring": "Restaurando...",
+      "confirm": "Confirmar la restauración"
+    },
+    "terminateLease": {
+      "title": "Rescindir el contrato",
+      "description": "Rescisión del contrato de {tenant} para la unidad {unit}"
+    },
+    "addTenantForm": {
+      "uploadError": "Error al cargar la imagen CIN ({type}): {message}",
+      "emailAlreadyUsed": "Este email ya está siendo utilizado por otro inquilino",
+      "chooseAnotherEmail": "Por favor elija otro email",
+      "emailExists": "Este email ya existe",
+      "validation": {
+        "nameRequired": "El apellido es obligatorio.",
+        "firstNameRequired": "El nombre es obligatorio.",
+        "phoneRequired": "El número de teléfono es obligatorio.",
+        "emailRequired": "El email es obligatorio.",
+        "emailInvalid": "Dirección de email inválida.",
+        "propertyRequired": "Por favor seleccione una propiedad.",
+        "unitRequired": "Por favor seleccione una unidad.",
+        "rentMin": "El alquiler debe ser superior a 0.",
+        "startDateRequired": "La fecha de inicio es obligatoria.",
+        "durationMin": "La duración mínima es de 1 mes.",
+        "depositMin": "El depósito de garantía no puede ser negativo.",
+        "cinOrImages": "Por favor ingrese un código CIN válido (mínimo 6 caracteres) o cargue ambas imágenes (frente y reverso).",
+        "cinBackRequired": "Por favor también cargue la imagen del reverso del CIN.",
+        "cinFrontRequired": "Por favor también cargue la imagen del frente del CIN.",
+        "monthlyDonsRequired": "Por favor especifique un monto de cargos mensuales válido.",
+        "indexationRateRequired": "Por favor especifique una tasa de indexación válida."
+      },
+      "sections": {
+        "personalInfo": "Información personal",
+        "address": "Dirección personal",
+        "professional": "Información profesional",
+        "identity": "Documento de identidad"
+      },
+      "labels": {
+        "lastName": "Apellido",
+        "firstName": "Nombre",
+        "cin": "N° CIN",
+        "nationality": "Nacionalidad",
+        "phone": "N° de teléfono",
+        "email": "Dirección de correo electrónico",
+        "fullAddress": "Dirección completa",
+        "city": "Ciudad",
+        "profession": "Profesión",
+        "cinFront": "CIN Frente",
+        "cinBack": "CIN Reverso",
+        "required": "*",
+        "imageFront": "Imagen Frente",
+        "imageBack": "Imagen Reverso",
+        "chooseFile": "Elegir un archivo",
+        "noFileChosen": "Ningún archivo elegido"
+      },
+      "placeholders": {
+        "selectNationality": "Seleccionar la nacionalidad",
+        "phoneNumber": "0661000000",
+        "emailAddress": "nombre@ejemplo.com",
+        "addressExample": "Ej: 45 Calle Hassan II, Guéliz",
+        "selectCity": "Seleccionar una ciudad",
+        "selectProfession": "Seleccionar una profesión"
+      },
+      "buttons": {
+        "continueToAddress": "Continuar a la dirección",
+        "continueToProfessional": "Continuar a la información profesional",
+        "continueToProfessionalShort": "Continuar a info pro",
+        "continueToIdentity": "Continuar al documento de identidad",
+        "enterCode": "Ingresar el código",
+        "uploadImages": "Cargar las imágenes",
+        "next": "Siguiente",
+        "previous": "Anterior",
+        "cancel": "Cancelar",
+        "confirmAndSave": "Confirmar y Guardar",
+        "confirm": "Confirmar"
+      },
+      "toast": {
+        "tenantCreatedGuarantorError": "Inquilino creado pero error al añadir el garante",
+        "addGuarantorManually": "Puede añadir el garante manualmente desde la página del inquilino",
+        "emailDuplicate": "Este email ya está siendo utilizado por otro inquilino",
+        "modifyEmailRetry": "Por favor modifique el email e intente nuevamente",
+        "saveError": "Error al guardar",
+        "retryOrContact": "Por favor intente nuevamente o contacte al soporte"
+      },
+      "steps": {
+        "tenant": "Inquilino",
+        "contract": "Contrato",
+        "guarantor": "Garante",
+        "security": "Seguridad",
+        "review": "Revisión"
+      },
+      "nationalities": {
+        "moroccan": "Marroquí",
+        "french": "Francesa",
+        "spanish": "Española",
+        "italian": "Italiana",
+        "german": "Alemana",
+        "british": "Británica",
+        "american": "Americana",
+        "canadian": "Canadiense",
+        "other": "Otra"
+      },
+      "professions": {
+        "architect": "Arquitecto",
+        "engineer": "Ingeniero",
+        "doctor": "Médico",
+        "lawyer": "Abogado",
+        "teacher": "Profesor",
+        "pharmacist": "Farmacéutico",
+        "dentist": "Dentista",
+        "accountant": "Contador",
+        "consultant": "Consultor",
+        "entrepreneur": "Empresario",
+        "civil_servant": "Funcionario",
+        "merchant": "Comerciante",
+        "craftsman": "Artesano",
+        "student": "Estudiante",
+        "retired": "Jubilado",
+        "other": "Otro"
+      },
+      "contract": {
+        "title": "Detalles del contrato",
+        "property": "Propiedad",
+        "availableUnit": "Unidad disponible",
+        "unitsAvailable": "unidades disponibles",
+        "selectProperty": "Seleccionar una propiedad",
+        "selectUnitFirst": "Seleccione primero una propiedad",
+        "monthlyRent": "Alquiler mensual (MAD)",
+        "startDate": "Fecha de inicio",
+        "contractDuration": "Duración del contrato (meses)",
+        "leaseType": "Tipo de contrato",
+        "chargesIncluded": "Cargos incluidos en el alquiler",
+        "enterDateFormat": "Ingrese la fecha en formato DD/MM/AAAA o haga clic en el icono del calendario",
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "mixed": "Mixto",
+        "selectRelation": "Seleccionar una relación"
+      },
+      "guarantor": {
+        "title": "Garante",
+        "hasGuarantor": "El inquilino tiene un garante",
+        "name": "Nombre del garante",
+        "cin": "N° CIN del garante",
+        "phone": "Teléfono del garante",
+        "email": "Email del garante",
+        "relation": "Relación con el inquilino",
+        "relations": {
+          "parent": "Padre/Madre",
+          "conjoint": "Cónyuge",
+          "ami": "Amigo(a)",
+          "collegue": "Colega",
+          "autre": "Otro"
+        }
+      },
+      "security": {
+        "title": "Seguridad y documentos",
+        "securityDeposit": "Depósito de garantía (MAD)",
+        "moveInInspection": "Inventario de entrada",
+        "confirmDocumentSignature": "Confirmar la firma del documento.",
+        "indexationClause": "Cláusula de indexación",
+        "indexationRate": "Tasa de indexación (%)"
+      }
+    },
+    "advancedFilters": {
+      "status": {
+        "active": "Activo",
+        "pending": "Pendiente",
+        "late": "Atrasado",
+        "suspended": "Suspendido"
+      },
+      "statusLabel": "Estado",
+      "cityLabel": "Ciudad",
+      "professionLabel": "Profesión",
+      "advancedLabel": "Avanzado",
+      "filterByStatus": "Filtrar por estado",
+      "filterByCity": "Filtrar por ciudad",
+      "filterByProfession": "Filtrar por profesión",
+      "searchFields": "Campos de búsqueda",
+      "nameLabel": "Nombre/Apellido",
+      "emailLabel": "Email",
+      "phoneLabel": "Teléfono",
+      "cinLabel": "CIN",
+      "cancel": "Cancelar",
+      "apply": "Aplicar",
+      "clearAll": "Borrar todo ({count})",
+      "clearAllShort": "Borrar todo",
+      "activeFilters": "Filtros activos ({count})"
+    },
+    "archivedTenantsFilterBar": {
+      "quickSearch": "Búsqueda rápida",
+      "searchPlaceholder": "Buscar por nombre, email...",
+      "searchTooltip": "Buscar por nombre, email o teléfono",
+      "city": "Ciudad",
+      "filterByCity": "Filtrar por ciudad",
+      "filterByCityPlaceholder": "Filtrar por ciudad...",
+      "profession": "Profesión",
+      "filterByProfession": "Filtrar por profesión",
+      "filterByProfessionPlaceholder": "Filtrar por profesión...",
+      "nationality": "Nacionalidad",
+      "filterByNationality": "Filtrar por nacionalidad",
+      "filterByNationalityPlaceholder": "Filtrar por nacionalidad...",
+      "hideFilters": "Ocultar filtros",
+      "showFilters": "Mostrar filtros",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "restore": "Restaurar ({count})",
+      "results": "{count} resultado",
+      "resultsPlural": "{count} resultados",
+      "reset": "Reiniciar",
+      "resetFilters": "Reiniciar filtros",
+      "filterTenants": "Filtrar inquilinos",
+      "filterArchivedTenants": "Filtrar inquilinos archivados"
+    },
+    "changeStatusForm": {
+      "title": "Cambio de estado",
+      "tenant": "Inquilino",
+      "currentStatus": "Estado actual",
+      "newStatus": "Nuevo estado",
+      "newStatusRequired": "Nuevo estado *",
+      "selectStatus": "Seleccionar un estado",
+      "current": "(actual)",
+      "effectiveDate": "Fecha de efecto",
+      "selectDate": "Seleccionar una fecha",
+      "reason": "Razón del cambio *",
+      "reasonPlaceholder": "Explique la razón de este cambio de estado...",
+      "reasonHistory": "Esta información se registrará en el historial del inquilino",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar el cambio",
+      "confirmShort": "Confirmar",
+      "changing": "Cambiando...",
+      "changingShort": "En curso...",
+      "changeError": "Error al cambiar el estado. Por favor intente nuevamente.",
+      "status": {
+        "active": {
+          "label": "Activo",
+          "description": "El inquilino está activo con un contrato en curso",
+          "impact": "Los contratos en borrador se activarán automáticamente"
+        },
+        "pending": {
+          "label": "Pendiente",
+          "description": "El inquilino está pendiente de validación o asignación",
+          "impact": "Todos los contratos se pondrán en borrador"
+        },
+        "late": {
+          "label": "Atrasado",
+          "description": "El inquilino tiene retrasos en el pago",
+          "impact": "Ninguna acción automática sobre los contratos"
+        },
+        "suspended": {
+          "label": "Suspendido",
+          "description": "El inquilino está temporalmente suspendido",
+          "impact": "Ninguna acción automática sobre los contratos"
+        },
+        "terminated": {
+          "label": "Terminado",
+          "description": "El contrato del inquilino ha sido rescindido",
+          "impact": "Todos los contratos activos se terminarán y las unidades se liberarán"
+        },
+        "archived": {
+          "label": "Archivado",
+          "description": "El inquilino está archivado (eliminación suave)",
+          "impact": "Todos los contratos activos se terminarán y las unidades se liberarán"
+        }
+      },
+      "automaticImpact": "Impacto automático:"
+    },
+    "documentTypeSelector": {
+      "placeholder": "Seleccionar el tipo de documento",
+      "loading": "Cargando tipos...",
+      "loadError": "Error de carga",
+      "noTypes": "Ningún tipo disponible",
+      "categories": {
+        "identity": "Documentos de Identidad",
+        "lease": "Documentos de Contrato",
+        "tenant": "Documentos del Inquilino"
+      },
+      "badges": {
+        "identity": "Identidad",
+        "lease": "Contrato",
+        "tenant": "Inquilino"
+      },
+      "info": {
+        "identityDoc": "Documento de identidad:",
+        "identityDesc": "Este documento será almacenado en la carpeta segura de identidad del inquilino.",
+        "cinFront": "(Cara frontal del CIN)",
+        "cinBack": "(Cara trasera del CIN)",
+        "leaseDoc": "Documento de contrato:",
+        "leaseDesc": "Este documento será asociado al contrato y almacenado en la carpeta correspondiente.",
+        "identityRequired": "Documento de identidad requerido para el registro del inquilino",
+        "leaseRequired": "Documento de contrato para formalizar el alquiler",
+        "generalDoc": "Documento general del inquilino"
+      }
+    },
+    "editTenantForm": {
+      "title": "Modificar la información del inquilino",
+      "description": "Modifique la información personal de {name}",
+      "personalInfo": "Información personal",
+      "contactEmergency": "Contacto y Emergencia",
+      "firstName": "Nombre",
+      "firstNamePlaceholder": "Ej: Ahmed",
+      "lastName": "Apellido",
+      "lastNamePlaceholder": "Ej: Benali",
+      "cin": "CIN",
+      "cinPlaceholder": "Ej: G123456",
+      "nationality": "Nacionalidad",
+      "nationalityPlaceholder": "Seleccionar una nacionalidad",
+      "city": "Ciudad",
+      "cityPlaceholder": "Seleccionar una ciudad",
+      "profession": "Profesión",
+      "professionPlaceholder": "Seleccionar una profesión",
+      "phone": "Teléfono",
+      "phonePlaceholder": "Ej: +212 6 12 34 56 78",
+      "email": "Email",
+      "emailPlaceholder": "Ej: ahmed@ejemplo.com",
+      "emergencyContact": "Contacto de emergencia",
+      "emergencyContactName": "Nombre del contacto de emergencia",
+      "emergencyContactNamePlaceholder": "Ej: Fatima Benali",
+      "emergencyContactPhone": "Teléfono del contacto de emergencia",
+      "emergencyContactPhonePlaceholder": "Ej: +212 6 87 65 43 21",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "updating": "Actualizando...",
+      "successTitle": "¡Información del inquilino actualizada con éxito!",
+      "errorTitle": "Error al actualizar",
+      "errorDescription": "Ha ocurrido un error inesperado",
+      "required": "*"
+    },
+    "formErrorsSummary": {
+      "title": "Hay {count} error en el formulario",
+      "titlePlural": "Hay {count} errores en el formulario"
+    },
+    "guarantorForm": {
+      "fullName": "Nombre completo",
+      "fullNameRequired": "Nombre completo *",
+      "fullNamePlaceholder": "Ej: Ahmed Ben Ali",
+      "relation": "Relación con el inquilino",
+      "relationRequired": "Relación con el inquilino *",
+      "relationPlaceholder": "Ej: Padre, Hermano, Amigo, Colega...",
+      "phone": "Teléfono",
+      "phoneRequired": "Teléfono *",
+      "phonePlaceholder": "Ej: 0661234567",
+      "cin": "Número CIN (opcional)",
+      "cinPlaceholder": "Ej: AB123456",
+      "email": "Email (opcional)",
+      "emailPlaceholder": "Ej: ahmed@ejemplo.com",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando..."
+    },
+    "leaseForm": {
+      "titleEdit": "Modificar el contrato",
+      "titleNew": "Nuevo contrato",
+      "descriptionEdit": "Modifique la información del contrato",
+      "descriptionNew": "Crear un nuevo contrato para {tenantName}",
+      "unit": "Unidad",
+      "unitSection": "Unidad",
+      "unitDescription": "Seleccione la unidad a alquilar",
+      "unitLabel": "Unidad",
+      "unitRequired": "Unidad *",
+      "unitPlaceholder": "Seleccionar una unidad",
+      "leasePeriod": "Período del contrato",
+      "leasePeriodDescription": "Defina la duración del contrato",
+      "startDate": "Fecha de inicio",
+      "startDateRequired": "Fecha de inicio *",
+      "endDate": "Fecha de fin",
+      "endDateRequired": "Fecha de fin *",
+      "selectDate": "Seleccionar una fecha",
+      "financialTerms": "Condiciones financieras",
+      "financialTermsDescription": "Defina los montos y condiciones de pago",
+      "monthlyRent": "Alquiler mensual",
+      "monthlyRentRequired": "Alquiler mensual *",
+      "monthlyRentPlaceholder": "Ej: 3500",
+      "securityDeposit": "Depósito de garantía",
+      "securityDepositPlaceholder": "Ej: 7000",
+      "paymentDay": "Día de pago",
+      "paymentDayPlaceholder": "Día del mes",
+      "paymentDayOption": "{day} del mes",
+      "currency": "Moneda",
+      "currencyMAD": "MAD (Dirham)",
+      "currencyEUR": "EUR (Euro)",
+      "currencyUSD": "USD (Dólar)",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "edit": "Modificar",
+      "create": "Crear el contrato"
+    },
+    "terminateLeaseForm": {
+      "title": "Rescindir el contrato",
+      "description": "Rescisión del contrato de {tenantName} para la unidad {unitName}",
+      "alertMessage": "La rescisión aplicará automáticamente el preaviso legal. La unidad será liberada al final del preaviso.",
+      "requestDate": "Fecha de solicitud",
+      "requestDateRequired": "Fecha de solicitud *",
+      "selectDate": "Seleccionar una fecha",
+      "leaseType": "Tipo de contrato",
+      "leaseTypeRequired": "Tipo de contrato *",
+      "leaseTypePlaceholder": "Seleccionar el tipo de contrato",
+      "leaseTypeResidential": "Residencial",
+      "leaseTypeCommercial": "Comercial",
+      "leaseTypeSeasonal": "De temporada",
+      "noticeDays": "Preaviso (días)",
+      "reason": "Razón de la rescisión",
+      "reasonRequired": "Razón de la rescisión *",
+      "reasonPlaceholder": "Motivo de la rescisión",
+      "comment": "Comentario",
+      "commentPlaceholder": "Notas adicionales...",
+      "predictedEndDate": "Fecha teórica de fin de preaviso:",
+      "calculating": "Calculando...",
+      "currentEndDate": "Fin actual del contrato:",
+      "cancel": "Cancelar",
+      "terminate": "Rescindir el contrato",
+      "terminating": "Rescindiendo...",
+      "successTitle": "Contrato rescindido con éxito",
+      "successDescription": "{tenantName} será liberado del contrato al término del preaviso",
+      "errorTitle": "Error al rescindir",
+      "errorDescription": "Ha ocurrido un error inesperado",
+      "defaultReason": "Rescisión anticipada"
+    },
+    "navbar": {
+      "defaultTitle": "Gestión de Inquilinos",
+      "searchPlaceholder": "Buscar un inquilino...",
+      "addTenant": "Añadir un Inquilino"
+    },
+    "tenantNavbar": {
+      "searchPlaceholder": "Buscar inquilinos…",
+      "searchAriaLabel": "Buscar inquilinos",
+      "newButton": "Nuevo"
+    },
+    "archivedTenantsGrid": {
+      "selectedItems": "{count} elemento seleccionado",
+      "selectedItemsPlural": "{count} elementos seleccionados",
+      "restore": "Restaurar ({count})",
+      "noArchivedTitle": "Ningún inquilino archivado",
+      "noArchivedDescription": "Todos sus inquilinos están actualmente activos."
+    },
+    "archivedTenantsList": {
+      "refreshingData": "Actualizando datos...",
+      "refreshSuccess": "Datos actualizados con éxito",
+      "refreshError": "Error al actualizar los datos",
+      "title": "Inquilinos Archivados",
+      "countInfo": "{showing} de {total} inquilinos archivados",
+      "restore": "Restaurar ({count})",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "refreshingTitle": "Actualizando...",
+      "refreshTitle": "Actualizar los datos",
+      "selectedMobile": "{selected}/{total} seleccionado",
+      "selectedMobilePlural": "{selected}/{total} seleccionados",
+      "allSelected": "Todos los inquilinos seleccionados ({count})",
+      "selectedCount": "{count} inquilino seleccionado",
+      "selectedCountPlural": "{count} inquilinos seleccionados",
+      "noResults": "Ningún resultado",
+      "noArchivedTenants": "Ningún inquilino archivado",
+      "noResultsDescription": "Ningún inquilino archivado coincide con su búsqueda.",
+      "allActive": "Todos sus inquilinos están actualmente activos.",
+      "archived": "Archivado",
+      "restoring": "Restaurando...",
+      "paginationInfo": "Mostrando {from} a {to} de {total} inquilinos archivados",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "archivedTenantsTable": {
+      "name": "Nombre y Apellido",
+      "email": "Email",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "archiveDate": "Fecha de archivo",
+      "archived": "Archivado"
+    },
+    "archivedTenantsView": {
+      "title": "Inquilinos Archivados",
+      "titleAriaLabel": "Inquilinos Archivados",
+      "description": "Gestione y restaure sus antiguos inquilinos."
+    },
+    "documentsTabContent": {
+      "categoryTenant": "Inquilino",
+      "categoryLease": "Contrato",
+      "categoryIdentity": "Identidad",
+      "archiveSuccess": "Documento archivado con éxito",
+      "archiveSuccessDescription": "El documento \"{name}\" ha sido movido a los archivos.",
+      "archiveError": "Error al archivar",
+      "archiveErrorDescription": "Ha ocurrido un error al archivar el documento. Por favor intente nuevamente.",
+      "restoreSuccess": "Documento restaurado con éxito",
+      "restoreSuccessDescription": "El documento ha sido restaurado y ahora es visible en la lista principal.",
+      "restoreError": "Error al restaurar",
+      "restoreErrorDescription": "Ha ocurrido un error al restaurar el documento. Por favor intente nuevamente.",
+      "title": "Documentos",
+      "countInfo": "{filtered} de {total} documento mostrado",
+      "countInfoPlural": "{filtered} de {total} documentos mostrados",
+      "archived": "Archivados",
+      "archivedShort": "Archivo",
+      "addDocument": "Añadir un documento",
+      "addShort": "Añadir",
+      "searchPlaceholder": "Buscar un documento...",
+      "typeAll": "Todos los documentos",
+      "typeTenant": "Documentos del inquilino",
+      "typeLease": "Documentos de contrato",
+      "typeIdentity": "Documentos de identidad",
+      "typePlaceholder": "Tipo de documento",
+      "size": "Tamaño",
+      "addedOn": "Añadido el",
+      "openDocument": "Abrir el documento",
+      "downloadDocument": "Descargar el documento",
+      "deleteDocument": "Eliminar el documento",
+      "noDocumentsTitle": "Ningún documento encontrado",
+      "noDocumentsSearch": "Ningún documento coincide con sus criterios de búsqueda.",
+      "noDocumentsEmpty": "Ningún documento de identidad ha sido añadido para este inquilino.",
+      "addFirstDocument": "Añadir el primer documento",
+      "paginationInfo": "Mostrando {from} a {to} de {total} documentos",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "typeUndefined": "Tipo no definido"
+    },
+    "guarantorsTabContent": {
+      "title": "Garantes",
+      "loading": "Cargando...",
+      "activeCount": "{count} garante activo",
+      "activeCountPlural": "{count} garantes activos",
+      "archived": "Archivados",
+      "archivedShort": "Archivo",
+      "addGuarantor": "Añadir un garante",
+      "addShort": "Añadir",
+      "loadingGuarantors": "Cargando garantes...",
+      "editGuarantor": "Editar el garante",
+      "archiveGuarantor": "Archivar el garante",
+      "archiveError": "Error al archivar el garante. Por favor intente nuevamente.",
+      "restoreError": "Error al restaurar el garante. Por favor intente nuevamente.",
+      "phone": "Teléfono",
+      "email": "Email",
+      "cin": "CIN",
+      "addedOn": "Añadido el",
+      "modifiedOn": "Modificado el",
+      "noGuarantorsTitle": "Ningún garante",
+      "noGuarantorsDescription": "Ningún garante ha sido registrado para este inquilino. Añada un garante para asegurar el contrato.",
+      "addFirstGuarantor": "Añadir el primer garante"
+    },
+    "leaseDetailsTab": {
+      "statusActive": "Activo",
+      "statusPending": "Pendiente",
+      "statusLate": "Atrasado",
+      "statusSuspended": "Suspendido",
+      "statusTerminated": "Rescindido",
+      "statusArchived": "Archivado",
+      "statusUnknown": "Desconocido",
+      "noLeaseFound": "Ningún contrato activo encontrado para este inquilino.",
+      "activeLease": "Contrato Activo",
+      "property": "Propiedad",
+      "unit": "Unidad",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "financialTerms": "Condiciones Financieras",
+      "monthlyRent": "Alquiler Mensual",
+      "securityDeposit": "Depósito de Garantía",
+      "editLease": "Modificar el contrato"
+    },
+    "leasesTabContent": {
+      "leaseCreatedSuccess": "¡Contrato creado con éxito!",
+      "leaseRenewedSuccess": "¡Contrato renovado con éxito!",
+      "leaseActivatedSuccess": "¡Contrato activado con éxito!",
+      "leaseActivationError": "Error al activar el contrato",
+      "leaseArchivedSuccess": "¡Contrato archivado con éxito!",
+      "leaseArchiveError": "Error al archivar el contrato",
+      "statusActive": "Activo",
+      "statusDraft": "Borrador",
+      "statusTerminated": "Terminado",
+      "statusExpired": "Expirado",
+      "statusCancelled": "Cancelado",
+      "invalidDate": "Fecha inválida",
+      "expired": "Expirado",
+      "daysRemaining": "{days} días restantes",
+      "title": "Contratos",
+      "loading": "Cargando...",
+      "leaseCount": "{count} contrato registrado",
+      "leaseCountPlural": "{count} contratos registrados",
+      "statsActive": "Activo: {count}",
+      "statsDraft": "Borrador: {count}",
+      "statsTerminated": "Terminado: {count}",
+      "newLease": "Nuevo contrato",
+      "loadingLeases": "Cargando contratos...",
+      "leaseId": "Contrato #{id}",
+      "generateContract": "Generar contrato",
+      "renew": "Renovar",
+      "renewing": "Renovando...",
+      "activate": "Activar",
+      "activating": "Activando...",
+      "terminate": "Rescindir",
+      "archive": "Archivar",
+      "archiving": "Archivando...",
+      "period": "Período",
+      "rent": "Alquiler",
+      "perMonth": "por mes",
+      "deposit": "Depósito",
+      "guarantee": "garantía",
+      "unit": "Unidad",
+      "reference": "referencia",
+      "leaseTerminated": "Contrato rescindido",
+      "terminationDate": "Fecha de rescisión:",
+      "reason": "Razón:",
+      "processedOn": "Procesado el:",
+      "createdOn": "Creado el",
+      "modifiedOn": "Modificado el",
+      "noLeasesTitle": "Ningún contrato",
+      "noLeasesDescription": "Ningún contrato ha sido registrado para este inquilino.",
+      "createFirstLease": "Crear el primer contrato"
+    },
+    "statusHistoryTab": {
+      "statusActive": "Activo",
+      "statusPending": "Pendiente",
+      "statusLate": "Atrasado",
+      "statusSuspended": "Suspendido",
+      "statusTerminated": "Rescindido",
+      "statusArchived": "Archivado",
+      "loadingError": "Error de carga",
+      "loadingErrorDescription": "No se puede cargar el historial de estados. Por favor intente más tarde.",
+      "noHistoryTitle": "Ningún historial",
+      "noHistoryDescription": "Ningún cambio de estado ha sido registrado aún para este inquilino.",
+      "title": "Historial de estados",
+      "changeCount": "{count} cambio registrado",
+      "changeCountPlural": "{count} cambios registrados",
+      "recent": "Reciente"
+    },
+    "tenantDashboardHeader": {
+      "totalTenantsTitle": "Total",
+      "totalTenantsSubtitle": "Inquilinos",
+      "totalTenantsDescription1": "Número total de",
+      "totalTenantsDescription2": "inquilinos",
+      "monthlyRevenueTitle": "Ingresos",
+      "monthlyRevenueSubtitle": "Mensuales",
+      "monthlyRevenueDescription1": "Ingresos de alquiler activos",
+      "monthlyRevenueDescription2": "mensuales",
+      "occupancyRateTitle": "Tasa",
+      "occupancyRateSubtitle": "de Ocupación",
+      "occupancyRateDescription1": "Unidades ocupadas",
+      "occupancyRateDescription2": "actualmente",
+      "expiringLeasesTitle": "Contratos por Vencer",
+      "expiringLeasesDescription1": "En los próximos 3",
+      "expiringLeasesDescription2": "meses",
+      "latePaymentsTitle": "Atrasados",
+      "latePaymentsDescription1": "Retrasos de pago",
+      "latePaymentsDescription2": "actuales"
+    },
+    "tenantDetailView": {
+      "email": "Email",
+      "changeStatus": "Cambiar estado",
+      "edit": "Editar",
+      "tenantNotFound": "Inquilino no encontrado",
+      "leaseDetailsTab": "Detalles del Contrato",
+      "leaseHistoryTab": "Historial Contratos",
+      "guarantorsTab": "Garantes",
+      "documentsTab": "Documentos",
+      "statusHistoryTab": "Historial Estados"
+    },
+    "archiveDialog": {
+      "title": "Archivar el inquilino",
+      "subtitle": "Esta acción desactivará el inquilino",
+      "confirmTitle": "Confirmación de archivo",
+      "confirmMessage": "¿Está seguro de que desea archivar a {name}?",
+      "warning": "Esta acción archivará definitivamente este inquilino. Ya no aparecerá en la lista principal.",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar el archivo",
+      "archiving": "Archivando..."
+    },
+    "addTenant": {
+      "title": "Añadir un nuevo inquilino y un nuevo contrato",
+      "description": "Siga los pasos para registrar toda la información esencial del inquilino y del contrato."
+    },
+    "addLease": {
+      "title": "Nuevo contrato",
+      "unknownProperty": "Propiedad desconocida",
+      "loadUnitsError": "No se pueden cargar las unidades disponibles",
+      "createSuccess": "¡Contrato creado con éxito!",
+      "loadingUnits": "Cargando unidades disponibles...",
+      "noUnitsAvailable": "Ninguna unidad disponible por el momento.",
+      "noUnitsHint": "Asegúrese de que hay unidades con el estado \"disponible\"."
+    },
+    "addGuarantor": {
+      "titleAdd": "Añadir un garante",
+      "titleEdit": "Modificar un garante",
+      "tenantIdRequired": "tenantId requerido para crear un garante",
+      "updateSuccess": "Garante modificado con éxito",
+      "updateSuccessDesc": "La información de {name} ha sido actualizada",
+      "createSuccess": "Garante añadido con éxito",
+      "createSuccessDesc": "{name} ha sido añadido como garante",
+      "actionUpdate": "modificación",
+      "actionCreate": "adición",
+      "error": "Error al {action} del garante",
+      "errorDesc": "Ha ocurrido un error al {action} del garante"
+    },
+    "addDocument": {
+      "title": "Añadir Documentos",
+      "filePreview": "Vista previa del archivo",
+      "documentType": "Tipo de documento",
+      "customName": "Nombre personalizado",
+      "documentNamePlaceholder": "Nombre del documento",
+      "selectType": "Seleccionar el tipo",
+      "selectTypeError": "Por favor seleccione un tipo para {count} documento(s)",
+      "fileSizeError": "{count} archivo(s) exceden el límite de 10MB",
+      "fetchTypesError": "Error recuperación tipos",
+      "uploadError": "Error al añadir los documentos",
+      "guideTitle": "Guía de tipos de documentos",
+      "guideTenant": "Documentos Inquilino",
+      "guideTenantList": "• Comprobante de salario<br/>• Certificado de trabajo<br/>• Extracto bancario<br/>• Foto del inquilino",
+      "guideLease": "Documentos de Contrato",
+      "guideLeaseList": "• Contrato de alquiler<br/>• Inventario de entrada<br/>• Adenda al contrato<br/>• Recibo de alquiler",
+      "guideIdentity": "Documentos de Identidad",
+      "guideIdentityList": "• CIN frente<br/>• CIN reverso<br/>• CIN garante frente<br/>• CIN garante reverso",
+      "dropzoneText": "Arrastre y suelte o haga clic para seleccionar archivos",
+      "dropzoneHint": "JPG, PNG, PDF, DOCX (máx 10MB)",
+      "filesToAdd": "Archivos a añadir ({count})",
+      "headerPreview": "VISTA PREVIA",
+      "headerFile": "ARCHIVO",
+      "headerType": "TIPO DE DOCUMENTO",
+      "headerCustomName": "NOMBRE PERSONALIZADO",
+      "headerActions": "ACCIONES",
+      "cancel": "Cancelar",
+      "uploading": "En curso...",
+      "addDocuments": "Añadir {count} documento(s)"
+    },
+    "details": {
+      "backButton": "Volver a la lista",
+      "editButton": "Editar",
+      "archiveButton": "Archivar",
+      "tabs": {
+        "overview": "Resumen",
+        "leases": "Contratos",
+        "documents": "Documentos",
+        "guarantors": "Garantes",
+        "history": "Historial"
+      },
+      "overview": {
+        "personalInfo": "Información Personal",
+        "contactInfo": "Información de Contacto",
+        "professionalInfo": "Información Profesional",
+        "emergencyContact": "Contacto de Emergencia",
+        "fullName": "Nombre Completo",
+        "email": "Email",
+        "phone": "Teléfono",
+        "city": "Ciudad",
+        "profession": "Profesión",
+        "status": "Estado"
+      }
+    },
+    "form": {
+      "add": {
+        "title": "Añadir un Nuevo Inquilino",
+        "subtitle": "Complete la información del inquilino",
+        "steps": {
+          "personal": "Info Personal",
+          "contract": "Contrato",
+          "guarantor": "Garante",
+          "security": "Seguridad",
+          "review": "Revisión"
+        }
+      },
+      "edit": {
+        "title": "Modificar el Inquilino",
+        "subtitle": "Actualizar la información del inquilino"
+      },
+      "fields": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Email",
+        "phone": "Teléfono",
+        "city": "Ciudad",
+        "profession": "Profesión",
+        "status": "Estado",
+        "emergencyContact": "Contacto de Emergencia",
+        "emergencyPhone": "Teléfono de Emergencia"
+      },
+      "placeholders": {
+        "firstName": "Juan",
+        "lastName": "Pérez",
+        "email": "juan.perez@ejemplo.com",
+        "phone": "+212 6XX XXX XXX",
+        "city": "Casablanca",
+        "profession": "Seleccionar una profesión",
+        "emergencyContact": "Nombre del contacto",
+        "emergencyPhone": "+212 6XX XXX XXX"
+      },
+      "buttons": {
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "submit": "Enviar"
+      },
+      "validation": {
+        "required": "Este campo es obligatorio",
+        "invalidEmail": "Dirección de email inválida",
+        "invalidPhone": "Número de teléfono inválido"
+      },
+      "success": "Inquilino {action} con éxito",
+      "error": "Error al {action} del inquilino"
+    },
+    "actions": {
+      "view": "Ver",
+      "edit": "Editar",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "delete": "Eliminar",
+      "refresh": "Actualizar"
+    },
+    "toast": {
+      "archiveSuccess": "Inquilino archivado con éxito",
+      "archiveError": "Error al archivar el inquilino",
+      "restoreSuccess": "Inquilino restaurado con éxito",
+      "restoreError": "Error al restaurar el inquilino",
+      "deleteSuccess": "Inquilino eliminado con éxito",
+      "deleteError": "Error al eliminar el inquilino",
+      "updateSuccess": "Inquilino actualizado con éxito",
+      "updateError": "Error al actualizar el inquilino"
+    }
+  },
+  "regularisations": {
+    "title": "Regularizaciones",
+    "subtitle": "Consulte y exporte sus cálculos de regularización",
+    "kpis": {
+      "totalCalculations": {
+        "title": "Cálculos totales",
+        "description": "finalizados de",
+        "info": "Número de cálculos realizados con su estado de finalización."
+      },
+      "totalDons": {
+        "title": "Cargos totales",
+        "description": "Todos los períodos combinados",
+        "info": "Monto total de cargos distribuidos en todos los períodos."
+      },
+      "averagePerCalculation": {
+        "title": "Promedio por cálculo",
+        "description": "Por período",
+        "info": "Monto promedio de cargos por período de regularización."
+      },
+      "availableDons": {
+        "title": "Cargos disponibles",
+        "description": "En la base de datos",
+        "info": "Cargos disponibles para crear nuevas regularizaciones."
+      },
+      "labels": {
+        "finalized": "finalizados",
+        "allPeriods": "Todos los períodos combinados",
+        "perPeriod": "Por período",
+        "inDatabase": "En la base de datos"
+      }
+    },
+    "actions": {
+      "newCalculation": "Iniciar un cálculo",
+      "viewArchives": "Ver archivos",
+      "archive": "Archivar",
+      "restore": "Restaurar",
+      "delete": "Eliminar",
+      "export": "Exportar",
+      "details": "Detalles",
+      "pdf": "PDF",
+      "excel": "Excel",
+      "back": "Atrás",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "cancel": "Cancelar",
+      "calculate": "Calcular",
+      "save": "Guardar cálculo",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "reset": "Restablecer",
+      "finalize": "Finalizar",
+      "recalculate": "Recalcular"
+    },
+    "table": {
+      "columns": {
+        "property": "Propiedad",
+        "period": "Período",
+        "units": "Unidades",
+        "total": "Total (MAD)",
+        "status": "Estado",
+        "actions": "Acciones",
+        "tenant": "Inquilino",
+        "factor": "Factor",
+        "percentage": "%",
+        "amount": "Cargos",
+        "provisions": "Provisiones",
+        "archivedAt": "Archivado el"
+      },
+      "status": {
+        "finalized": "Finalizado",
+        "draft": "Borrador"
+      },
+      "badges": {
+        "oldVersion": "Versión anterior"
+      },
+      "empty": "No hay cálculo disponible",
+      "emptyDescription": "Comience creando su primer cálculo de regularización",
+      "selected": "seleccionado(s)",
+      "pagination": {
+        "page": "Página",
+        "of": "/"
+      },
+      "info": {
+        "factor": "Valor utilizado para el cálculo (superficie, cuotas, etc.).",
+        "percentage": "Porcentaje de distribución de cargos para esta unidad.",
+        "amount": "Monto de cargos asignado a esta unidad."
+      }
+    },
+    "filters": {
+      "title": "Filtrar cálculos",
+      "search": "Buscar por nombre, email...",
+      "property": "Filtrar por propiedad...",
+      "method": "Filtrar por método...",
+      "period": "Seleccionar un período",
+      "allProperties": "Todas las propiedades",
+      "allMethods": "Todos los métodos",
+      "reset": "Restablecer",
+      "resetAll": "Restablecer todos los filtros",
+      "results": "resultado",
+      "results_plural": "resultados",
+      "show": "Mostrar filtros",
+      "hide": "Ocultar filtros"
+    },
+    "wizard": {
+      "title": "Asistente de cálculo de regularización",
+      "description": "Siga los pasos para calcular la distribución de cargos",
+      "steps": {
+        "property": "Propiedad",
+        "units": "Unidades",
+        "key": "Clave",
+        "period": "Período",
+        "result": "Resultado"
+      },
+      "step1": {
+        "title": "Seleccione la propiedad",
+        "description": "Elija la propiedad concernida",
+        "searchPlaceholder": "Buscar por nombre o dirección...",
+        "unitsBadge": "{count} unidad(es)",
+        "filter": {
+          "propertyType": {
+            "aria": "Filtrar por tipo de propiedad",
+            "placeholder": "Todos los tipos",
+            "all": "Todos los tipos"
+          },
+          "units": {
+            "aria": "Filtrar por unidades",
+            "placeholder": "Todas las unidades",
+            "allProperties": "Todas las propiedades",
+            "withUnits": "Con unidad(es)",
+            "withoutUnits": "Sin unidad"
+          }
+        },
+        "table": {
+          "property": "Propiedad",
+          "address": "Dirección",
+          "units": "Unidades"
+        }
+      },
+      "step2": {
+        "title": "Seleccione las unidades",
+        "description": "Marque las unidades a incluir en el cálculo",
+        "selectedCount": "unidad(es) seleccionada(s)",
+        "searchPlaceholder": "Buscar (número de unidad, inquilino)",
+        "vacant": "Vacante",
+        "occupied": "Ocupada",
+        "surface": "Superficie",
+        "selectionCount": "{selected} / {total} unidad(es)",
+        "selectAll": "Seleccionar todo",
+        "deselectAll": "Deseleccionar todo",
+        "table": {
+          "unit": "Unidad",
+          "tenant": "Inquilino",
+          "surface": "Superficie",
+          "status": "Estado"
+        },
+        "surfaceBadge": "Superficie: {value} m²"
+      },
+      "step3": {
+        "title": "Elija el método de distribución",
+        "description": "Seleccione cómo distribuir los cargos",
+        "titleProvisions": "Configure las provisiones mensuales",
+        "changeMethod": "Cambiar método",
+        "provisions": {
+          "title": "Provisiones mensuales",
+          "description": "Defina el monto de provisiones para todas las unidades",
+          "amountLabel": "Monto mensual aplicado a todas las unidades",
+          "selectPlaceholder": "Seleccionar un monto...",
+          "customLabel": "O ingrese un monto personalizado",
+          "customPlaceholder": "Monto personalizado",
+          "previewTitle": "Vista previa",
+          "previewUnits": "unidad(es) seleccionada(s)",
+          "perUnit": "Monto por unidad",
+          "totalMonthly": "Total mensual",
+          "currency": "MAD/mes",
+          "currencyShort": "MAD"
+        },
+        "jit": {
+          "common": {
+            "unitLabel": "Unidad {unitNumber}",
+            "invalidTitle": "Valor no válido",
+            "genericUpdateError": "Error al actualizar",
+            "saveErrorTitle": "Error al guardar",
+            "saveButton": "Guardar"
+          },
+          "occupants": {
+            "title": "Entrada JIT — Ocupantes",
+            "description": "Indique el número de ocupantes por unidad seleccionada. El valor se guardará y se utilizará para el cálculo.",
+            "invalidDescription": "El número de ocupantes debe ser un entero ≥ 0",
+            "successTitle": "Ocupantes actualizados",
+            "successDescription": "Unidad {unitNumber}: {value}"
+          },
+          "surface": {
+            "title": "Entrada JIT — Superficie (m²)",
+            "description": "Ajuste la superficie utilizada para el cálculo por unidad seleccionada. El valor se guardará y se utilizará para el cálculo.",
+            "invalidDescription": "La superficie debe ser un número estrictamente positivo",
+            "successTitle": "Superficie actualizada",
+            "successDescription": "Unidad {unitNumber}: {value} m²",
+            "currentValue": "m² (actual: {value})"
+          },
+          "tantieme": {
+            "title": "Entrada JIT — Cuotas",
+            "description": "Indique las cuotas utilizadas para la distribución por unidad seleccionada. El valor se guardará y se utilizará para el cálculo.",
+            "invalidDescription": "Las cuotas deben ser un entero estrictamente positivo",
+            "successTitle": "Cuotas actualizadas",
+            "successDescription": "Unidad {unitNumber}: {value}"
+          }
+        }
+      },
+      "step4": {
+        "title": "Seleccione el período",
+        "description": "Defina el período de cálculo de cargos (mínimo 1 mes)",
+        "startDate": "Fecha de inicio",
+        "endDate": "Fecha de fin",
+        "chooseStartDate": "Elegir una fecha de inicio",
+        "chooseEndDate": "Elegir una fecha de fin",
+        "chooseEndDateManually": "o elegir manualmente",
+        "duration": "Duración del período",
+        "startDatePlaceholder": "Elegir una fecha de inicio",
+        "durationLabel": "Duración del período",
+        "presets": {
+          "quarter": "Trimestre",
+          "quarterSub": "3 meses",
+          "semester": "Semestre",
+          "semesterSub": "6 meses",
+          "year": "Año",
+          "yearSub": "12 meses"
+        },
+        "validation": {
+          "tooShort": "Período demasiado corto",
+          "tooShortDescription": "El período debe ser de al menos 30 días (1 mes)",
+          "tooShortError": "día(s) • Mínimo: 30 días",
+          "valid": "Período válido",
+          "validDescription": "día(s)"
+        },
+        "validPeriodSummary": "Período válido: {days} día(s)",
+        "tooShortSummary": "Período demasiado corto: {days} día(s) • Mínimo: {minDays} días"
+      },
+      "step5": {
+        "calculating": "Calculando...",
+        "calculatingDescription": "Por favor espere",
+        "completed": "¡Cálculo completado!",
+        "completedDescription": "Aquí está la distribución de cargos para",
+        "summary": {
+          "totalDons": "Cargos totales",
+          "unitsCount": "Unidades concernidas",
+          "method": "Método"
+        },
+        "breakdown": "Desglose por unidad",
+        "unitDetails": {
+          "unit": "Unidad",
+          "factor": "Factor",
+          "percentage": "Parte",
+          "amount": "Monto"
+        },
+        "totalDonsLabel": "Cargos totales",
+        "unitsLabel": "Unidades concernidas",
+        "methodLabel": "Método",
+        "breakdownTitle": "Desglose por unidad",
+        "unitTitle": "Unidad {unitNumber}",
+        "factorLabel": "Factor",
+        "shareLabel": "Parte",
+        "amountLabel": "Monto"
+      },
+      "allocationKeys": {
+        "equitable": {
+          "label": "Distribución equitativa",
+          "description": "Cargos distribuidos equitativamente entre todas las unidades seleccionadas."
+        },
+        "surface": {
+          "label": "Distribución por superficie",
+          "description": "Cargos distribuidos según la superficie habitable de cada unidad."
+        },
+        "tantieme": {
+          "label": "Distribución por cuotas",
+          "description": "Cargos distribuidos según las cuotas de copropiedad."
+        },
+        "occupants": {
+          "label": "Distribución por ocupantes",
+          "description": "Cargos distribuidos según el número de ocupantes por unidad."
+        }
+      },
+      "actions": {
+        "close": "Cerrar",
+        "back": "Volver",
+        "cancel": "Cancelar",
+        "next": "Siguiente",
+        "calculate": "Calcular",
+        "save": "Guardar cálculo",
+        "selectAll": "Seleccionar todo",
+        "deselectAll": "Deseleccionar todo"
+      },
+      "toast": {
+        "calculationSuccess": "¡Cálculo completado con éxito!",
+        "calculationSaved": "¡Cálculo guardado con éxito!",
+        "periodTooShort": "Período demasiado corto",
+        "periodTooShortDescription": "El período debe ser de al menos 30 días (1 mes)",
+        "calculationError": "Error durante el cálculo",
+        "calculationErrorDescription": "Se ha producido un error al ejecutar el cálculo. Verifique la información introducida y vuelva a intentarlo. Si el problema persiste, póngase en contacto con su administrador."
+      },
+      "navigation": {
+        "back": "Volver",
+        "cancel": "Cancelar",
+        "next": "Siguiente",
+        "calculate": "Calcular",
+        "saveCalculation": "Guardar cálculo"
+      },
+      "drawer": {
+        "title": "Asistente de cálculo de regularización",
+        "description": "Siga los pasos para calcular la distribución de cargos"
+      },
+      "common": {
+        "viewGridAria": "Vista de cuadrícula",
+        "viewListAria": "Vista de lista"
+      },
+      "pagination": {
+        "pageOf": "Página {page} / {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      }
+    },
+    "details": {
+      "title": "Detalles del cálculo",
+      "generalInfo": "Información general",
+      "property": "Propiedad",
+      "method": "Método",
+      "units": "Unidades",
+      "period": "Período",
+      "status": "Estado",
+      "totalDons": "Cargos totales",
+      "breakdown": "Desglose por unidad",
+      "breakdownHelp": {
+        "title": "Comprender estos importes",
+        "chargesLabel": "Cargos",
+        "chargesDescription": "parte de los cargos reales imputada a cada unidad para el período.",
+        "provisionsLabel": "Provisiones",
+        "provisionsDescription": "monto ya pagado por el inquilino durante el mismo período.",
+        "balanceLabel": "Saldo",
+        "balanceFormula": "Saldo = Provisiones − Cargos.",
+        "balanceNegativeLabel": "Saldo negativo",
+        "balanceNegativeDescription": "las provisiones son inferiores a los cargos → monto pendiente de pago por el inquilino.",
+        "balancePositiveLabel": "Saldo positivo",
+        "balancePositiveDescription": "las provisiones son superiores a los cargos → monto a reembolsar o a compensar a favor del inquilino."
+      },
+      "close": "Cerrar",
+      "from": "Del",
+      "to": "al"
+    },
+    "history": {
+      "title": "Histórico",
+      "events": {
+        "create": "Creación",
+        "finalize": "Finalización",
+        "archive": "Archivado",
+        "restore": "Restauración",
+        "renew": "Renovación",
+        "correct": "Corrección",
+        "recalculate": "Recalculo"
+      },
+      "recalculationLabel": "Recalculo",
+      "statusLabel": "Estado: {status}"
+    },
+    "archive": {
+      "title": "Archivos",
+      "subtitle": "Cálculos archivados",
+      "description": "Consulte sus cálculos archivados",
+      "backToList": "Volver a la lista",
+      "empty": "No hay cálculo archivado",
+      "emptyDescription": "Los cálculos archivados aparecerán aquí",
+      "selected": "cálculo(s) seleccionado(s)",
+      "restoreSelected": "Restaurar selección",
+      "confirmRestore": {
+        "title": "Restaurar este cálculo",
+        "titleBulk": "Restaurar {count} cálculo(s)",
+        "description": "¿Confirma la restauración de este cálculo? Se reintegrará en la lista principal.",
+        "descriptionBulk": "¿Confirma la restauración de estos cálculos? Se reintegrarán en la lista principal."
+      }
+    },
+    "confirmArchive": {
+      "title": "Archivar este cálculo",
+      "titleBulk": "Archivar {count} cálculo(s)",
+      "description": "¿Está seguro de que desea archivar este cálculo de regularización? Puede restaurarlo en cualquier momento desde la página de archivos.",
+      "descriptionBulk": "¿Está seguro de que desea archivar los {count} cálculos seleccionados? Puede restaurarlos en cualquier momento desde la página de archivos.",
+      "action": "Archivar",
+      "actionAll": "Archivar todo"
+    },
+    "toast": {
+      "archiveSuccess": "Cálculo archivado con éxito",
+      "archiveSuccessBulk": "{count} cálculo(s) archivado(s) con éxito",
+      "restoreSuccess": "Cálculo restaurado con éxito",
+      "restoreSuccessBulk": "{count} cálculo(s) restaurado(s)",
+      "exportPDF": "Exportación PDF en curso...",
+      "exportExcel": "Exportación Excel en curso...",
+      "deleteSuccess": "Cálculo eliminado con éxito",
+      "error": "Se produjo un error"
+    }
+  },
+  "team": {
+    "title": "Gestión de Equipo",
+    "description": "Gestione los miembros de su equipo y sus permisos",
+    "addMember": "Agregar miembro",
+    "members": "Miembros",
+    "member": "Miembro",
+    "noMembers": "No se encontraron miembros",
+    "viewModes": {
+      "list": "Lista",
+      "grid": "Cuadrícula"
+    },
+    "status": {
+      "active": "Activo",
+      "suspended": "Suspendido",
+      "revoked": "Revocado"
+    },
+    "wizard": {
+      "steps": {
+        "userInfo": "Información",
+        "accessType": "Tipo de Acceso",
+        "permissions": "Permisos",
+        "review": "Confirmación"
+      },
+      "userInfo": {
+        "title": "Información del Usuario",
+        "description": "Ingrese la información básica del nuevo miembro",
+        "infoMessage": "El usuario recibirá un correo electrónico con estas credenciales y podrá cambiar su contraseña en el primer inicio de sesión.",
+        "fullName": "Nombre Completo",
+        "fullNamePlaceholder": "Ej: Hassan Alami",
+        "email": "Correo Electrónico",
+        "emailPlaceholder": "correo@ejemplo.com",
+        "password": "Contraseña",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Confirmar Contraseña",
+        "passwordStrength": {
+          "weak": "Débil",
+          "medium": "Media",
+          "good": "Buena",
+          "strong": "Fuerte"
+        },
+        "passwordRequirements": {
+          "title": "La contraseña debe contener:",
+          "minLength": "Al menos 8 caracteres",
+          "uppercase": "Al menos una letra mayúscula (A-Z)",
+          "lowercase": "Al menos una letra minúscula (a-z)",
+          "number": "Al menos un dígito (0-9)"
+        },
+        "passwordsMatch": "Las contraseñas coinciden",
+        "passwordsDontMatch": "Las contraseñas no coinciden"
+      },
+      "accessType": {
+        "title": "Tipo de Acceso",
+        "description": "Elija el nivel de acceso para este miembro",
+        "selectRole": "Seleccionar rol",
+        "selectRolePlaceholder": "👉 Elegir un rol...",
+        "predefinedRoles": "Roles Predefinidos",
+        "predefinedRolesDescription": "Seleccione un rol con permisos personalizables.",
+        "fullAccess": "Acceso Completo",
+        "fullAccessDescription": "Todos los permisos activados.",
+        "fullAccessInfo": "✓ Al elegir \"Acceso Completo\", pasará directamente al paso de confirmación.",
+        "roleInfo": "→ Seleccionará un rol predefinido con permisos personalizables."
+      },
+      "permissions": {
+        "title": "Permisos del Rol",
+        "description": "Personalice los permisos para este miembro",
+        "noRoleSelected": "No se ha seleccionado ningún rol. Vuelva al paso anterior.",
+        "selectAll": "Seleccionar todo",
+        "deselectAll": "Deseleccionar todo",
+        "selectProperties": "Seleccionar propiedades",
+        "selectedCount": "{count} seleccionado(s)",
+        "propertyScope": "Acceso a Propiedades",
+        "keyFeatures": "Funciones Clave"
+      },
+      "review": {
+        "title": "Confirmar Adición del Miembro",
+        "description": "Revise la información antes de confirmar",
+        "userInformation": "Información del Usuario",
+        "accessType": "Tipo de Acceso",
+        "permissions": "Permisos",
+        "permissionsSummary": "Resumen de Permisos",
+        "propertiesAccess": "Acceso a Propiedades",
+        "canAddProperties": "Puede agregar nuevas propiedades",
+        "noAccess": "Sin acceso",
+        "warning": "Advertencia: Estos permisos pueden modificarse posteriormente"
+      },
+      "navigation": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+      }
+    },
+    "properties": {
+      "title": "Propiedades",
+      "canAddProperties": "Puede agregar nuevas propiedades",
+      "canAddPropertiesDescription": "Permite crear propiedades y agregar unidades a ellas",
+      "selectProperties": "Seleccionar propiedades",
+      "selectedProperties": "{count} propiedad(es) seleccionada(s)",
+      "propertyPermissionsNote": "Los permisos por propiedad se pueden configurar después de agregar el miembro",
+      "view": "Ver propiedades",
+      "create": "Crear propiedades",
+      "edit": "Editar propiedades",
+      "archive": "Archivar propiedades",
+      "addUnits": "Agregar unidades",
+      "propertiesAccessible": "Propiedades Accesibles",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "searchPlaceholder": "Buscar una propiedad...",
+      "showingResults": "Mostrando {filtered} de {total} propiedades",
+      "currentlyAssigned": "{count} propiedad(es) actualmente asignada(s)",
+      "useWizardForDetails": "Use el asistente para modificar propiedades específicas",
+      "noPropertiesSelected": "No hay propiedades seleccionadas",
+      "noPropertiesAvailable": "No hay propiedades disponibles",
+      "pagination": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {current} de {total}"
+      },
+      "dialog": {
+        "title": "Seleccionar Propiedades",
+        "description": "Elija a qué propiedades tendrá acceso este miembro"
+      }
+    },
+    "charges": {
+      "title": "Cargos",
+      "view": "Ver cargos",
+      "create": "Crear cargos",
+      "edit": "Editar cargos",
+      "archive": "Archivar cargos"
+    },
+    "tenants": {
+      "title": "Inquilinos",
+      "view": "Ver inquilinos",
+      "add": "Agregar inquilinos",
+      "edit": "Editar inquilinos",
+      "archive": "Archivar inquilinos"
+    },
+    "contacts": {
+      "title": "Contactos",
+      "view": "Ver contactos",
+      "add": "Agregar contactos",
+      "edit": "Editar contactos",
+      "delete": "Eliminar contactos",
+      "archive": "Archivar contactos"
+    },
+    "documents": {
+      "title": "Documentos",
+      "view": "Ver documentos",
+      "download": "Descargar documentos"
+    },
+    "roles": {
+      "property_staff": "Personal de Propiedades",
+      "property_staff_description": "Asistente financiero o contador",
+      "owner": "Propietario (Arrendador)",
+      "owner_description": "Propietario con visibilidad sobre sus propiedades",
+      "tenant": "Inquilino",
+      "tenant_description": "Inquilino con acceso limitado",
+      "auditor": "Auditor",
+      "auditor_description": "Auditor externo o firma de auditoría",
+      "vendor": "Proveedor",
+      "vendor_description": "Proveedor o prestador de servicios",
+      "system_support": "Soporte del Sistema",
+      "system_support_description": "Soporte técnico con acceso de solo lectura",
+      "assistant_pm": "Asistente de Gestor de Propiedades"
+    },
+    "filters": {
+      "search": "Buscar por nombre o correo...",
+      "role": "Rol",
+      "status": "Estado",
+      "allRoles": "Todos los roles",
+      "allStatus": "Todos los estados",
+      "clearFilters": "Limpiar filtros",
+      "showFilters": "Mostrar filtros",
+      "hideFilters": "Ocultar filtros",
+      "activeFilters": "{count} filtro(s) activo(s)",
+      "showingResults": "Mostrando {start} a {end} de {total} miembros",
+      "loading": "Cargando...",
+      "error": "Error al cargar datos",
+      "retry": "Reintentar",
+      "refresh": "Actualizar",
+      "noResults": "No se encontraron miembros",
+      "noResultsDescription": "Intenta ajustar tus filtros",
+      "noMembersDescription": "Comienza agregando miembros a tu equipo",
+      "apply": "Aplicar"
+    },
+    "table": {
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "role": "Rol",
+        "permissions": "Permisos",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "fullAccess": "Acceso Completo",
+      "noPermissions": "Sin acceso"
+    },
+    "actions": {
+      "viewDetails": "Ver detalles",
+      "editPermissions": "Editar permisos",
+      "delete": "Eliminar",
+      "viewProfile": "Ver perfil"
+    },
+    "view": {
+      "title": "Detalles del Miembro",
+      "role": "Rol",
+      "email": "Correo",
+      "addedOn": "Agregado el",
+      "accessType": "Tipo de Acceso",
+      "customAccess": "Acceso Personalizado",
+      "customAccessDescription": "Permisos específicos definidos a continuación",
+      "fullAccessDescription": "Todos los permisos en todos los recursos",
+      "close": "Cerrar",
+      "edit": "Editar"
+    },
+    "edit": {
+      "title": "Editar Permisos",
+      "fullAccess": "Acceso Completo",
+      "fullAccessDescription": "Todos los permisos en todos los recursos",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saving": "Guardando..."
+    },
+    "delete": {
+      "title": "Eliminar Miembro",
+      "description": "¿Está seguro de que desea eliminar este miembro?",
+      "warning": "Esta acción es irreversible. El miembro perderá inmediatamente todo acceso.",
+      "memberName": "Miembro: {name}",
+      "confirm": "Sí, eliminar",
+      "cancel": "Cancelar",
+      "deleting": "Eliminando..."
+    },
+    "notifications": {
+      "memberAdded": "¡Miembro agregado!",
+      "memberAddedDescription": "{name} ha sido agregado a su equipo",
+      "memberUpdated": "¡Permisos actualizados!",
+      "memberUpdatedDescription": "Los permisos de {name} han sido actualizados",
+      "memberDeleted": "¡Miembro eliminado!",
+      "memberDeletedDescription": "{name} ha sido eliminado de su equipo",
+      "refreshSuccess": "Datos actualizados con éxito",
+      "refreshError": "Error al actualizar los datos",
+      "error": "Error",
+      "errorAddingMember": "No se pudo agregar el miembro",
+      "errorUpdatingMember": "No se pudieron actualizar los permisos",
+      "errorDeletingMember": "No se pudo eliminar el miembro"
+    },
+    "confirmFullAccess": {
+      "title": "Confirmar Acceso Completo",
+      "description": "Está a punto de otorgar acceso completo a este miembro.",
+      "warning": "⚠️ El acceso completo otorga todos los privilegios de administrador sobre todos los recursos.",
+      "features": "Esto incluye:",
+      "feature1": "Ver, crear, editar y eliminar todas las propiedades",
+      "feature2": "Gestionar todos los inquilinos y contratos",
+      "feature3": "Crear y editar todos los cargos",
+      "feature4": "Acceder a todos los documentos y contactos",
+      "feature5": "Modificar la configuración de la organización",
+      "confirm": "Sí, otorgar acceso completo",
+      "cancel": "No, personalizar permisos"
+    }
+  }
+}

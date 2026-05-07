@@ -1,0 +1,3865 @@
+{
+  "common": {
+    "actions": {
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "submitting": "Envoi en cours...",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "create": "Créer",
+      "update": "Mettre à jour",
+      "view": "Voir",
+      "search": "Rechercher",
+      "filter": "Filtrer",
+      "export": "Exporter",
+      "import": "Importer",
+      "download": "Télécharger",
+      "upload": "Téléverser",
+      "like": "J'aime",
+      "dislike": "Je n'aime pas",
+      "liked": "Aimé",
+      "feedbackSent": "Feedback envoyé"
+    },
+    "feedback": {
+      "title": "Envoyer un feedback",
+      "description": "Aidez-nous à nous améliorer en partageant ce qui n'allait pas avec cette réponse.",
+      "placeholder": "Quel était le problème avec cette réponse ?",
+      "submit": "Envoyer le feedback"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "pending": "En attente",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "archived": "Archivé",
+      "all": "Tous",
+      "filter": "Filtrer par statut..."
+    },
+    "labels": {
+      "name": "Nom",
+      "description": "Description",
+      "date": "Date",
+      "amount": "Montant",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "navigation": {
+      "dashboard": "Tableau de bord",
+      "centers": "Centres",
+      "donors": "Donneurs",
+      "donations": "Dons",
+      "documents": "Documents",
+      "alerts": "Alertes",
+      "settings": "Paramètres",
+      "account": {
+        "myAccount": "Mon Compte",
+        "settings": "Paramètres",
+        "logout": "Déconnexion"
+      }
+    },
+    "language": {
+      "switch": "Changer de langue",
+      "current": "Langue actuelle",
+      "chooseLanguage": "Choisir la langue"
+    },
+    "search": {
+      "placeholder": "Rechercher donneurs, alertes, documents...",
+      "placeholderShort": "Rechercher...",
+      "title": "Recherche globale",
+      "description": "Tapez pour rechercher dans vos biens, locataires, documents et plus encore.",
+      "noResults": "Aucun résultat pour \"{query}\"",
+      "tryOtherKeywords": "Essayez avec d'autres mots-clés",
+      "shortcuts": {
+        "open": "pour ouvrir",
+        "navigate": "naviguer",
+        "select": "sélectionner",
+        "close": "fermer"
+      },
+      "categories": {
+        "properties": "Biens transfusions",
+        "tenants": "Donneurs",
+        "documents": "Documents",
+        "finances": "Finances",
+        "navigation": "Navigation"
+      }
+    }
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite",
+    "notFound": "Page non trouvée",
+    "unauthorized": "Non autorisé",
+    "serverError": "Erreur serveur",
+    "networkError": "Erreur réseau",
+    "global": {
+      "toast": {
+        "title": "Oops! Une erreur inattendue est survenue.",
+        "description": "Nous avons été notifiés et travaillons à résoudre le problème."
+      },
+      "heading": "Oops, une erreur est survenue!",
+      "description": "Quelque chose s'est mal passé de notre côté. Vous pouvez essayer de rafraîchir la page ou revenir plus tard.",
+      "button": "Réessayer"
+    }
+  },
+  "unauthorized": {
+    "title": "Accès non autorisé",
+    "description": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "message": "Si vous pensez qu'il s'agit d'une erreur, contactez votre administrateur ou revenez au tableau de bord.",
+    "goHome": "Retour au tableau de bord"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalidEmail": "Adresse e-mail invalide",
+    "invalidPhone": "Numéro de téléphone invalide",
+    "minLength": "Longueur minimale non respectée",
+    "maxLength": "Longueur maximale dépassée",
+    "invalidFormat": "Format invalide"
+  },
+  "dashboard": {
+    "welcome": {
+      "title": "Bienvenue sur BloodLink. Gérez votre centre de transfusion efficacement !",
+      "createButton": "Gérer les alertes",
+      "dismissButton": "Ignorer"
+    },
+    "kpis": {
+      "totalRevenue": {
+        "title": "Dons validés",
+        "description": "Le nombre total de dons validés par le centre pour la période sélectionnée.",
+        "delta": "+12,5% par rapport au mois dernier"
+      },
+      "occupancyRate": {
+        "title": "Taux de conversion RDV",
+        "description": "Le pourcentage de rendez-vous honorés par rapport au total des réservations.",
+        "delta": "+2,1% par rapport au mois dernier",
+        "unitSingular": "RDV",
+        "unitPlural": "RDV"
+      },
+      "activeTenants": {
+        "title": "Donneurs inscrits",
+        "description": "Le nombre total de donneurs ayant choisi votre centre.",
+        "delta": "+1 ce mois‑ci",
+        "tenantLabel": "donneurs"
+      },
+      "avgRepairTime": {
+        "title": "Temps moyen de prise en charge",
+        "description": "Le temps moyen nécessaire pour valider un don après l'arrivée du donneur.",
+        "delta": "-5%"
+      },
+      "turnoverRate": {
+        "title": "Taux de rétention",
+        "description": "Le pourcentage de donneurs qui reviennent donner dans votre centre.",
+        "delta": "+2%"
+      },
+      "unpaid": {
+        "title": "RDV ce jour",
+        "description": "Nombre de rendez-vous pour aujourd'hui.",
+        "delta": "+3 ce jour",
+        "paidLabel": "honorés"
+      }
+    },
+    "cashflow": {
+      "title": "Volume de prélèvements",
+      "revenue": "Poches récoltées",
+      "expenses": "Dons rejetés",
+      "balance": "Stock net",
+      "currency": "ml",
+      "months": {
+        "jan": "Janv",
+        "feb": "Févr",
+        "mar": "Mars",
+        "apr": "Avr",
+        "may": "Mai",
+        "jun": "Juin"
+      }
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "subtitle": "Tâches courantes et raccourcis",
+      "addDonor": "Enregistrer un donneur",
+      "createAlert": "Lancer une alerte",
+      "addDonation": "Valider un prélèvement",
+      "openEvents": "Gérer les collectes",
+      "openTeam": "Gérer l'équipe médicale"
+    },
+    "alerts": {
+      "title": "Alertes & notifications",
+      "subtitle": "Éléments importants nécessitant une attention",
+      "overdueRents": {
+        "title": "3 dons en retard",
+        "subtitle": "Total : 4 850 MAD",
+        "action": "Voir"
+      },
+      "expiringLeases": {
+        "title": "2 baux expirent bientôt",
+        "subtitle": "Dans 30 jours",
+        "action": "Examiner"
+      },
+      "maintenanceUpToDate": {
+        "title": "Maintenance à jour",
+        "subtitle": "Aucune demande en attente"
+      }
+    },
+    "tabs": {
+      "overview": "Aperçu",
+      "performance": "Performance des biens",
+      "activities": "Activités récentes",
+      "overviewShort": "Aperçu",
+      "performanceShort": "Performance",
+      "activitiesShort": "Activités",
+      "ariaLabel": "Sections du tableau de bord",
+      "sectionsLabel": "Sections du tableau de bord"
+    },
+    "activities": {
+      "title": "Activités récentes",
+      "subtitle": "Dernières mises à jour et transactions",
+      "empty": "Aucune activité récente",
+      "emptyHint": "Les activités apparaîtront ici lorsque vous ajouterez ou modifierez des éléments",
+      "tags": {
+        "created": "Ajouté",
+        "updated": "Modifié",
+        "archived": "Archivé"
+      },
+      "items": {
+        "payment": "Don effectué par 1 850 MAD pour Donneur #123",
+        "maintenance": "Don terminé dans Donneur #456",
+        "lease": "Rendez-vous signé pour Salle 1",
+        "inquiry": "Demande d'information pour App 2C",
+        "time1": "il y a 2 heures",
+        "time2": "il y a 4 heures",
+        "time3": "il y a 1 jour",
+        "time4": "il y a 2 jours",
+        "tag1": "terminé",
+        "tag2": "en attente",
+        "tag3": "signé",
+        "tag4": "répondu"
+      }
+    },
+    "properties": {
+      "title": "Performance des biens",
+      "subtitle": "Vue d'ensemble des biens et de leurs indicateurs clés",
+      "units": "services",
+      "occupancy": "Occupation",
+      "revenue": "Revenus",
+      "viewAll": "Voir tout",
+      "trends": {
+        "up": "Excellent",
+        "down": "À améliorer",
+        "stable": "Satisfaisant"
+      }
+    },
+    "sidebar": {
+      "dashboard": "Tableau de bord",
+      "centers": "Mon Centre",
+      "donors": "Donneurs",
+      "donations": "Dons & Stocks",
+      "appointments": "Rendez-vous",
+      "alerts": "Alertes Urgentes",
+      "documents": "Rapports",
+      "settings": "Configurations"
+    }
+  },
+  "auth": {
+    "common": {
+      "brandName": "BLOODLINK",
+      "loading": "Chargement...",
+      "copyright": "© {year} BloodLink. Tous droits réservés."
+    },
+    "testimonials": {
+      "slides": [
+        {
+          "alt": "Gestion des dons en temps réel.",
+          "quote": "Le suivi des stocks de sang est devenu extrêmement précis. Nous pouvons anticiper les pénuries avant qu'elles n'arrivent.",
+          "author": "Dr. Sarah Mansouri",
+          "title": "Responsable de Centre"
+        },
+        {
+          "alt": "Interface fluide pour les donneurs.",
+          "quote": "L'application permet une coordination parfaite entre les centres régionaux et les hôpitaux.",
+          "author": "Pr. Ahmed Tazi",
+          "title": "Hématologue"
+        }
+      ]
+    },
+    "login": {
+      "title": "Connectez-vous",
+      "subtitle": "Accédez à votre tableau de bord.",
+      "labels": {
+        "email": "Email",
+        "password": "Mot de passe"
+      },
+      "placeholders": {
+        "email": "nom@exemple.com",
+        "password": "••••••••"
+      },
+      "buttons": {
+        "submit": "Se connecter",
+        "submitting": "Connexion...",
+        "google": "Continuer avec Google",
+        "divider": "OU"
+      },
+      "links": {
+        "forgotPassword": "Oublié ?",
+        "noAccount": "Pas encore de compte ?",
+        "signUp": "Inscrivez-vous"
+      },
+      "aria": {
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Cacher le mot de passe"
+      },
+      "toast": {
+        "errorTitle": "Échec de la connexion",
+        "emailConfirmedTitle": "Email confirmé avec succès",
+        "passwordUpdatedTitle": "Mot de passe mis à jour"
+      },
+      "errors": {
+        "invalidCredentials": "Les informations d'identification sont incorrectes.",
+        "fieldsRequired": "L'email et le mot de passe sont requis."
+      }
+    },
+    "signup": {
+      "title": "Créer votre compte",
+      "subtitle": "Gérez vos centres de transfusion en quelques minutes.",
+      "labels": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe"
+      },
+      "placeholders": {
+        "firstName": "Oussama",
+        "lastName": "El Amrani",
+        "email": "vous@example.com",
+        "password": "••••••••"
+      },
+      "passwordRules": {
+        "minLength": "Au moins 8 caractères",
+        "upperLower": "Une majuscule et une minuscule",
+        "digit": "Au moins un chiffre"
+      },
+      "passwordMatch": {
+        "match": "Les mots de passe correspondent",
+        "noMatch": "Les mots de passe ne correspondent pas"
+      },
+      "terms": {
+        "prefix": "J'accepte les",
+        "linkText": "Conditions d'utilisation",
+        "suffix": "."
+      },
+      "buttons": {
+        "submit": "Créer un compte",
+        "submitting": "Création en cours…",
+        "google": "Continuer avec Google"
+      },
+      "links": {
+        "hasAccount": "Vous avez déjà un compte ?",
+        "login": "Se connecter"
+      },
+      "aria": {
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe"
+      },
+      "footer": {
+        "copyright": "© {year} BloodLink Engineering. Tous droits réservés."
+      },
+      "success": {
+        "title": "Inscription réussie. Bienvenue !",
+        "emailConfirm": "Vérifiez votre e-mail pour confirmer votre compte."
+      },
+      "errors": {
+        "fixErrors": "Veuillez corriger les erreurs du formulaire.",
+        "emailExists": "Cet e-mail est déjà utilisé.",
+        "passwordInsecure": "Le mot de passe ne respecte pas les critères de sécurité.",
+        "rateLimited": "Trop de tentatives. Veuillez réessayer plus tard.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "resetPassword": {
+      "title": "Mot de passe oublié ?",
+      "description": "Entrez votre email pour recevoir un lien de réinitialisation.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "nom@exemple.com",
+      "submitButton": "Envoyer le lien de réinitialisation",
+      "loadingButton": "Envoi en cours...",
+      "successButton": "Email envoyé ✓",
+      "backToLogin": "← Retour à la connexion",
+      "noAccount": "Pas encore de compte ?",
+      "signUpLink": "Inscrivez-vous",
+      "validation": {
+        "emailRequired": "Email requis",
+        "emailInvalid": "Format d'email invalide"
+      },
+      "error": {
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "newPassword": {
+      "title": "Nouveau mot de passe",
+      "description": "Définissez votre nouveau mot de passe sécurisé.",
+      "passwordLabel": "Nouveau mot de passe",
+      "passwordPlaceholder": "Entrez votre nouveau mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
+      "submitButton": "Mettre à jour le mot de passe",
+      "submittingButton": "Mise à jour en cours...",
+      "backToLogin": "← Retour à la connexion",
+      "error": {
+        "generic": "Une erreur est survenue"
+      }
+    },
+    "emailSent": {
+      "title": "Email envoyé",
+      "description": "Vérifiez votre boîte de réception pour réinitialiser votre mot de passe",
+      "cardTitle": "Lien de réinitialisation envoyé",
+      "cardDescription": "Nous avons envoyé un lien de réinitialisation à :",
+      "instructions": {
+        "clickLink": "Cliquez sur le lien dans l'email pour créer un nouveau mot de passe.",
+        "emailDelay": "L'email peut prendre quelques minutes à arriver."
+      },
+      "resendButton": {
+        "resending": "Envoi en cours...",
+        "resend": "Renvoyer l'email",
+        "countdown": "Renvoyer dans {seconds}s"
+      },
+      "backToReset": "← Retour à la réinitialisation",
+      "error": {
+        "resend": "Erreur lors du renvoi:"
+      }
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire.",
+      "firstNameRequired": "Le prénom est obligatoire.",
+      "lastNameRequired": "Le nom est obligatoire.",
+      "emailInvalid": "Adresse e-mail invalide.",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères.",
+      "passwordUpperLower": "Le mot de passe doit contenir au moins une majuscule et une minuscule.",
+      "passwordDigit": "Le mot de passe doit contenir au moins un chiffre.",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+      "termsRequired": "Vous devez accepter les Conditions d'utilisation.",
+      "currentPasswordInvalid": "Mot de passe actuel invalide.",
+      "phoneInvalid": "Numéro de téléphone invalide (format E.164)."
+    },
+    "serverErrors": {
+      "invalidCredentials": "Les informations d'identification sont incorrectes.",
+      "fieldsRequired": "L'email et le mot de passe sont requis.",
+      "emailAlreadyExists": "Cet e-mail est déjà utilisé.",
+      "weakPassword": "Le mot de passe ne respecte pas les critères de sécurité.",
+      "rateLimited": "Trop de tentatives. Veuillez réessayer plus tard.",
+      "resetEmailFailed": "Impossible d'envoyer l'email de réinitialisation.",
+      "invalidResetLink": "Lien invalide ou expiré.",
+      "updatePasswordFailed": "Impossible de mettre à jour le mot de passe.",
+      "allFieldsRequired": "Tous les champs sont requis.",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères.",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+      "unknownError": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "success": {
+      "loginSuccess": "Connexion réussie. Bienvenue !",
+      "signupSuccess": "Inscription réussie. Bienvenue !",
+      "emailConfirmRequired": "Vérifiez votre e-mail pour confirmer votre compte.",
+      "emailConfirmed": "Votre adresse email a été confirmée avec succès. Vous pouvez maintenant vous connecter.",
+      "resetEmailSent": "Un lien de réinitialisation a été envoyé à votre adresse email.",
+      "passwordUpdated": "Mot de passe mis à jour avec succès."
+    }
+  },
+  "terms": {
+    "metadata": {
+      "title": "Conditions d'utilisation - BloodLink",
+      "description": "Consultez les conditions d'utilisation de la plateforme BloodLink. Informations légales sur l'utilisation de nos services de gestion de dons de sang."
+    },
+    "navigation": {
+      "back": "Retour",
+      "backAriaLabel": "Retour à la page précédente",
+      "skip": "Aller au contenu principal"
+    },
+    "header": {
+      "title": "Conditions d'utilisation",
+      "lastUpdated": "Dernière mise à jour",
+      "effectiveDate": "8 octobre 2025"
+    },
+    "sections": {
+      "introduction": {
+        "title": "Introduction",
+        "content": "Ces conditions régissent votre accès et votre utilisation de l'application BloodLink. En utilisant nos services, vous acceptez d'être lié par ces conditions. Veuillez les lire attentivement."
+      },
+      "accounts": {
+        "title": "Comptes utilisateurs",
+        "content": "Vous êtes responsable de la confidentialité de votre compte et de votre mot de passe. Vous acceptez de ne pas divulguer votre mot de passe à des tiers et de nous informer immédiatement de toute utilisation non autorisée de votre compte."
+      },
+      "acceptableUse": {
+        "title": "Utilisation acceptable",
+        "content": "Vous vous engagez à ne pas utiliser nos services de manière abusive, illégale ou non autorisée. Vous devez vous conformer à toutes les lois locales, nationales et internationales applicables lors de l'utilisation de nos services."
+      },
+      "privacy": {
+        "title": "Confidentialité et protection des données",
+        "content": "Nous traitons vos données personnelles conformément à notre Politique de confidentialité et au Règlement Général sur la Protection des Données (RGPD). Vos données sont stockées de manière sécurisée et ne sont jamais vendues à des tiers."
+      },
+      "liability": {
+        "title": "Limitation de responsabilité",
+        "content": "Les services sont fournis « tels quels » sans garantie d'aucune sorte. Dans la mesure permise par la loi, nous excluons toutes les garanties, expresses ou implicites, concernant nos services."
+      },
+      "modifications": {
+        "title": "Modifications des conditions",
+        "content": "Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications importantes seront communiquées par email ou via une notification dans l'application. Votre utilisation continue de nos services après de telles modifications constitue votre acceptation des nouvelles conditions."
+      },
+      "termination": {
+        "title": "Résiliation",
+        "content": "Nous nous réservons le droit de suspendre ou de résilier votre compte à tout moment, avec ou sans préavis, en cas de violation de ces conditions ou pour toute autre raison jugée nécessaire."
+      },
+      "contact": {
+        "title": "Nous contacter",
+        "content": "Pour toute question concernant ces conditions d'utilisation, veuillez nous contacter à l'adresse suivante : support@pamgroupmaroc.com"
+      }
+    },
+    "footer": {
+      "login": "Connexion",
+      "signup": "Inscription",
+      "separator": "•",
+      "copyright": "© {year} BloodLink. Tous droits réservés."
+    }
+  },
+  "properties": {
+    "header": {
+      "title": "Gestion des Centres",
+      "subtitle": "Gérez vos biens, services et performances",
+      "addButton": "+ Ajouter une propriété",
+      "searchPlaceholder": "Rechercher par nom...",
+      "refreshing": "Rafraîchissement des données...",
+      "refreshSuccess": "Les données ont été mises à jour avec succès.",
+      "refreshError": "Échec du rafraîchissement des données."
+    },
+    "filters": {
+      "all": "Toutes",
+      "residential": "Résidentiel",
+      "commercial": "Commercial",
+      "land": "Terrain"
+    },
+    "viewModes": {
+      "grid": "Grille",
+      "table": "Tableau"
+    },
+    "empty": {
+      "title": "Aucune propriété trouvée",
+      "subtitle": "Commencez par ajouter votre première propriété pour la gérer ici.",
+      "addButton": "+ Ajouter une propriété"
+    },
+    "categories": {
+      "residential": "Résidentiel",
+      "commercial": "Commercial",
+      "land": "Terrain"
+    },
+    "types": {
+      "building": "Immeuble",
+      "house": "Maison / Villa",
+      "office": "Bureau",
+      "retail": "Commerce",
+      "warehouse": "Entrepôt",
+      "land": "Terrain",
+      "other": "Autre"
+    },
+    "actions": {
+      "viewDetails": "Voir détails",
+      "edit": "Modifier",
+      "archive": "Archiver",
+      "unarchive": "Désarchiver",
+      "archiving": "Archivage...",
+      "unarchiving": "Désarchivage...",
+      "archiveDialog": {
+        "title": "Êtes-vous absolument sûr ?",
+        "withUnits": "Cette propriété contient {count} service(s).",
+        "unitsWillBeArchived": "L'archivage archivera également toutes les services associées.",
+        "noUnits": "Cette action marquera la propriété comme archivée.",
+        "description": "Elle ne sera plus visible dans la liste principale mais pourra être consultée dans les archives.",
+        "cancel": "Annuler",
+        "confirm": "Oui, archiver"
+      },
+      "unarchiveDialog": {
+        "title": "Désarchiver cette propriété ?",
+        "withUnits": "Cette propriété contient {count} service(s).",
+        "unitsWillBeUnarchived": "Le désarchivage désarchivera également toutes les services associées.",
+        "noUnits": "Cette action réactivera la propriété.",
+        "description": "Elle redeviendra visible dans la liste principale.",
+        "cancel": "Annuler",
+        "confirm": "Oui, désarchiver"
+      }
+    },
+    "card": {
+      "units": "service(s)",
+      "viewDetails": "Voir détails",
+      "showUnits": "Voir les services",
+      "hideUnits": "Masquer les services",
+      "noUnits": "Aucune service ajoutée",
+      "avgRent": "Don moyen",
+      "createdYear": "Construit en",
+      "details": "Détails",
+      "edit": "Modifier",
+      "archive": "Archiver",
+      "delete": "Supprimer"
+    },
+    "table": {
+      "title": "Liste des Centres",
+      "property": "Centre",
+      "category": "Catégorie",
+      "type": "Type",
+      "units": "Services",
+      "actions": "Actions",
+      "loadMore": "Charger plus",
+      "showLess": "Afficher moins",
+      "allDisplayed": "Toutes les centres sont affichées."
+    },
+    "wizard": {
+      "title": "Ajouter une nouvelle propriété",
+      "stepDescription": "Étape {current} sur {total}: Suivez les étapes pour ajouter les détails de votre bien.",
+      "successMessage": "Centre ajoutée avec succès!",
+      "errorMessage": "Erreur: {error}",
+      "defaultError": "Impossible de créer la propriété.",
+      "genericError": "Une erreur est survenue.",
+      "previousButton": "Précédent",
+      "nextButton": "Suivant",
+      "addPropertyButton": "Ajouter la propriété",
+      "addingButton": "Ajout en cours...",
+      "step": "Étape",
+      "of": "sur",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "submit": "Créer la propriété",
+      "creating": "Création...",
+      "cancel": "Annuler",
+      "step1": {
+        "title": "Type de bien",
+        "subtitle": "Choisissez le type de bien que vous souhaitez ajouter",
+        "categoryLabel": "Catégorie",
+        "categoryDescription": "Sélectionnez la catégorie principale de votre bien.",
+        "typeLabel": "Type spécifique",
+        "typeDescription": "Précisez le type exact de centre de transfusion.",
+        "categories": {
+          "residential": {
+            "label": "Résidentiel",
+            "description": "Maisons, donneurs, et villas."
+          },
+          "commercial": {
+            "label": "Commercial",
+            "description": "Bureaux, magasins, et entrepôts."
+          },
+          "land": {
+            "label": "Terrain",
+            "description": "Parcelles de terrain non développées."
+          }
+        },
+        "types": {
+          "residential": {
+            "building": {
+              "label": "Immeuble",
+              "description": "Bâtiment multi-services avec plusieurs donneurs ou étages."
+            },
+            "house": {
+              "label": "Maison / Villa",
+              "description": "Centre résidentielle unifamiliale."
+            },
+            "other": {
+              "label": "Autre (Résidentiel)",
+              "description": "Autres types de centres résidentielles."
+            }
+          },
+          "commercial": {
+            "office": {
+              "label": "Bureau",
+              "description": "Espace de bureau pour activités professionnelles."
+            },
+            "retail": {
+              "label": "Magasin / Commerce",
+              "description": "Local commercial pour vente au détail."
+            },
+            "warehouse": {
+              "label": "Entrepôt",
+              "description": "Espace de stockage ou industriel."
+            },
+            "other": {
+              "label": "Autre (Commercial)",
+              "description": "Autres types de centres commerciales."
+            }
+          },
+          "land": {
+            "land": {
+              "label": "Terrain",
+              "description": "Terrain nu prêt pour développement."
+            }
+          }
+        }
+      },
+      "step2": {
+        "title": "Informations du bien",
+        "subtitle": "Renseignez les détails de la propriété",
+        "nameLabel": "Nom de la propriété",
+        "nameDescription": "Choisissez un nom descriptif qui aidera à identifier facilement cette propriété",
+        "namePlaceholder": "Ex: Résidence Al Houda, Immeuble Centre-Ville...",
+        "addressLabel": "Adresse complète",
+        "addressDescription": "Où se trouve ce bien ? Plus l'adresse est précise, mieux c'est.",
+        "addressLine1Label": "Adresse ligne 1",
+        "addressLine1Placeholder": "123 Rue Mohammed V",
+        "addressLine2Label": "Adresse ligne 2 (optionnelle)",
+        "addressLine2Placeholder": "Appartement, étage, bâtiment...",
+        "cityLabel": "Ville",
+        "cityPlaceholder": "Casablanca",
+        "stateLabel": "Région / Province",
+        "statePlaceholder": "Casablanca-Settat",
+        "countryLabel": "Pays",
+        "countryPlaceholder": "Maroc",
+        "countryHint": "Utilisez le code ISO à 2 lettres (MA pour Maroc)",
+        "postalCodeLabel": "Code postal",
+        "postalCodePlaceholder": "20000",
+        "postalCodeHint": "Optionnel pour le Maroc",
+        "helperTitle": "Conseil",
+        "helperDescription": "Une adresse complète facilite la gestion locative et améliore la visibilité de votre propriété sur les plateformes de recherche."
+      },
+      "step3": {
+        "title": "Services",
+        "subtitle": "Ajoutez les services de ce bien",
+        "landMessage": {
+          "title": "Les terrains n'ont pas d'services",
+          "description": "Les centres de type 'Terrain' ne nécessitent pas de configuration d'services. Passez à l'étape suivante pour finaliser."
+        },
+        "emptyState": {
+          "title": "Aucune service ajoutée",
+          "description": "Ajoutez des services pour ce bien (donneurs, étages, chambres, etc.)",
+          "addButton": "+ Ajouter une service"
+        },
+        "addButton": "+ Ajouter une autre service",
+        "unitCard": {
+          "title": "Unité #{number}",
+          "unitNumber": "Numéro d'service",
+          "unitNumberPlaceholder": "Ex: A1, RDC, 101...",
+          "unitType": "Type d'service",
+          "selectPlaceholder": "Sélectionner...",
+          "area": "Superficie",
+          "type": "Type d'service",
+          "typePlaceholder": "Sélectionnez un type",
+          "size": "Surface (m²)",
+          "sizePlaceholder": "Ex: 85",
+          "rooms": "Nombre de pièces",
+          "roomsPlaceholder": "Ex: 3",
+          "remove": "Supprimer l'service"
+        },
+        "unitTypes": {
+          "apartment": "Appartement",
+          "studio": "Studio",
+          "floor": "Étage entier",
+          "room": "Chambre",
+          "commercial": "Commercial",
+          "other": "Autre"
+        }
+      },
+      "step4": {
+        "title": "Prêt à finaliser ?",
+        "subtitle": "Vérifiez attentivement les informations avant de créer la propriété.",
+        "propertyInfo": "Informations de la propriété",
+        "category": "Catégorie",
+        "type": "Type",
+        "name": "Nom",
+        "address": "Adresse",
+        "country": "Pays",
+        "unitsSection": "Services ({count})",
+        "noUnits": "Aucune service ajoutée",
+        "unitNumber": "Numéro",
+        "unitType": "Type",
+        "size": "Surface",
+        "rooms": "Pièces",
+        "na": "N/A",
+        "categoryLabels": {
+          "residential": "Résidentiel",
+          "commercial": "Commercial",
+          "land": "Terrain"
+        },
+        "unitTypeLabels": {
+          "studio": "Studio",
+          "apartment": "Appartement",
+          "floor": "Étage entier",
+          "room": "Chambre",
+          "commercial": "Commercial",
+          "other": "Autre"
+        }
+      },
+      "validation": {
+        "name": {
+          "required": "Le nom de la propriété est requis",
+          "max": "Le nom ne doit pas dépasser 150 caractères"
+        },
+        "addressLine1": {
+          "required": "L'adresse est requise"
+        },
+        "city": {
+          "required": "La ville est requise"
+        },
+        "postalCode": {
+          "required": "Le code postal ne peut pas être vide"
+        },
+        "country": {
+          "required": "Le pays est requis",
+          "invalid": "Le pays doit être un code ISO à 2 lettres"
+        },
+        "type": {
+          "invalid": "Combinaison catégorie/type invalide"
+        },
+        "unitNumber": {
+          "required": "Le numéro d'service est requis"
+        }
+      }
+    },
+    "details": {
+      "backToList": "Retour à la liste des centres",
+      "editButton": "Modifier",
+      "addUnitButton": "Ajouter une service",
+      "tabs": {
+        "overview": "Résumé",
+        "units": "Services",
+        "documents": "Documents",
+        "financials": "Finances",
+        "maintenance": "Maintenance"
+      },
+      "overview": {
+        "propertyDetails": "Détails du bien",
+        "keyStats": "Statistiques Clés",
+        "category": "Catégorie",
+        "type": "Type",
+        "yearBuilt": "Année de construction",
+        "address": "Adresse",
+        "stats": {
+          "title": "Statistiques",
+          "totalUnits": "Services totales",
+          "occupied": "Occupées",
+          "occupancy": "Taux d'occupation",
+          "vacant": "Libres",
+          "revenue": "Revenu mensuel"
+        }
+      },
+      "units": {
+        "listTitle": "Liste des Services",
+        "emptyMessage": "Cette propriété n'a pas encore d'services. Ajoutez-en une pour commencer.",
+        "addFirstUnit": "Ajouter la première service",
+        "title": "Services de ce bien",
+        "count": "{count} service(s)",
+        "addButton": "+ Ajouter une service",
+        "empty": "Aucune service pour le moment"
+      }
+    },
+    "addUnit": {
+      "title": "Ajouter une service",
+      "description": "Remplissez les informations pour créer une nouvelle service dans votre propriété",
+      "unitNumber": "Numéro d'service",
+      "unitNumberPlaceholder": "Ex: 1A, 2B, 101",
+      "unitType": "Type d'service",
+      "unitTypePlaceholder": "Choisir le type",
+      "area": "Superficie",
+      "areaPlaceholder": "Ex: 75",
+      "areaUnit": "en m²",
+      "rooms": "Nombre de pièces",
+      "roomsPlaceholder": "Ex: 3",
+      "roomsHint": "Nombre entier",
+      "addButton": "Ajouter l'service",
+      "adding": "Ajout en cours...",
+      "cancel": "Annuler",
+      "unitTypes": {
+        "apartment": "Appartement",
+        "studio": "Studio",
+        "floor": "Étage entier",
+        "room": "Chambre",
+        "office": "Bureau",
+        "commercial": "Commercial",
+        "other": "Autre"
+      },
+      "errors": {
+        "unauthorized": "Action non autorisée.",
+        "validationError": "Veuillez corriger les erreurs dans le formulaire de l'service.",
+        "databaseError": "Erreur de base de données: Impossible d'ajouter l'service.",
+        "unitNumberRequired": "Le numéro d'service est requis.",
+        "unitTypeRequired": "Le type d'service est requis.",
+        "sizeInvalid": "La superficie doit être un nombre positif.",
+        "roomsInvalid": "Le nombre de pièces doit être un entier positif."
+      },
+      "success": "Unité ajoutée avec succès !"
+    },
+    "units": {
+      "title": "Gestion des Services",
+      "listTitle": "Liste des Services",
+      "count": "{count} service(s) au total",
+      "searchPlaceholder": "Rechercher une service...",
+      "filters": "Filtres",
+      "addButton": "Ajouter",
+      "editAction": "Modifier",
+      "deleteAction": "Supprimer",
+      "empty": {
+        "title": "Aucune service trouvée",
+        "subtitle": "Commencez par ajouter votre première service pour la gérer ici.",
+        "addButton": "Ajouter une service"
+      },
+      "table": {
+        "unit": "Unité",
+        "type": "Type",
+        "size": "Superficie",
+        "rooms": "Pièces",
+        "status": "Statut",
+        "tenant": "Donneur",
+        "rent": "Don",
+        "actions": "Actions"
+      },
+      "status": {
+        "occupied": "Occupé",
+        "vacant": "Libre",
+        "maintenance": "Maintenance",
+        "reserved": "Réservé"
+      },
+      "types": {
+        "studio": "Studio",
+        "apartment": "Appartement",
+        "floor": "Étage entier",
+        "room": "Chambre",
+        "commercial": "Commercial",
+        "other": "Autre"
+      },
+      "edit": {
+        "dialog": {
+          "title": "Modifier l'service",
+          "description": "Modifiez les informations de votre service. Les champs marqués d'un astérisque (*) sont obligatoires.",
+          "loading": "Chargement des informations...",
+          "loadError": "Impossible de charger l'service.",
+          "notFound": "Unité non trouvée"
+        },
+        "form": {
+          "nonEditableSection": "Informations non modifiables",
+          "nonEditableNote": "Cette service appartient à la propriété parente et ne peut pas être déplacée.",
+          "unitNumber": "Numéro de l'service",
+          "unitNumberPlaceholder": "ex: A1, Bureau 205, Parking 12",
+          "unitNumberDescription": "Doit être unique dans cette propriété",
+          "unitType": "Type d'service",
+          "selectType": "Sélectionner un type",
+          "types": {
+            "studio": "Studio",
+            "apartment": "Appartement",
+            "office": "Bureau",
+            "shop": "Commerce",
+            "warehouse": "Entrepôt",
+            "parking": "Parking",
+            "storage": "Stockage",
+            "other": "Autre"
+          },
+          "area": "Superficie (pieds carrés)",
+          "areaPlaceholder": "ex: 1200",
+          "rooms": "Nombre de pièces",
+          "roomsPlaceholder": "ex: 3",
+          "optional": "Optionnel",
+          "tip": "Astuce:",
+          "tipMessage": "Les champs \"Superficie\" et \"Nombre de pièces\" sont optionnels. Laissez-les vides pour les parkings ou espaces de stockage.",
+          "cancel": "Annuler",
+          "saving": "Enregistrement...",
+          "save": "Enregistrer les modifications"
+        }
+      }
+    },
+    "documents": {
+      "title": "Documents de la propriété",
+      "uploadButton": "Téléverser un document",
+      "tabs": {
+        "active": "Actifs",
+        "archived": "Archivés"
+      },
+      "filters": {
+        "property": "Centre",
+        "unit": "Unité"
+      },
+      "viewModes": {
+        "grid": "Grille",
+        "list": "Liste"
+      },
+      "searchPlaceholder": "Rechercher un document...",
+      "empty": {
+        "title": "Aucun document",
+        "description": "Commencez par téléverser votre premier document.",
+        "loading": "Chargement des documents..."
+      },
+      "card": {
+        "viewedOn": "Consulté le",
+        "neverViewed": "Jamais consulté",
+        "actions": {
+          "view": "Voir",
+          "download": "Télécharger",
+          "archive": "Archiver",
+          "restore": "Restaurer"
+        }
+      },
+      "upload": {
+        "title": "Téléverser un document",
+        "dragDrop": "Glissez-déposez un fichier ou cliquez pour sélectionner",
+        "fileSelected": "Fichier sélectionné",
+        "uploading": "Téléversement en cours...",
+        "uploadButton": "Téléverser",
+        "cancel": "Annuler"
+      },
+      "archive": {
+        "title": "Archiver le document",
+        "message": "Êtes-vous sûr de vouloir archiver « {name} » ?",
+        "confirm": "Oui, archiver",
+        "cancel": "Annuler"
+      },
+      "restore": {
+        "title": "Restaurer le document",
+        "message": "Êtes-vous sûr de vouloir restaurer « {name} » ?",
+        "confirm": "Oui, restaurer",
+        "cancel": "Annuler"
+      }
+    },
+    "edit": {
+      "dialog": {
+        "title": "Modifier la propriété",
+        "description": "Modifiez les informations de votre propriété. Les champs marqués d'un astérisque (*) sont obligatoires.",
+        "loading": "Chargement des informations...",
+        "loadError": "Impossible de charger la propriété.",
+        "notFound": "Centre non trouvée"
+      },
+      "form": {
+        "nonEditableSection": "Informations non modifiables",
+        "category": "Catégorie",
+        "type": "Type",
+        "categoryTypeNote": "La catégorie et le type ne peuvent pas être modifiés après la création.",
+        "propertyName": "Nom de la propriété",
+        "propertyNamePlaceholder": "ex: Résidence Al Amal",
+        "propertyNameDescription": "Nom unique pour identifier cette propriété",
+        "addressSection": "Adresse",
+        "address": "Adresse",
+        "addressPlaceholder": "ex: 123 Avenue Mohammed V",
+        "addressLine2": "Complément d'adresse",
+        "addressLine2Placeholder": "ex: Appartement 5, 2ème étage",
+        "optional": "Optionnel",
+        "city": "Ville",
+        "cityPlaceholder": "ex: Casablanca",
+        "region": "Région/Province",
+        "regionPlaceholder": "ex: Casablanca-Settat",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "ex: 20000",
+        "country": "Pays (code ISO)",
+        "countryPlaceholder": "MA",
+        "countryDescription": "Code pays à 2 lettres (ex: MA pour Maroc)",
+        "cancel": "Annuler",
+        "saving": "Enregistrement...",
+        "save": "Enregistrer les modifications"
+      }
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "tabs": {
+      "profile": "Informations personnelles",
+      "email": "Modifier l'email",
+      "phone": "Modifier le téléphone",
+      "password": "Modifier le mot de passe",
+      "language": "Langue",
+      "currency": "Devise",
+      "team": "Gestion des utilisateurs"
+    },
+    "profile": {
+      "title": "Informations de profil",
+      "description": "Mettez à jour vos informations personnelles ici.",
+      "avatar": {
+        "change": "Modifier",
+        "upload": "Télécharger l'avatar"
+      },
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "street": "Rue",
+        "houseNumber": "Numéro de maison",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "country": "Pays"
+      },
+      "buttons": {
+        "save": "Enregistrer les modifications",
+        "saving": "Enregistrement..."
+      },
+      "errors": {
+        "loadError": "Impossible de charger les données de profil."
+      }
+    },
+    "email": {
+      "title": "Changer l'email",
+      "description": "Votre email actuel : {email}",
+      "descriptionUnknown": "Votre email actuel : inconnu",
+      "fields": {
+        "newEmail": "Nouvel email",
+        "confirmEmail": "Confirmer le nouvel email"
+      },
+      "buttons": {
+        "submit": "Envoyer la confirmation",
+        "submitting": "Envoi..."
+      }
+    },
+    "password": {
+      "title": "Modifier le mot de passe",
+      "description": "Choisissez un mot de passe fort.",
+      "fields": {
+        "current": "Mot de passe actuel",
+        "new": "Nouveau mot de passe",
+        "confirm": "Confirmer le nouveau mot de passe"
+      },
+      "buttons": {
+        "update": "Mettre à jour",
+        "updating": "Sauvegarde..."
+      }
+    },
+    "phone": {
+      "title": "Changer le téléphone",
+      "description": "Numéro actuel : {phone}. Saisissez le nouveau numéro (format +212...).",
+      "descriptionEmpty": "Numéro actuel : —. Saisissez le nouveau numéro (format +212...).",
+      "fields": {
+        "newPhone": "Nouveau numéro"
+      },
+      "buttons": {
+        "update": "Mettre à jour",
+        "updating": "Sauvegarde..."
+      }
+    },
+    "language": {
+      "title": "Langue et région",
+      "description": "Sélectionnez votre langue préférée. Les changements sont appliqués immédiatement.",
+      "browserDetected": {
+        "title": "Langue du navigateur détectée",
+        "description": "Nous avons détecté que votre navigateur est configuré en {language}. Souhaitez-vous basculer ?",
+        "apply": "Appliquer"
+      },
+      "info": {
+        "title": "À propos des changements de langue",
+        "description": "Votre préférence de langue est automatiquement sauvegardée. Tous les textes, la navigation et les éléments de l'interface seront mis à jour immédiatement."
+      },
+      "toast": {
+        "changed": "Langue changée en {language}",
+        "changedDescription": "Tous les éléments de l'interface ont été mis à jour dans votre langue préférée.",
+        "reverted": "Changement de langue annulé",
+        "revertedDescription": "Retour à {language}",
+        "undo": "Annuler"
+      }
+    },
+    "currency": {
+      "title": "Préférence de devise",
+      "description": "Sélectionnez votre devise préférée pour l'affichage des montants financiers dans l'application.",
+      "label": "Devise préférée",
+      "preview": "Aperçu :",
+      "previewNote": "Voici comment les montants seront affichés dans votre devise sélectionnée.",
+      "infoTitle": "Formatage de la devise",
+      "infoDescription": "Le format de la devise s'adaptera à votre langue sélectionnée. Les nombres, séparateurs décimaux et placement du symbole monétaire suivront les conventions régionales.",
+      "save": "Enregistrer la préférence de devise",
+      "saving": "Enregistrement...",
+      "success": "Préférence de devise mise à jour !",
+      "successDescription": "Votre devise préférée a été définie sur {currency}. La page va se recharger pour appliquer les changements.",
+      "error": "Échec de l'enregistrement de la préférence de devise",
+      "errorDescription": "Veuillez réessayer ou contacter le support si le problème persiste."
+    },
+    "actions": {
+      "errors": {
+        "authError": "Erreur d'authentification : Utilisateur introuvable.",
+        "storageError": "Erreur de stockage : {message}",
+        "validationError": "Erreur de validation : Veuillez vérifier votre saisie.",
+        "invalidEmail": "Email invalide.",
+        "emailSame": "Le nouvel email est identique à l'email actuel.",
+        "emailUpdateError": "Impossible de modifier l'email : {message}",
+        "invalidPassword": "Mot de passe invalide.",
+        "currentPasswordIncorrect": "Le mot de passe actuel est incorrect.",
+        "passwordUpdateError": "Impossible de mettre à jour le mot de passe : {message}",
+        "invalidPhone": "Numéro de téléphone invalide.",
+        "phoneUpdateError": "Impossible de modifier le numéro : {message}",
+        "unexpectedError": "Une erreur inattendue s'est produite."
+      },
+      "success": {
+        "profileUpdated": "Profil mis à jour avec succès.",
+        "emailConfirmationSent": "Email de confirmation envoyé. Veuillez valider via le lien reçu.",
+        "passwordUpdated": "Mot de passe mis à jour avec succès.",
+        "phoneUpdated": "Numéro de téléphone mis à jour avec succès."
+      }
+    }
+  },
+  "charges": {
+    "title": "Gestion des Dons",
+    "description": "Suivez, gérez et analysez toutes vos charges immobilières.",
+    "addButton": "Ajouter une Charge",
+    "pagination": {
+      "showing": "Affichage de",
+      "to": "à",
+      "of": "sur",
+      "results": "résultats",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "wizardDialog": {
+      "title": "Ajouter une Nouvelle Charge (Étape {step}/4)",
+      "description": "Complétez les étapes pour ajouter une nouvelle charge.",
+      "back": "Retour",
+      "next": "Suivant",
+      "confirm": "Confirmer & Ajouter",
+      "retry": "Réessayer",
+      "errorRequired": "Au moins un document de preuve est requis.",
+      "successAdded": "Charge ajoutée avec succès !",
+      "errorFailed": "Échec de l'ajout de la charge",
+      "errorUnexpected": "Une erreur inattendue est survenue."
+    },
+    "emptyState": {
+      "title": "Aucune charge pour le moment",
+      "description": "Cliquez sur le bouton en haut à droite pour ajouter une charge."
+    },
+    "bulkActions": {
+      "selected": "{count} élément sélectionné",
+      "selectedPlural": "{count} éléments sélectionnés",
+      "archive": "Archiver",
+      "archiving": "Archivage...",
+      "unarchive": "Désarchiver",
+      "unarchiving": "Désarchivage..."
+    },
+    "actions": {
+      "openMenu": "Ouvrir le menu",
+      "menuTitle": "Actions",
+      "edit": "Modifier la charge",
+      "archive": "Archiver la charge",
+      "archiving": "Archivage...",
+      "unarchive": "Désarchiver la charge",
+      "unarchiving": "Désarchivage..."
+    },
+    "card": {
+      "selectCharge": "Sélectionner la charge",
+      "document": "{count} Document",
+      "documents": "{count} Documents",
+      "noDocuments": "Aucun document",
+      "error": "Erreur"
+    },
+    "archiveDialog": {
+      "archiveTitle": "Êtes-vous absolument sûr ?",
+      "archiveDescription": "Cette action marquera la charge comme archivée. Elle ne sera plus visible dans la liste principale mais pourra être consultée dans les archives.",
+      "unarchiveTitle": "Désarchiver cette charge ?",
+      "unarchiveDescription": "Cette action restaurera la charge dans la liste principale.",
+      "cancel": "Annuler",
+      "confirmArchive": "Oui, archiver",
+      "confirmUnarchive": "Oui, désarchiver",
+      "archiving": "Archivage...",
+      "unarchiving": "Désarchivage..."
+    },
+    "wizard": {
+      "step1": {
+        "title": "Choisissez une catégorie générale pour votre charge.",
+        "chooseCategory": "Choisissez une catégorie générale pour votre charge.",
+        "loading": "Chargement des catégories...",
+        "error": "Erreur lors du chargement des catégories",
+        "selectSubtype": "Sélectionnez un sous-type pour continuer.",
+        "back": "Retour",
+        "noSubtypes": "Aucun sous-type disponible",
+        "subtypesAvailable": "{count} sous-type disponible",
+        "subtypesAvailablePlural": "{count} sous-types disponibles",
+        "categories": {
+          "factures": "Factures",
+          "services": "Services & Maintenance",
+          "reparations": "Réparations",
+          "taxes": "Taxes & Assurance"
+        }
+      },
+      "step2": {
+        "title": "Maintenant, entrez les détails financiers de la charge.",
+        "amount": "Montant (MAD)",
+        "amountPlaceholder": "ex: 250.00",
+        "amountDescription": "Entrez le montant total de la charge en Dirham Marocain.",
+        "labelLocal": "Libellé personnalisé",
+        "optional": "(Optionnel)",
+        "labelLocalPlaceholder": "ex: Facture Redal Janvier",
+        "labelLocalDescription": "Donnez un nom unique à cette charge (ex: Facture d'eau Janvier).",
+        "period": "Période de facturation",
+        "periodPlaceholder": "Choisissez une période",
+        "periodDescription": "Sélectionnez la date de début et de fin de la charge.",
+        "lastMonth": "Mois Dernier",
+        "last3Months": "3 Derniers Mois",
+        "last6Months": "6 Derniers Mois",
+        "last12Months": "12 Derniers Mois",
+        "document": "Document de preuve",
+        "documentDescription": "Téléchargez une copie de la facture ou autre document justifiant la charge."
+      },
+      "step3": {
+        "title": "À qui cette charge doit-elle être appliquée ?",
+        "property": "Une Centre",
+        "tenant": "Un Donneur",
+        "propertyLabel": "Centre",
+        "propertyPlaceholder": "Sélectionnez une propriété",
+        "propertyDescription": "La charge sera appliquée à toutes les services de cette propriété.",
+        "tenantLabel": "Donneur",
+        "tenantPlaceholder": "Sélectionnez un locataire",
+        "tenantDescription": "La charge ne sera appliquée qu'à ce locataire spécifique.",
+        "noPropertiesTitle": "Aucune propriété trouvée",
+        "noPropertiesDescription": "Veuillez d'abord ajouter une propriété avant de pouvoir lui assigner une charge.",
+        "noTenantsTitle": "Aucun locataire trouvé",
+        "noTenantsDescription": "Veuillez d'abord ajouter un locataire avant de pouvoir lui assigner une charge."
+      },
+      "step4": {
+        "title": "Veuillez vérifier votre nouvelle charge",
+        "category": "Catégorie",
+        "unknown": "Inconnue",
+        "amount": "Montant",
+        "period": "Période",
+        "periodFrom": "Du",
+        "periodTo": "au",
+        "allocatedTo": "Alloué à",
+        "property": "Centre:",
+        "tenant": "Donneur:",
+        "customLabel": "Libellé personnalisé",
+        "documents": "Document(s) de preuve ({count})",
+        "hide": "Masquer",
+        "showMore": "Voir {count} autre(s) document(s)"
+      }
+    },
+    "table": {
+      "selectAll": "Tout sélectionner",
+      "selectRow": "Sélectionner la ligne",
+      "columns": {
+        "charge": "Charge",
+        "amount": "Montant",
+        "period": "Période",
+        "status": "Statut"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "final": "Finalisé",
+        "archived": "Archivé"
+      }
+    },
+    "filters": {
+      "show": "Afficher les filtres",
+      "hide": "Masquer les filtres",
+      "reset": "Réinitialiser",
+      "resetAll": "Réinitialiser les filtres",
+      "results": "résultat",
+      "resultsPlural": "résultats",
+      "apply": "Appliquer",
+      "filterButton": "Filtrer les charges",
+      "search": {
+        "label": "Recherche rapide",
+        "placeholder": "Rechercher par libellé ou type...",
+        "aria": "Recherche (libellé ou type)",
+        "tooltip": "Rechercher par libellé ou type"
+      },
+      "property": {
+        "label": "Centre",
+        "placeholder": "Filtrer par propriété...",
+        "tooltip": "Filtrer par propriété"
+      },
+      "tenant": {
+        "label": "Donneur",
+        "placeholder": "Filtrer par locataire...",
+        "tooltip": "Filtrer par locataire"
+      },
+      "type": {
+        "label": "Type de charge",
+        "placeholder": "Filtrer par type...",
+        "tooltip": "Filtrer par type"
+      },
+      "status": {
+        "label": "Statut rapide",
+        "placeholder": "Filtrer par statut...",
+        "tooltip": "Filtrer par statut",
+        "all": "Tous",
+        "draft": "Brouillon",
+        "final": "Finalisé",
+        "archived": "Archivé"
+      },
+      "period": {
+        "label": "Période",
+        "placeholder": "Choisissez une période",
+        "tooltip": "Choisir une période"
+      }
+    },
+    "edit": {
+      "dialog": {
+        "title": "Modifier la Charge",
+        "description": "Modifiez les informations de la charge sélectionnée."
+      },
+      "form": {
+        "customLabel": "Libellé personnalisé",
+        "customLabelPlaceholder": "ex: Facture Redal Janvier",
+        "customLabelDescription": "Donnez un nom unique à cette charge.",
+        "amount": "Montant (MAD)",
+        "amountPlaceholder": "ex: 250.00",
+        "amountDescription": "Entrez le montant total de la charge en Dirham Marocain.",
+        "billingPeriod": "Période de facturation",
+        "choosePeriod": "Choisissez une période",
+        "periodDescription": "Sélectionnez la date de début et de fin de la charge.",
+        "allocation": "Allocation",
+        "allocationProperty": "Une Centre",
+        "allocationTenant": "Un Donneur",
+        "property": "Centre",
+        "selectProperty": "Sélectionnez une propriété",
+        "tenant": "Donneur",
+        "selectTenant": "Sélectionnez un locataire",
+        "documents": "Documents",
+        "addDocuments": "Ajouter des documents",
+        "existingDocuments": "Documents existants:",
+        "toDelete": "(À supprimer)",
+        "restore": "Restaurer",
+        "noDocuments": "Aucun document attaché à cette charge.",
+        "newDocuments": "Nouveaux documents:",
+        "new": "(Nouveau)",
+        "saveChanges": "Enregistrer les modifications",
+        "errors": {
+          "uploadError": "Erreur lors du téléchargement: {error}",
+          "uploadFailed": "Erreur lors du téléchargement du fichier"
+        }
+      }
+    }
+  },
+  "contacts": {
+    "title": "Gestion des Contacts",
+    "description": "Gérez tous vos contacts en un seul endroit.",
+    "addButton": "Ajouter un contact",
+    "table": {
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "category": "Catégorie"
+      },
+      "actions": {
+        "label": "Actions",
+        "view": "Voir les détails",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "empty": "Aucun contact trouvé"
+    },
+    "form": {
+      "createTitle": "Ajouter un nouveau contact",
+      "editTitle": "Modifier le contact",
+      "tabs": {
+        "individual": "Particulier",
+        "company": "Société"
+      },
+      "fields": {
+        "category": "Catégorie",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "companyName": "Nom de l'entreprise",
+        "email": "Email",
+        "phone": "Téléphone",
+        "whatsapp": "WhatsApp",
+        "cin": "CIN",
+        "ice": "ICE",
+        "rc": "RC",
+        "if": "Identifiant Fiscal",
+        "street": "Rue",
+        "city": "Ville",
+        "postalCode": "Code Postal",
+        "country": "Pays",
+        "rib": "RIB",
+        "bankName": "Nom de la banque"
+      },
+      "sections": {
+        "contactInfo": "Informations de contact",
+        "address": "Adresse",
+        "financial": "Informations financières",
+        "companyInfo": "Informations de l'entreprise"
+      },
+      "placeholders": {
+        "selectCategory": "Sélectionnez une catégorie",
+        "enterFirstName": "Entrez le prénom",
+        "enterLastName": "Entrez le nom",
+        "enterCompanyName": "Entrez le nom de l'entreprise",
+        "enterEmail": "exemple@email.com",
+        "enterPhone": "+212 6XX XXX XXX",
+        "enterWhatsapp": "+212 6XX XXX XXX",
+        "enterCIN": "AB123456",
+        "enterICE": "000000000000000",
+        "enterRC": "123456",
+        "enterIF": "12345678",
+        "enterStreet": "Numéro et nom de rue",
+        "enterCity": "Ville",
+        "enterPostalCode": "Code postal",
+        "enterCountry": "Pays",
+        "enterRIB": "RIB",
+        "enterBankName": "Nom de la banque"
+      },
+      "buttons": {
+        "submit": "Enregistrer",
+        "cancel": "Annuler",
+        "create": "Créer le contact",
+        "update": "Mettre à jour"
+      }
+    },
+    "details": {
+      "tabs": {
+        "contact": "Détails du Contact",
+        "financial": "Détails Financiers"
+      },
+      "actions": {
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "sendMessage": "Envoyer Message"
+      },
+      "labels": {
+        "contactInfo": "Informations de contact",
+        "address": "Adresse",
+        "financialInfo": "Informations financières",
+        "companyInfo": "Informations de l'entreprise",
+        "email": "Email",
+        "phone": "Téléphone",
+        "whatsapp": "WhatsApp",
+        "cin": "CIN",
+        "ice": "ICE",
+        "rc": "RC",
+        "if": "Identifiant Fiscal",
+        "street": "Rue",
+        "city": "Ville",
+        "postalCode": "Code Postal",
+        "country": "Pays",
+        "rib": "RIB",
+        "bankName": "Nom de la banque",
+        "notAvailable": "N/A"
+      }
+    },
+    "categories": {
+      "TENANT": "Donneur",
+      "OWNER": "Propriétaire",
+      "SERVICE_PROVIDER": "Fournisseur",
+      "AGENT": "Agent transfusion",
+      "SYNDIC": "Syndic",
+      "OTHER": "Autre"
+    },
+    "toast": {
+      "deleteInProgress": "Suppression en cours...",
+      "deleteSuccess": "Contact supprimé avec succès.",
+      "deleteError": "Échec de la suppression du contact.",
+      "createSuccess": "Contact ajouté avec succès !",
+      "updateSuccess": "Contact modifié avec succès !",
+      "genericError": "Une erreur est survenue."
+    },
+    "validation": {
+      "invalidEmail": "L'adresse e-mail n'est pas valide.",
+      "firstNameRequired": "Le nom et le prénom sont requis.",
+      "lastNameRequired": "Le nom et le prénom sont requis.",
+      "companyNameRequired": "Le nom de l'entreprise est requis."
+    }
+  },
+  "chat": {
+    "interface": {
+      "ariaLabel": "Interface de chat",
+      "messagesLabel": "Messages du chat",
+      "welcome": {
+        "title": "Comment puis-je vous aider aujourd'hui ?",
+        "subtitle": "Posez-moi toutes vos questions sur la gestion de dons de sang"
+      },
+      "suggestions": [
+        "Aide-moi à créer un contrat de bail",
+        "Quels sont les indicateurs clés ?",
+        "Explique-moi les bonnes pratiques",
+        "Génère un modèle de calendrier"
+      ],
+      "offline": {
+        "title": "Connexion internet interrompue",
+        "message": "Vous ne pouvez pas envoyer de messages pour le moment.",
+        "instructions": "Pour continuer :",
+        "steps": {
+          "wifi": "Vérifiez que votre WiFi est activé",
+          "connection": "Vérifiez votre connexion internet",
+          "retry": "Réessayez dans quelques instants"
+        }
+      },
+      "error": {
+        "title": "Erreur de connexion",
+        "instructions": "Actions possibles :",
+        "steps": {
+          "checkConnection": "Vérifiez votre connexion internet",
+          "clickRetry": "Cliquez sur \"Réessayer\" ci-dessous",
+          "refresh": "Si le problème persiste, actualisez la page"
+        },
+        "retryButton": "Réessayer maintenant"
+      },
+      "input": {
+        "label": "Message à l'Assistant IA",
+        "placeholder": "Envoyez un message...",
+        "placeholderOffline": "Hors ligne - Vérifiez votre connexion...",
+        "ariaLabel": "Zone de saisie du message",
+        "disclaimer": "L'IA peut faire des erreurs. Vérifiez les informations importantes.",
+        "charCount": "{count} / 4000"
+      },
+      "actions": {
+        "send": "Envoyer le message",
+        "stop": "Arrêter la génération",
+        "scrollToBottom": "Défiler vers le bas",
+        "copy": "Copier",
+        "copied": "Copié",
+        "regenerate": "Régénérer"
+      }
+    },
+    "message": {
+      "userLabel": "Message utilisateur",
+      "assistantLabel": "Message assistant IA",
+      "streaming": "L'IA tape...",
+      "actions": {
+        "copyCode": "Copier le code",
+        "codeCopied": "Code copié",
+        "copyMessage": "Copier le message",
+        "messageCopied": "Message copié",
+        "copy": "Copier",
+        "copied": "Copié",
+        "regenerate": "Régénérer la réponse"
+      }
+    },
+    "error": {
+      "boundary": {
+        "title": "Une erreur s'est produite",
+        "message": "L'interface de chat a rencontré une erreur inattendue. Vous pouvez essayer de rafraîchir la page ou contacter le support si le problème persiste.",
+        "tryAgain": "Réessayer",
+        "reloadPage": "Recharger la page",
+        "support": "Si ce problème persiste, veuillez contacter le support avec les détails de l'erreur ci-dessus."
+      }
+    },
+    "serverErrors": {
+      "auth": "Vous devez être connecté pour envoyer des messages",
+      "apiError": "Échec de l'obtention de la réponse IA",
+      "timeout": "La requête vers le service IA a expiré. Veuillez réessayer.",
+      "validationError": "Format de message invalide",
+      "networkError": "Impossible de se connecter au service IA. Vérifiez votre connexion.",
+      "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    },
+    "toolResults": {
+      "exportSuccess": "Données exportées avec succès",
+      "exportFailed": "Échec de l'exportation",
+      "exportError": "Une erreur s'est produite lors de l'exportation des données",
+      "adaptationError": "Échec de l'affichage du résultat de l'outil",
+      "adaptationErrorMessage": "L'IA a renvoyé des données dans un format inattendu. Veuillez reformuler votre question.",
+      "noResults": "Aucun résultat à afficher",
+      "viewDetails": "Voir les détails",
+      "exportCSV": "Exporter CSV",
+      "rowsExported": "{count} ligne(s) exportée(s) avec succès"
+    }
+  },
+  "documents": {
+    "navigation": {
+      "title": "Types de documents",
+      "description": "Choisissez un type pour filtrer vos fichiers.",
+      "categories": {
+        "inbox": {
+          "label": "Tous",
+          "description": "Consultez tous vos documents dans un seul endroit."
+        },
+        "properties": {
+          "label": "Centres",
+          "description": "Consultez contrats, plans et pièces liées à vos centres immobilières."
+        },
+        "units": {
+          "label": "Services",
+          "description": "Consultez documents liés aux services (donneurs, locaux, …)."
+        },
+        "tenants": {
+          "label": "Donneurs",
+          "description": "Consultez dossiers locataires, CIN et quittances signées."
+        },
+        "charges": {
+          "label": "Dons",
+          "description": "Consultez factures d'eau, d'électricité et charges partagées."
+        }
+      }
+    },
+    "filters": {
+      "search": {
+        "placeholder": "Rechercher des documents…",
+        "label": "Recherche"
+      },
+      "chargeType": {
+        "label": "Type de charge",
+        "placeholder": "Tous les types de charges",
+        "loading": "Chargement…",
+        "all": "Tous les types de charges"
+      },
+      "dateRange": {
+        "label": "Période",
+        "placeholder": "Choisissez une période",
+        "clear": "Effacer",
+        "apply": "Appliquer"
+      },
+      "property": {
+        "label": "Centre",
+        "placeholder": "Toutes les centres",
+        "loading": "Chargement…",
+        "all": "Toutes les centres"
+      },
+      "unit": {
+        "label": "Unité",
+        "placeholder": "Toutes les services",
+        "loading": "Chargement…",
+        "all": "Toutes les services"
+      },
+      "tenant": {
+        "label": "Donneur",
+        "placeholder": "Tous les locataires",
+        "loading": "Chargement…",
+        "all": "Tous les locataires"
+      },
+      "actions": {
+        "showFilters": "Afficher les filtres",
+        "hideFilters": "Masquer les filtres",
+        "filterDocuments": "Filtrer les documents",
+        "reset": "Réinitialiser",
+        "refresh": "Rafraîchir",
+        "refreshing": "Actualisation en cours…",
+        "refreshTitle": "Rafraîchir les documents"
+      },
+      "results": {
+        "count": "{count} résultat",
+        "countPlural": "{count} résultats",
+        "resetFilters": "Réinitialiser les filtres"
+      }
+    },
+    "viewModes": {
+      "table": "Liste",
+      "grid": "Grille"
+    },
+    "messages": {
+      "loading": "Chargement de la page…",
+      "inboxDescription": "Consultez tous vos documents dans un seul endroit. Utilisez les filtres pour affiner votre recherche.",
+      "categoryDescription": "Sélectionnez la {category} cible pour afficher uniquement ses documents.",
+      "categorySelected": "Documents de la {category} sélectionnée.",
+      "categoryNotSelected": "Sélectionnez une {category} pour afficher uniquement ses documents."
+    },
+    "table": {
+      "columns": {
+        "name": "Nom",
+        "type": "Type",
+        "size": "Taille",
+        "date": "Date",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "Voir",
+        "download": "Télécharger",
+        "delete": "Supprimer",
+        "archive": "Archiver",
+        "openMenu": "Ouvrir le menu",
+        "open": "Ouvrir",
+        "opening": "Ouverture…"
+      },
+      "pagination": {
+        "previous": "Précédent",
+        "next": "Suivant",
+        "page": "Page"
+      },
+      "notifications": {
+        "updateSuccess": "Données mises à jour avec succès",
+        "refreshing": "Rafraîchissement des données..."
+      },
+      "empty": {
+        "title": "Aucun document",
+        "description": "Aucun document trouvé pour les critères sélectionnés.",
+        "noResults": "Aucun résultat trouvé"
+      }
+    }
+  },
+  "propertyManagement": {
+    "documents": {
+      "property": {
+        "title": "Documents du Bien",
+        "panelTitle": "Documents - {propertyName} (Bien)",
+        "tabs": {
+          "active": "Actifs",
+          "archived": "Archivés"
+        },
+        "headers": {
+          "activeDocuments": "Documents actifs",
+          "archivedDocuments": "Documents archivés"
+        }
+      },
+      "unit": {
+        "title": "Documents des Services",
+        "panelTitle": "Documents - Unité {unitName}",
+        "selectLabel": "Sélectionner une service",
+        "selectPlaceholder": "Choisir une service...",
+        "tableHeaders": {
+          "name": "Nom",
+          "size": "Taille",
+          "date": "Date",
+          "actions": "Actions"
+        }
+      },
+      "common": {
+        "search": {
+          "placeholder": "Rechercher un document"
+        },
+        "actions": {
+          "add": "Ajouter un document",
+          "adding": "Ajout...",
+          "upload": "Upload...",
+          "view": "Voir le document",
+          "archive": "Archiver",
+          "restore": "Restaurer",
+          "unarchive": "Désarchiver",
+          "cancel": "Annuler",
+          "selectFile": "Sélectionner un fichier",
+          "gridView": "Grille",
+          "loading": "Chargement..."
+        },
+        "upload": {
+          "title": "Ajouter des Documents",
+          "dragDrop": "Glissez-déposez ou cliquez pour sélectionner des fichiers",
+          "fileTypes": "JPG, PNG, PDF, DOCX (max 50MB)",
+          "addDocuments": "Ajouter 1 document(s)"
+        },
+        "messages": {
+          "loading": "Chargement des documents...",
+          "noActiveDocuments": "Aucun document actif",
+          "noArchivedDocuments": "Aucun document archivé",
+          "clickToUpload": "Cliquez sur \"Ajouter\" pour uploader un document",
+          "archivedOn": "Archivé le",
+          "fileTypeNotAllowed": "Type de fichier non autorisé (PDF, JPG, PNG, DOC, DOCX, XLS, XLSX, TXT)",
+          "fileTooLarge": "Fichier trop volumineux (max 50MB)"
+        },
+        "dialogs": {
+          "archive": {
+            "title": "Archiver le document",
+            "description": "Le document sera déplacé vers les archives et pourra être restauré.",
+            "confirm": "Archiver"
+          },
+          "restore": {
+            "title": "Restaurer le document",
+            "description": "Le document redeviendra actif immédiatement.",
+            "confirm": "Restaurer"
+          }
+        }
+      }
+    }
+  },
+  "landing": {
+    "nav": {
+      "home": "Accueil",
+      "advantages": "Avantages",
+      "features": "Fonctionnalités",
+      "contact": "Contact",
+      "cta": "Prendre RDV"
+    },
+    "hero": {
+      "title1": "Transformez votre gestion de dons de sang",
+      "with": "avec notre",
+      "words": {
+        "platform": "plateforme",
+        "solution": "solution",
+        "system": "système",
+        "technology": "technologie"
+      },
+      "title2": "alimentée par l'IA",
+      "cta1": "Commencer maintenant",
+      "cta2": "Voir la démo"
+    },
+    "problems": {
+      "badge": "Problème",
+      "title": "Les limites d'une gestion de dons de sang sans BloodLink",
+      "cards": {
+        "calculation": {
+          "title": "Calcul des charges manuel",
+          "description": "Excel, erreurs et perte de temps pour les répartitions et régularisations."
+        },
+        "documents": {
+          "title": "Documents éparpillés",
+          "description": "Contrats, PV et factures disséminés — suivi des versions et conformité compliqués."
+        },
+        "communication": {
+          "title": "Communication lente",
+          "description": "Demandes locataires et validations internes sans workflow centralisé."
+        },
+        "tracking": {
+          "title": "Suivi inefficace",
+          "description": "Retards dans les paiements et maintenance sans alertes automatiques."
+        }
+      }
+    },
+    "why": {
+      "title": "Pourquoi choisir notre plateforme ?",
+      "subtitle": "Une solution complète qui révolutionne la gestion de dons de sang grâce à l'intelligence artificielle",
+      "cards": {
+        "automation": {
+          "title": "Immobilière augmentée par l'IA",
+          "description": "Répartition des charges, rappels, conformité — propulsée par l'IA."
+        },
+        "managers": {
+          "title": "Management transfusion professionnel",
+          "description": "Tableaux en temps réel, flux d'organisation, contrôle documentaire."
+        },
+        "users": {
+          "title": "Gestion locative complète",
+          "description": "Portail unifié: paiements, tickets, documents, performance."
+        },
+        "security": {
+          "title": "Sécurité & conformité",
+          "description": "Chiffrement, journal d'audits, rôles & accès granulaires."
+        },
+        "analytics": {
+          "title": "Analytics & Reporting",
+          "description": "Tableaux de bord intelligents, prévisions IA, rapports automatisés."
+        },
+        "support": {
+          "title": "Support 24/7",
+          "description": "Assistance technique continue, formation personnalisée, maintenance proactive."
+        },
+        "integration": {
+          "title": "Intégration complète",
+          "description": "API robuste, synchronisation bancaire, connecteurs tiers."
+        },
+        "scalability": {
+          "title": "Évolutivité garantie",
+          "description": "Architecture cloud native, mise à l'échelle automatique, performance optimisée."
+        }
+      }
+    },
+    "features": {
+      "title": "Découvrez nos",
+      "titleHighlight": "fonctionnalités",
+      "subtitle": "Une plateforme complète qui simplifie chaque aspect de votre gestion de dons de sang",
+      "tabs": {
+        "dashboard": {
+          "title": "Tableau de bord intelligent",
+          "description": "Centralisez toutes vos données immobilières dans un tableau de bord moderne et intuitif. Suivez vos KPIs en temps réel avec des visualisations avancées et des métriques personnalisables.",
+          "badge": "Nouveau"
+        },
+        "properties": {
+          "title": "Gestion des biens",
+          "description": "Centralisez vos biens, types et caractéristiques. Créez, modifiez et suivez vos centres en quelques clics avec un workflow clair."
+        },
+        "tenants": {
+          "title": "Gestion des locataires",
+          "description": "Simplifiez la gestion de vos locataires avec des outils dédiés : suivi des paiements, communication directe, gestion des demandes de maintenance et historique complet."
+        },
+        "documents": {
+          "title": "Gestion des documents",
+          "description": "Système complet de gestion documentaire avec signature électronique, archivage automatique et conformité réglementaire. Accès sécurisé depuis n'importe où."
+        },
+        "ai": {
+          "title": "Chat IA",
+          "description": "Un assistant intelligent intégré pour répondre à vos questions, accélérer vos tâches et vous guider dans la plateforme."
+        }
+      },
+      "points": {
+        "intuitive": "Interface intuitive et moderne",
+        "realtime": "Synchronisation en temps réel",
+        "security": "Sécurité et conformité garanties"
+      }
+    },
+    "textReveal": {
+      "text": "Gérez votre patrimoine transfusion en toute simplicité. Automatisez, sécurisez, prospérez."
+    },
+    "journey": {
+      "title": "Parcours d'",
+      "titleHighlight": "adoption",
+      "subtitle": "Lancez-vous en 4 étapes simples et transformez votre gestion de dons de sang",
+      "cta": "Commencer maintenant",
+      "steps": {
+        "step1": {
+          "number": "01",
+          "title": "Connectez vos biens",
+          "description": "Importez facilement tous vos immeubles, services locatives, contrats de bail et charges communes dans la plateforme. Une synchronisation rapide qui centralise toutes vos données immobilières en quelques clics.",
+          "features": {
+            "feature1": "Import automatique",
+            "feature2": "Synchronisation rapide",
+            "feature3": "Centralisation des données"
+          }
+        },
+        "step2": {
+          "number": "02",
+          "title": "Activez l'IA",
+          "description": "Laissez l'intelligence artificielle optimiser votre gestion : allocation automatique des charges, notifications intelligentes et réponses assistées pour gagner du temps sur les tâches répétitives.",
+          "features": {
+            "feature1": "Allocation automatique",
+            "feature2": "Notifications intelligentes",
+            "feature3": "Réponses assistées"
+          }
+        },
+        "step3": {
+          "number": "03",
+          "title": "Collaborez",
+          "description": "Créez un portail collaboratif en temps réel où propriétaires, gestionnaires, locataires et prestataires peuvent interagir efficacement. Communication fluide et transparence garantie pour tous les acteurs.",
+          "features": {
+            "feature1": "Portail collaboratif",
+            "feature2": "Communication en temps réel",
+            "feature3": "Transparence totale"
+          }
+        },
+        "step4": {
+          "number": "04",
+          "title": "Mesurez & optimisez",
+          "description": "Analysez vos performances avec des KPIs détaillés, générez des rapports automatisés et recevez des recommandations personnalisées pour réduire vos coûts et maximiser votre rentabilité.",
+          "features": {
+            "feature1": "KPIs détaillés",
+            "feature2": "Rapports automatisés",
+            "feature3": "Recommandations IA"
+          }
+        }
+      }
+    },
+    "faq": {
+      "title1": "Questions",
+      "title2": "Fréquentes",
+      "subtitle": "Trouvez des réponses aux questions les plus courantes sur notre plateforme de gestion de dons de sang, nos fonctionnalités et notre accompagnement.",
+      "questions": {
+        "q1": {
+          "category": "Gestion Immobilière",
+          "question": "Comment BloodLink simplifie-t-elle la gestion de mes centres de transfusion ?",
+          "answer": "BloodLink centralise tous vos processus : gestion des locataires, suivi des paiements, maintenance préventive, documents numériques et communication unifiée. Plus besoin de jongler entre plusieurs outils, tout est accessible depuis une seule plateforme intuitive."
+        },
+        "q2": {
+          "category": "Digitalisation",
+          "question": "Puis-je digitaliser mes documents papier existants ?",
+          "answer": "Absolument ! Notre système permet d'importer et d'organiser tous vos documents existants. Scan automatique, reconnaissance OCR, classement intelligent par propriété et locataire. Fini les classeurs et les documents perdus."
+        },
+        "q3": {
+          "category": "Automatisation",
+          "question": "Comment fonctionne l'automatisation des relances de loyer ?",
+          "answer": "Le système détecte automatiquement les retards de paiement et envoie des relances personnalisées par email/SMS selon vos paramètres. Escalade progressive, suivi des réponses et génération automatique des rapports de recouvrement."
+        },
+        "q4": {
+          "category": "Maintenance",
+          "question": "La maintenance prédictive peut-elle vraiment réduire mes coûts ?",
+          "answer": "Oui, en moyenne 30% d'économies ! Notre IA analyse l'historique de vos équipements, prédit les pannes et planifie les interventions préventives. Réseau d'artisans partenaires avec tarifs négociés inclus."
+        },
+        "q5": {
+          "category": "Communication",
+          "question": "Comment gérer efficacement la communication avec mes locataires ?",
+          "answer": "Hub de communication centralisé avec messagerie intégrée, portail locataire, notifications automatiques et historique complet. Vos locataires peuvent signaler des problèmes, consulter leurs documents et communiquer en temps réel."
+        },
+        "q6": {
+          "category": "Sécurité",
+          "question": "Mes données sont-elles sécurisées sur la plateforme ?",
+          "answer": "Sécurité bancaire garantie : chiffrement AES-256, hébergement certifié ISO 27001, sauvegardes automatiques, accès multi-facteurs et conformité RGPD. Vos données sont plus sécurisées que sur votre ordinateur local."
+        },
+        "q7": {
+          "category": "Intégration",
+          "question": "BloodLink s'intègre-t-elle avec mes outils comptables existants ?",
+          "answer": "Intégration native avec les principaux logiciels comptables (Sage, Ciel, EBP) et banques marocaines. Export automatique des écritures, rapprochement bancaire et génération des états financiers conformes à la législation marocaine."
+        },
+        "q8": {
+          "category": "Support",
+          "question": "Quel accompagnement proposez-vous pour la prise en main ?",
+          "answer": "Formation complète incluse : onboarding personnalisé, migration de vos données, formation de vos équipes et support technique 6j/7. Notre équipe d'experts vous accompagne jusqu'à votre autonomie complète."
+        }
+      }
+    },
+    "footer": {
+      "tagline1": "Gestion immobilière",
+      "tagline2": "simplifiée et moderne",
+      "heading": "Tout ce dont vous avez besoin pour votre gestion de dons de sang",
+      "company": {
+        "title": "Entreprise",
+        "whyUs": "Pourquoi nous",
+        "faq": "FAQ",
+        "privacy": "Politique de confidentialité",
+        "terms": "Conditions d'utilisation"
+      },
+      "features": {
+        "title": "Fonctionnalités",
+        "dashboard": "Tableau de bord",
+        "properties": "Gestion des biens",
+        "tenants": "Gestion locataires",
+        "documents": "Documents & IA"
+      },
+      "contact": {
+        "title": "Contact",
+        "phone": "+212 537 76 17 43",
+        "email": "info@hub4digi.com",
+        "address": "Jean Jaures 7 Les Orange, Rabat, Maroc"
+      },
+      "hiring": "Nous recrutons !",
+      "copyright": "Tous droits réservés.",
+      "contactForm": {
+        "title": "Prêt à transformer votre gestion de dons de sang ?",
+        "subtitle": "Contactez-nous pour une démonstration personnalisée de notre plateforme",
+        "cta": "Nous contacter",
+        "button": "Nous contacter",
+        "formTitle": "Parlons de votre projet",
+        "formSubtitle": "Remplissez ce formulaire et notre équipe vous contactera sous 24h pour discuter de vos besoins",
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Tel",
+        "message": "Message",
+        "send": "Envoyer",
+        "cancel": "Annuler"
+      }
+    }
+  },
+  "tenantManagement": {
+    "page": {
+      "title": "Gestion des Locations",
+      "subtitle": "Gérez les informations, les baux et les communications des locataires",
+      "addButton": "Ajouter un locataire",
+      "addButtonShort": "Nouveau"
+    },
+    "header": {
+      "title": "Donneurs",
+      "subtitle": "{count} sur {total} locataires affichés",
+      "addButton": "Nouveau Donneur",
+      "archivedButton": "Archivés",
+      "refreshing": "Actualisation en cours...",
+      "refreshTitle": "Actualiser les données",
+      "refreshSuccess": "Données mises à jour avec succès",
+      "refreshError": "Erreur lors de la mise à jour des données"
+    },
+    "dashboard": {
+      "totalTenants": "Total Donneurs",
+      "activeTenants": "Donneurs Actifs",
+      "monthlyRevenue": "Revenus Mensuels",
+      "expiringLeases": "Rendez-vous Expirants",
+      "pendingTenants": "En Attente",
+      "lateTenants": "En Retard",
+      "occupancyRate": "Taux d'Occupation"
+    },
+    "search": {
+      "placeholder": "Rechercher par nom, email, téléphone...",
+      "clear": "Effacer"
+    },
+    "filters": {
+      "title": "Filtres",
+      "status": "Statut",
+      "city": "Ville",
+      "profession": "Profession",
+      "searchFields": "Champs de recherche",
+      "reset": "Réinitialiser",
+      "activeFilters": "{count} filtre(s) actif(s)"
+    },
+    "viewModes": {
+      "grid": "Grille",
+      "list": "Liste"
+    },
+    "sort": {
+      "label": "Trier par",
+      "nameAsc": "Nom (A-Z)",
+      "nameDesc": "Nom (Z-A)",
+      "statusAsc": "Statut (A-Z)",
+      "statusDesc": "Statut (Z-A)",
+      "cityAsc": "Ville (A-Z)",
+      "cityDesc": "Ville (Z-A)",
+      "dateAsc": "Date (anciens)",
+      "dateDesc": "Date (récents)"
+    },
+    "status": {
+      "active": "Actif",
+      "pending": "En attente",
+      "late": "En retard",
+      "suspended": "Suspendu",
+      "terminated": "Résilié",
+      "archived": "Archivé"
+    },
+    "bulk": {
+      "selected": "{count} locataire(s) sélectionné(s)",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "archive": "Archiver ({count})",
+      "archiveConfirm": "Archiver {count} locataire(s) ?",
+      "archiveSuccess": "Donneurs archivés avec succès",
+      "archiveError": "Erreur lors de l'archivage des locataires",
+      "restoreAll": "Restaurer tout",
+      "restoring": "Restauration...",
+      "restoreSuccess": "{count} locataire(s) restauré(s) avec succès",
+      "restoreError": "Erreur lors de la restauration en lot",
+      "cancel": "Annuler"
+    },
+    "card": {
+      "phone": "Téléphone",
+      "email": "Email",
+      "city": "Ville",
+      "profession": "Profession",
+      "viewDetails": "Voir les détails",
+      "edit": "Modifier",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "delete": "Supprimer",
+      "archived": "Archivé",
+      "archivedOn": "Archivé le {date}",
+      "restoring": "Restauration...",
+      "notProvided": "Non renseigné",
+      "addedOn": "Ajouté le {date}",
+      "archiving": "Archivage...",
+      "archiveSuccess": "Donneur archivé avec succès",
+      "archiveError": "Erreur lors de l'archivage du locataire"
+    },
+    "empty": {
+      "title": "Aucun locataire trouvé",
+      "subtitle": "Commencez par ajouter votre premier locataire",
+      "addButton": "Ajouter un locataire"
+    },
+    "emptyState": {
+      "title": "Aucun locataire trouvé",
+      "description": "Essayez de modifier vos critères de recherche ou de filtre, ou ajoutez un nouveau locataire."
+    },
+    "refresh": {
+      "button": "Actualiser",
+      "success": "Données mises à jour avec succès",
+      "error": "Erreur lors de la mise à jour des données"
+    },
+    "pagination": {
+      "showing": "Affichage de",
+      "to": "à",
+      "of": "sur",
+      "results": "résultats",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "archived": {
+      "title": "Donneurs Archivés",
+      "subtitle": "{count} locataire(s) archivé(s)",
+      "backButton": "Retour aux locataires",
+      "searchPlaceholder": "Rechercher dans les archivés...",
+      "archivedOn": "Archivé le",
+      "restoreSuccess": "Donneur restauré avec succès",
+      "restoreError": "Erreur lors de la restauration du locataire",
+      "empty": {
+        "title": "Aucun locataire archivé",
+        "subtitle": "Les locataires archivés apparaîtront ici"
+      }
+    },
+    "lease": {
+      "statusActive": "Rendez-vous actif",
+      "statusDraft": "Brouillon",
+      "statusTerminated": "Terminé",
+      "statusCancelled": "Annulé"
+    },
+    "documents": {
+      "categoryIdentity": "Identité",
+      "categoryLease": "Rendez-vous",
+      "categoryGeneral": "Général",
+      "openDocument": "Ouvrir le document",
+      "downloadDocument": "Télécharger le document",
+      "download": "Télécharger",
+      "delete": "Supprimer"
+    },
+    "archivedDocs": {
+      "title": "Documents Archivés",
+      "count": "{count} document(s) archivé(s)",
+      "noDocuments": "Aucun document archivé",
+      "noDocumentsHint": "Les documents archivés apparaîtront ici",
+      "categoryTenant": "Donneur",
+      "categoryLease": "Rendez-vous",
+      "categoryIdentity": "Identité",
+      "categoryOther": "Autre",
+      "unknownSize": "Taille inconnue",
+      "undefinedType": "Type non défini",
+      "openDocument": "Ouvrir le document",
+      "downloadDocument": "Télécharger le document",
+      "openError": "Erreur lors de l'ouverture du document",
+      "downloadError": "Erreur lors du téléchargement du document",
+      "restore": "Restaurer",
+      "createdOn": "Créé le",
+      "archivedOn": "Archivé le {date}",
+      "pageInfo": "Page {current} sur {total}",
+      "previous": "Précédent",
+      "prev": "Préc.",
+      "next": "Suivant",
+      "nextShort": "Suiv."
+    },
+    "archivedGuarantors": {
+      "title": "Garants Archivés",
+      "count": "{count} garant(s) archivé(s)",
+      "noGuarantors": "Aucun garant archivé",
+      "noGuarantorsHint": "Les garants archivés apparaîtront ici",
+      "restore": "Restaurer",
+      "archivedOn": "Archivé le {date}",
+      "pageInfo": "Page {current} sur {total}",
+      "previous": "Précédent",
+      "prev": "Préc.",
+      "next": "Suivant",
+      "nextShort": "Suiv."
+    },
+    "archiveDocDialog": {
+      "title": "Archiver le document",
+      "description": "Êtes-vous sûr de vouloir archiver ce document ? Il sera déplacé vers les archives et pourra être restauré plus tard.",
+      "cancel": "Annuler",
+      "archiving": "Archivage...",
+      "archive": "Archiver"
+    },
+    "archiveGuarantorDialog": {
+      "title": "Archiver le garant",
+      "confirmMessage": "Êtes-vous sûr de vouloir archiver le garant \"{name}\" ?",
+      "reversibleTitle": "Cette action est réversible",
+      "reversibleMessage": "Le garant sera masqué de la liste mais pourra être restauré à tout moment depuis les archives.",
+      "cancel": "Annuler",
+      "archiving": "Archivage...",
+      "archive": "Archiver"
+    },
+    "bulkArchiveDialog": {
+      "title": "Archiver {count} locataire(s)",
+      "subtitle": "Cette action archivera définitivement les locataires sélectionnés. Ils n'apparaîtront plus",
+      "confirmTitle": "Confirmation d'archivage en lot",
+      "confirmMessage": "Vous êtes sur le point d'archiver {count} locataire(s) :",
+      "andOthers": "... et {count} autre(s)",
+      "warning": "dans la liste principale. Vous pourrez les retrouver dans la section \"Archivés\". et n'apparaîtront plus dans la liste principale.",
+      "cancel": "Annuler",
+      "archiving": "Archivage en cours...",
+      "archiveButton": "Archiver {count} locataire(s)"
+    },
+    "bulkRestoreDialog": {
+      "title": "Restaurer {count} locataire(s)",
+      "subtitle": "Cette action va réactiver les locataires sélectionnés",
+      "confirmTitle": "Confirmation de restauration en lot",
+      "confirmMessage": "Vous êtes sur le point de restaurer {count} locataire(s) :",
+      "andOthers": "... et {count} autre(s)",
+      "warning": "Tous ces locataires redeviendront actifs et apparaîtront dans la liste principale.",
+      "cancel": "Annuler",
+      "restoring": "Restauration en cours...",
+      "restoreButton": "Restaurer {count} locataire(s)"
+    },
+    "changeStatusModal": {
+      "title": "Modifier le statut du locataire",
+      "success": "Statut modifié avec succès !",
+      "successDesc": "{name} est maintenant \"{status}\"",
+      "autoActions": "Actions automatiques effectuées",
+      "error": "Erreur lors du changement de statut",
+      "errorDesc": "Une erreur inattendue s'est produite"
+    },
+    "generateContract": {
+      "title": "Générer le contrat de location - {name}",
+      "loadError": "Erreur lors du chargement des données du contrat",
+      "addressRequired": "Veuillez renseigner l'adresse de l'entreprise",
+      "infoTitle": "Information",
+      "infoMessage": "Le nom du gestionnaire et son email seront récupérés automatiquement depuis votre profil Property Manager.",
+      "companyName": "Nom de l'entreprise",
+      "phone": "Téléphone",
+      "address": "Adresse de l'entreprise",
+      "addressPlaceholder": "Adresse complète du siège social",
+      "cancel": "Annuler",
+      "generating": "Génération...",
+      "generate": "Générer le contrat",
+      "contractNumber": "Contrat n° {number}",
+      "hide": "Masquer",
+      "preview": "Aperçu",
+      "downloadPDF": "Télécharger PDF",
+      "modifyInfo": "Modifier les informations",
+      "close": "Fermer"
+    },
+    "renewLease": {
+      "title": "Renouveler le bail",
+      "description": "Renouvellement du bail de {tenant} pour l'service {property} - {unit}",
+      "success": "Rendez-vous renouvelé avec succès !",
+      "error": "Erreur lors du renouvellement: {message}",
+      "unknownError": "Erreur inconnue",
+      "currentLease": "Rendez-vous actuel",
+      "currentEndDate": "Fin du bail actuel",
+      "currentRent": "Don actuel",
+      "currentDeposit": "Dépôt actuel",
+      "newPeriod": "Nouvelle période",
+      "newPeriodDesc": "Définissez la période du nouveau bail",
+      "newStartDate": "Nouvelle date de début",
+      "newEndDate": "Nouvelle date de fin",
+      "selectDate": "Sélectionner une date",
+      "financialTerms": "Conditions financières",
+      "financialTermsDesc": "Ajustez les montants si nécessaire",
+      "newRent": "Nouveau loyer mensuel",
+      "newDeposit": "Nouveau dépôt de garantie",
+      "cancel": "Annuler",
+      "renewing": "Renouvellement...",
+      "renew": "Renouveler le bail"
+    },
+    "restoreDialog": {
+      "title": "Restaurer le locataire",
+      "subtitle": "Cette action va réactiver le locataire",
+      "confirmTitle": "Confirmation de restauration",
+      "confirmMessage": "Êtes-vous sûr de vouloir restaurer {name} ?",
+      "warning": "Le locataire redeviendra actif et apparaîtra dans la liste principale.",
+      "cancel": "Annuler",
+      "restoring": "Restauration...",
+      "confirm": "Confirmer la restauration"
+    },
+    "terminateLease": {
+      "title": "Résilier le bail",
+      "description": "Résiliation du bail de {tenant} pour l'service {unit}"
+    },
+    "addTenantForm": {
+      "uploadError": "Erreur lors de l'upload de l'image CIN ({type}): {message}",
+      "emailAlreadyUsed": "Cet email est déjà utilisé par un autre locataire",
+      "chooseAnotherEmail": "Veuillez choisir un autre email",
+      "emailExists": "Cet email existe déjà",
+      "validation": {
+        "nameRequired": "Le nom est requis.",
+        "firstNameRequired": "Le prénom est requis.",
+        "phoneRequired": "Le numéro de téléphone est requis.",
+        "emailRequired": "L'email est requis.",
+        "emailInvalid": "Adresse email invalide.",
+        "propertyRequired": "Veuillez sélectionner une propriété.",
+        "unitRequired": "Veuillez sélectionner une service.",
+        "rentMin": "Le loyer doit être supérieur à 0.",
+        "startDateRequired": "La date de début est obligatoire.",
+        "durationMin": "La durée minimale est de 1 mois.",
+        "depositMin": "Le dépôt de garantie ne peut pas être négatif.",
+        "cinOrImages": "Veuillez soit saisir un code CIN valide (minimum 6 caractères), soit télécharger les deux images (recto et verso).",
+        "cinBackRequired": "Veuillez également télécharger l'image verso de la CIN.",
+        "cinFrontRequired": "Veuillez également télécharger l'image recto de la CIN.",
+        "monthlyDonsRequired": "Veuillez spécifier un montant de charges mensuelles valide.",
+        "indexationRateRequired": "Veuillez spécifier un taux d'indexation valide."
+      },
+      "sections": {
+        "personalInfo": "Informations personnelles",
+        "address": "Adresse personnelle",
+        "professional": "Informations professionnelles",
+        "identity": "Document d'identité"
+      },
+      "labels": {
+        "lastName": "Nom",
+        "firstName": "Prénom",
+        "cin": "N° CIN",
+        "nationality": "Nationalité",
+        "phone": "N° de téléphone",
+        "email": "Adresse e-mail",
+        "fullAddress": "Adresse complète",
+        "city": "Ville",
+        "profession": "Profession",
+        "cinFront": "CIN Recto",
+        "cinBack": "CIN Verso",
+        "required": "*",
+        "imageFront": "Image Recto",
+        "imageBack": "Image Verso",
+        "chooseFile": "Choisir un fichier",
+        "noFileChosen": "Aucun fichier choisi"
+      },
+      "placeholders": {
+        "selectNationality": "Sélectionner la nationalité",
+        "phoneNumber": "0661000000",
+        "emailAddress": "nom@exemple.com",
+        "addressExample": "Ex: 45 Rue Hassan II, Guéliz",
+        "selectCity": "Sélectionner une ville",
+        "selectProfession": "Sélectionner une profession"
+      },
+      "buttons": {
+        "continueToAddress": "Continuer vers l'adresse",
+        "continueToProfessional": "Continuer vers les infos professionnelles",
+        "continueToProfessionalShort": "Continuer vers les infos pro",
+        "continueToIdentity": "Continuer vers la pièce d'identité",
+        "enterCode": "Saisir le code",
+        "uploadImages": "Télécharger les images",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "cancel": "Annuler",
+        "confirmAndSave": "Confirmer et Enregistrer",
+        "confirm": "Confirmer"
+      },
+      "toast": {
+        "tenantCreatedGuarantorError": "Donneur créé mais erreur lors de l'ajout du garant",
+        "addGuarantorManually": "Vous pouvez ajouter le garant manuellement depuis la page du locataire",
+        "emailDuplicate": "Cet email est déjà utilisé par un autre locataire",
+        "modifyEmailRetry": "Veuillez modifier l'email et réessayer",
+        "saveError": "Erreur lors de l'enregistrement",
+        "retryOrContact": "Veuillez réessayer ou contacter le support"
+      },
+      "steps": {
+        "tenant": "Donneur",
+        "contract": "Contrat",
+        "guarantor": "Garant",
+        "security": "Sécurité",
+        "review": "Révision"
+      },
+      "nationalities": {
+        "moroccan": "Marocaine",
+        "french": "Française",
+        "spanish": "Espagnole",
+        "italian": "Italienne",
+        "german": "Allemande",
+        "british": "Britannique",
+        "american": "Américaine",
+        "canadian": "Canadienne",
+        "other": "Autre"
+      },
+      "professions": {
+        "architect": "Architecte",
+        "engineer": "Ingénieur",
+        "doctor": "Médecin",
+        "lawyer": "Avocat",
+        "teacher": "Professeur",
+        "pharmacist": "Pharmacien",
+        "dentist": "Dentiste",
+        "accountant": "Comptable",
+        "consultant": "Consultant",
+        "entrepreneur": "Entrepreneur",
+        "civil_servant": "Fonctionnaire",
+        "merchant": "Commerçant",
+        "craftsman": "Artisan",
+        "student": "Étudiant",
+        "retired": "Retraité",
+        "other": "Autre"
+      },
+      "contract": {
+        "title": "Détails du contrat",
+        "property": "Centre",
+        "availableUnit": "Unité disponible",
+        "unitsAvailable": "services disponibles",
+        "selectProperty": "Sélectionner une propriété",
+        "selectUnitFirst": "Sélectionnez d'abord une propriété",
+        "monthlyRent": "Don mensuel (MAD)",
+        "startDate": "Date de début",
+        "contractDuration": "Durée du contrat (mois)",
+        "leaseType": "Type de bail",
+        "chargesIncluded": "Dons comprises dans le loyer",
+        "enterDateFormat": "Saisissez la date au format JJ/MM/AAAA ou cliquez sur l'icône calendrier",
+        "residential": "Résidentiel",
+        "commercial": "Commercial",
+        "mixed": "Mixte",
+        "selectRelation": "Sélectionner une relation"
+      },
+      "guarantor": {
+        "title": "Garant",
+        "hasGuarantor": "Le locataire a un garant",
+        "name": "Nom du garant",
+        "cin": "N° CIN du garant",
+        "phone": "Téléphone du garant",
+        "email": "Email du garant",
+        "relation": "Relation avec le locataire",
+        "relations": {
+          "parent": "Parent",
+          "conjoint": "Conjoint(e)",
+          "ami": "Ami(e)",
+          "collegue": "Collègue",
+          "autre": "Autre"
+        }
+      },
+      "security": {
+        "title": "Sécurité et documents",
+        "securityDeposit": "Dépôt de garantie (MAD)",
+        "moveInInspection": "État des lieux d'entrée",
+        "confirmDocumentSignature": "Confirmer la signature du document.",
+        "indexationClause": "Clause d'indexation",
+        "indexationRate": "Taux d'indexation (%)"
+      }
+    },
+    "advancedFilters": {
+      "status": {
+        "active": "Actif",
+        "pending": "En attente",
+        "late": "En retard",
+        "suspended": "Suspendu"
+      },
+      "statusLabel": "Statut",
+      "cityLabel": "Ville",
+      "professionLabel": "Profession",
+      "advancedLabel": "Avancé",
+      "filterByStatus": "Filtrer par statut",
+      "filterByCity": "Filtrer par ville",
+      "filterByProfession": "Filtrer par profession",
+      "searchFields": "Champs de recherche",
+      "nameLabel": "Nom/Prénom",
+      "emailLabel": "Email",
+      "phoneLabel": "Téléphone",
+      "cinLabel": "CIN",
+      "cancel": "Annuler",
+      "apply": "Appliquer",
+      "clearAll": "Tout effacer ({count})",
+      "clearAllShort": "Tout effacer",
+      "activeFilters": "Filtres actifs ({count})"
+    },
+    "archivedTenantsFilterBar": {
+      "quickSearch": "Recherche rapide",
+      "searchPlaceholder": "Rechercher par nom, email...",
+      "searchTooltip": "Rechercher par nom, email ou téléphone",
+      "city": "Ville",
+      "filterByCity": "Filtrer par ville",
+      "filterByCityPlaceholder": "Filtrer par ville...",
+      "profession": "Profession",
+      "filterByProfession": "Filtrer par profession",
+      "filterByProfessionPlaceholder": "Filtrer par profession...",
+      "nationality": "Nationalité",
+      "filterByNationality": "Filtrer par nationalité",
+      "filterByNationalityPlaceholder": "Filtrer par nationalité...",
+      "hideFilters": "Masquer les filtres",
+      "showFilters": "Afficher les filtres",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "restore": "Restaurer ({count})",
+      "results": "{count} résultat",
+      "resultsPlural": "{count} résultats",
+      "reset": "Réinitialiser",
+      "resetFilters": "Réinitialiser les filtres",
+      "filterTenants": "Filtrer les locataires",
+      "filterArchivedTenants": "Filtrer les locataires archivés"
+    },
+    "changeStatusForm": {
+      "title": "Changement de statut",
+      "tenant": "Donneur",
+      "currentStatus": "Statut actuel",
+      "newStatus": "Nouveau statut",
+      "newStatusRequired": "Nouveau statut *",
+      "selectStatus": "Sélectionner un statut",
+      "current": "(actuel)",
+      "effectiveDate": "Date d'effet",
+      "selectDate": "Sélectionner une date",
+      "reason": "Raison du changement *",
+      "reasonPlaceholder": "Expliquez la raison de ce changement de statut...",
+      "reasonHistory": "Cette information sera enregistrée dans l'historique du locataire",
+      "cancel": "Annuler",
+      "confirm": "Confirmer le changement",
+      "confirmShort": "Confirmer",
+      "changing": "Changement en cours...",
+      "changingShort": "En cours...",
+      "changeError": "Échec du changement de statut. Veuillez réessayer.",
+      "status": {
+        "active": {
+          "label": "Actif",
+          "description": "Le locataire est actif avec un bail en cours",
+          "impact": "Les baux en brouillon seront activés automatiquement"
+        },
+        "pending": {
+          "label": "En attente",
+          "description": "Le locataire est en attente de validation ou d'attribution",
+          "impact": "Tous les baux seront mis en brouillon"
+        },
+        "late": {
+          "label": "En retard",
+          "description": "Le locataire a des retards de paiement",
+          "impact": "Aucune action automatique sur les baux"
+        },
+        "suspended": {
+          "label": "Suspendu",
+          "description": "Le locataire est temporairement suspendu",
+          "impact": "Aucune action automatique sur les baux"
+        },
+        "terminated": {
+          "label": "Résilié",
+          "description": "Le bail du locataire a été résilié",
+          "impact": "Tous les baux actifs seront terminés et les services libérées"
+        },
+        "archived": {
+          "label": "Archivé",
+          "description": "Le locataire est archivé (soft delete)",
+          "impact": "Tous les baux actifs seront terminés et les services libérées"
+        }
+      },
+      "automaticImpact": "Impact automatique :"
+    },
+    "documentTypeSelector": {
+      "placeholder": "Sélectionner le type de document",
+      "loading": "Chargement des types...",
+      "loadError": "Erreur de chargement",
+      "noTypes": "Aucun type disponible",
+      "categories": {
+        "identity": "Documents d'Identité",
+        "lease": "Documents de Rendez-vous",
+        "tenant": "Documents du Donneur"
+      },
+      "badges": {
+        "identity": "Identité",
+        "lease": "Rendez-vous",
+        "tenant": "Donneur"
+      },
+      "info": {
+        "identityDoc": "Document d'identité :",
+        "identityDesc": "Ce document sera stocké dans le dossier sécurisé d'identité du locataire.",
+        "cinFront": "(Face avant de la CIN)",
+        "cinBack": "(Face arrière de la CIN)",
+        "leaseDoc": "Document de bail :",
+        "leaseDesc": "Ce document sera associé au bail et stocké dans le dossier correspondant.",
+        "identityRequired": "Document d'identité requis pour l'enregistrement du locataire",
+        "leaseRequired": "Document de bail pour formaliser la location",
+        "generalDoc": "Document général du locataire"
+      }
+    },
+    "editTenantForm": {
+      "title": "Modifier les informations du locataire",
+      "description": "Modifiez les informations personnelles de {name}",
+      "personalInfo": "Informations personnelles",
+      "contactEmergency": "Contact & Urgence",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Ex: Ahmed",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Ex: Benali",
+      "cin": "CIN",
+      "cinPlaceholder": "Ex: G123456",
+      "nationality": "Nationalité",
+      "nationalityPlaceholder": "Sélectionner une nationalité",
+      "city": "Ville",
+      "cityPlaceholder": "Sélectionner une ville",
+      "profession": "Profession",
+      "professionPlaceholder": "Sélectionner une profession",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Ex: +212 6 12 34 56 78",
+      "email": "Email",
+      "emailPlaceholder": "Ex: ahmed@example.com",
+      "emergencyContact": "Contact d'urgence",
+      "emergencyContactName": "Nom du contact d'urgence",
+      "emergencyContactNamePlaceholder": "Ex: Fatima Benali",
+      "emergencyContactPhone": "Téléphone du contact d'urgence",
+      "emergencyContactPhonePlaceholder": "Ex: +212 6 87 65 43 21",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "updating": "Mise à jour...",
+      "successTitle": "Informations du locataire mises à jour avec succès!",
+      "errorTitle": "Erreur lors de la mise à jour",
+      "errorDescription": "Une erreur inattendue s'est produite",
+      "required": "*"
+    },
+    "formErrorsSummary": {
+      "title": "Il y a {count} erreur dans le formulaire",
+      "titlePlural": "Il y a {count} erreurs dans le formulaire"
+    },
+    "guarantorForm": {
+      "fullName": "Nom complet",
+      "fullNameRequired": "Nom complet *",
+      "fullNamePlaceholder": "Ex: Ahmed Ben Ali",
+      "relation": "Relation avec le locataire",
+      "relationRequired": "Relation avec le locataire *",
+      "relationPlaceholder": "Ex: Père, Frère, Ami, Collègue...",
+      "phone": "Téléphone",
+      "phoneRequired": "Téléphone *",
+      "phonePlaceholder": "Ex: 0661234567",
+      "cin": "Numéro CIN (optionnel)",
+      "cinPlaceholder": "Ex: AB123456",
+      "email": "Email (optionnel)",
+      "emailPlaceholder": "Ex: ahmed@example.com",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "leaseForm": {
+      "titleEdit": "Modifier le bail",
+      "titleNew": "Nouveau bail",
+      "descriptionEdit": "Modifiez les informations du bail",
+      "descriptionNew": "Créer un nouveau bail pour {tenantName}",
+      "unit": "Unité",
+      "unitSection": "Unité",
+      "unitDescription": "Sélectionnez l'service à louer",
+      "unitLabel": "Unité",
+      "unitRequired": "Unité *",
+      "unitPlaceholder": "Sélectionner une service",
+      "leasePeriod": "Période du bail",
+      "leasePeriodDescription": "Définissez la durée du bail",
+      "startDate": "Date de début",
+      "startDateRequired": "Date de début *",
+      "endDate": "Date de fin",
+      "endDateRequired": "Date de fin *",
+      "selectDate": "Sélectionner une date",
+      "financialTerms": "Conditions financières",
+      "financialTermsDescription": "Définissez les montants et conditions de paiement",
+      "monthlyRent": "Don mensuel",
+      "monthlyRentRequired": "Don mensuel *",
+      "monthlyRentPlaceholder": "Ex: 3500",
+      "securityDeposit": "Dépôt de garantie",
+      "securityDepositPlaceholder": "Ex: 7000",
+      "paymentDay": "Jour de paiement",
+      "paymentDayPlaceholder": "Jour du mois",
+      "paymentDayOption": "{day} du mois",
+      "currency": "Devise",
+      "currencyMAD": "MAD (Dirham)",
+      "currencyEUR": "EUR (Euro)",
+      "currencyUSD": "USD (Dollar)",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Sauvegarde...",
+      "edit": "Modifier",
+      "create": "Créer le bail"
+    },
+    "terminateLeaseForm": {
+      "title": "Résilier le bail",
+      "description": "Résiliation du bail de {tenantName} pour l'service {unitName}",
+      "alertMessage": "La résiliation appliquera automatiquement le préavis légal. L'service sera libérée à la fin du préavis.",
+      "requestDate": "Date de demande",
+      "requestDateRequired": "Date de demande *",
+      "selectDate": "Sélectionner une date",
+      "leaseType": "Type de bail",
+      "leaseTypeRequired": "Type de bail *",
+      "leaseTypePlaceholder": "Sélectionner le type de bail",
+      "leaseTypeResidential": "Résidentiel",
+      "leaseTypeCommercial": "Commercial",
+      "leaseTypeSeasonal": "Saisonnier",
+      "noticeDays": "Préavis (jours)",
+      "reason": "Raison de la résiliation",
+      "reasonRequired": "Raison de la résiliation *",
+      "reasonPlaceholder": "Motif de la résiliation",
+      "comment": "Commentaire",
+      "commentPlaceholder": "Notes supplémentaires...",
+      "predictedEndDate": "Date théorique de fin de préavis :",
+      "calculating": "Calcul...",
+      "currentEndDate": "Fin actuelle du bail :",
+      "cancel": "Annuler",
+      "terminate": "Résilier le bail",
+      "terminating": "Résiliation...",
+      "successTitle": "Rendez-vous résilié avec succès",
+      "successDescription": "{tenantName} sera libéré du bail à l'issue du préavis",
+      "errorTitle": "Erreur lors de la résiliation",
+      "errorDescription": "Une erreur inattendue s'est produite",
+      "defaultReason": "Résiliation anticipée"
+    },
+    "navbar": {
+      "defaultTitle": "Gestion des Donneurs",
+      "searchPlaceholder": "Rechercher un locataire...",
+      "addTenant": "Ajouter un Donneur"
+    },
+    "tenantNavbar": {
+      "searchPlaceholder": "Rechercher des locataires…",
+      "searchAriaLabel": "Rechercher des locataires",
+      "newButton": "Nouveau"
+    },
+    "archivedTenantsGrid": {
+      "selectedItems": "{count} élément sélectionné",
+      "selectedItemsPlural": "{count} éléments sélectionnés",
+      "restore": "Restaurer ({count})",
+      "noArchivedTitle": "Aucun locataire archivé",
+      "noArchivedDescription": "Tous vos locataires sont actuellement actifs."
+    },
+    "archivedTenantsList": {
+      "refreshingData": "Rafraîchissement des données en cours...",
+      "refreshSuccess": "Données mises à jour avec succès",
+      "refreshError": "Erreur lors de la mise à jour des données",
+      "title": "Donneurs Archivés",
+      "countInfo": "{showing} sur {total} locataires archivés",
+      "restore": "Restaurer ({count})",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Désélectionner tout",
+      "refreshingTitle": "Actualisation en cours...",
+      "refreshTitle": "Actualiser les données",
+      "selectedMobile": "{selected}/{total} sélectionné",
+      "selectedMobilePlural": "{selected}/{total} sélectionnés",
+      "allSelected": "Tous les locataires sélectionnés ({count})",
+      "selectedCount": "{count} locataire sélectionné",
+      "selectedCountPlural": "{count} locataires sélectionnés",
+      "noResults": "Aucun résultat",
+      "noArchivedTenants": "Aucun locataire archivé",
+      "noResultsDescription": "Aucun locataire archivé ne correspond à votre recherche.",
+      "allActive": "Tous vos locataires sont actuellement actifs.",
+      "archived": "Archivé",
+      "restoring": "Restauration...",
+      "paginationInfo": "Affichage de {from} à {to} sur {total} locataires archivés",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "archivedTenantsTable": {
+      "name": "Nom & Prénom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "archiveDate": "Date d'archivage",
+      "archived": "Archivé"
+    },
+    "archivedTenantsView": {
+      "title": "Donneurs Archivés",
+      "titleAriaLabel": "Donneurs Archivés",
+      "description": "Gérez et restaurez vos anciens locataires."
+    },
+    "documentsTabContent": {
+      "categoryTenant": "Donneur",
+      "categoryLease": "Rendez-vous",
+      "categoryIdentity": "Identité",
+      "archiveSuccess": "Document archivé avec succès",
+      "archiveSuccessDescription": "Le document \"{name}\" a été déplacé vers les archives.",
+      "archiveError": "Erreur lors de l'archivage",
+      "archiveErrorDescription": "Une erreur est survenue lors de l'archivage du document. Veuillez réessayer.",
+      "restoreSuccess": "Document restauré avec succès",
+      "restoreSuccessDescription": "Le document a été restauré et est maintenant visible dans la liste principale.",
+      "restoreError": "Erreur lors de la restauration",
+      "restoreErrorDescription": "Une erreur est survenue lors de la restauration du document. Veuillez réessayer.",
+      "title": "Documents",
+      "countInfo": "{filtered} sur {total} document affiché",
+      "countInfoPlural": "{filtered} sur {total} documents affichés",
+      "archived": "Archivés",
+      "archivedShort": "Archive",
+      "addDocument": "Ajouter un document",
+      "addShort": "Ajouter",
+      "searchPlaceholder": "Rechercher un document...",
+      "typeAll": "Tous les documents",
+      "typeTenant": "Documents du locataire",
+      "typeLease": "Documents de bail",
+      "typeIdentity": "Documents d'identité",
+      "typePlaceholder": "Type de document",
+      "size": "Taille",
+      "addedOn": "Ajouté le",
+      "openDocument": "Ouvrir le document",
+      "downloadDocument": "Télécharger le document",
+      "deleteDocument": "Supprimer le document",
+      "noDocumentsTitle": "Aucun document trouvé",
+      "noDocumentsSearch": "Aucun document ne correspond à vos critères de recherche.",
+      "noDocumentsEmpty": "Aucun document d'identité a été ajouté pour ce locataire.",
+      "addFirstDocument": "Ajouter le premier document",
+      "paginationInfo": "Affichage de {from} à {to} sur {total} documents",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "typeUndefined": "Type non défini"
+    },
+    "guarantorsTabContent": {
+      "title": "Garants",
+      "loading": "Chargement...",
+      "activeCount": "{count} garant actif",
+      "activeCountPlural": "{count} garants actifs",
+      "archived": "Archivés",
+      "archivedShort": "Archive",
+      "addGuarantor": "Ajouter un garant",
+      "addShort": "Ajouter",
+      "loadingGuarantors": "Chargement des garants...",
+      "editGuarantor": "Modifier le garant",
+      "archiveGuarantor": "Archiver le garant",
+      "archiveError": "Erreur lors de l'archivage du garant. Veuillez réessayer.",
+      "restoreError": "Erreur lors de la restauration du garant. Veuillez réessayer.",
+      "phone": "Téléphone",
+      "email": "Email",
+      "cin": "CIN",
+      "addedOn": "Ajouté le",
+      "modifiedOn": "Modifié le",
+      "noGuarantorsTitle": "Aucun garant",
+      "noGuarantorsDescription": "Aucun garant n'a été enregistré pour ce locataire. Ajoutez un garant pour sécuriser le bail.",
+      "addFirstGuarantor": "Ajouter le premier garant"
+    },
+    "leaseDetailsTab": {
+      "statusActive": "Actif",
+      "statusPending": "En attente",
+      "statusLate": "En retard",
+      "statusSuspended": "Suspendu",
+      "statusTerminated": "Résilié",
+      "statusArchived": "Archivé",
+      "statusUnknown": "Inconnu",
+      "noLeaseFound": "Aucun bail actif trouvé pour ce locataire.",
+      "activeLease": "Rendez-vous Actif",
+      "property": "Centre",
+      "unit": "Unité",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "financialTerms": "Conditions Financières",
+      "monthlyRent": "Don Mensuel",
+      "securityDeposit": "Dépôt de Garantie",
+      "editLease": "Modifier le bail"
+    },
+    "leasesTabContent": {
+      "leaseCreatedSuccess": "Rendez-vous créé avec succès !",
+      "leaseRenewedSuccess": "Rendez-vous renouvelé avec succès !",
+      "leaseActivatedSuccess": "Rendez-vous activé avec succès !",
+      "leaseActivationError": "Erreur lors de l'activation du bail",
+      "leaseArchivedSuccess": "Rendez-vous archivé avec succès !",
+      "leaseArchiveError": "Erreur lors de l'archivage du bail",
+      "statusActive": "Actif",
+      "statusDraft": "Brouillon",
+      "statusTerminated": "Terminé",
+      "statusExpired": "Expiré",
+      "statusCancelled": "Annulé",
+      "invalidDate": "Date invalide",
+      "expired": "Expiré",
+      "daysRemaining": "{days} jours restants",
+      "title": "Rendez-vous",
+      "loading": "Chargement...",
+      "leaseCount": "{count} bail enregistré",
+      "leaseCountPlural": "{count} baux enregistrés",
+      "statsActive": "Actif: {count}",
+      "statsDraft": "Brouillon: {count}",
+      "statsTerminated": "Terminé: {count}",
+      "newLease": "Nouveau bail",
+      "loadingLeases": "Chargement des baux...",
+      "leaseId": "Rendez-vous #{id}",
+      "generateContract": "Générer contrat",
+      "renew": "Renouveler",
+      "renewing": "Renouvellement...",
+      "activate": "Activer",
+      "activating": "Activation...",
+      "terminate": "Résilier",
+      "archive": "Archiver",
+      "archiving": "Archivage...",
+      "period": "Période",
+      "rent": "Don",
+      "perMonth": "par mois",
+      "deposit": "Dépôt",
+      "guarantee": "garantie",
+      "unit": "Unité",
+      "reference": "référence",
+      "leaseTerminated": "Rendez-vous résilié",
+      "terminationDate": "Date de résiliation :",
+      "reason": "Raison :",
+      "processedOn": "Traité le :",
+      "createdOn": "Créé le",
+      "modifiedOn": "Modifié le",
+      "noLeasesTitle": "Aucun bail",
+      "noLeasesDescription": "Aucun bail n'a été enregistré pour ce locataire.",
+      "createFirstLease": "Créer le premier bail"
+    },
+    "statusHistoryTab": {
+      "statusActive": "Actif",
+      "statusPending": "En attente",
+      "statusLate": "En retard",
+      "statusSuspended": "Suspendu",
+      "statusTerminated": "Résilié",
+      "statusArchived": "Archivé",
+      "loadingError": "Erreur de chargement",
+      "loadingErrorDescription": "Impossible de charger l'historique des statuts. Veuillez réessayer plus tard.",
+      "noHistoryTitle": "Aucun historique",
+      "noHistoryDescription": "Aucun changement de statut n'a encore été enregistré pour ce locataire.",
+      "title": "Historique des statuts",
+      "changeCount": "{count} changement enregistré",
+      "changeCountPlural": "{count} changements enregistrés",
+      "recent": "Récent"
+    },
+    "tenantDashboardHeader": {
+      "totalTenantsTitle": "Total",
+      "totalTenantsSubtitle": "Donneurs",
+      "totalTenantsDescription1": "Nombre total de",
+      "totalTenantsDescription2": "locataires",
+      "monthlyRevenueTitle": "Revenus",
+      "monthlyRevenueSubtitle": "Mensuels",
+      "monthlyRevenueDescription1": "Revenus locatifs actifs",
+      "monthlyRevenueDescription2": "mensuels",
+      "occupancyRateTitle": "Taux",
+      "occupancyRateSubtitle": "d'Occupation",
+      "occupancyRateDescription1": "Services occupées",
+      "occupancyRateDescription2": "actuellement",
+      "expiringLeasesTitle": "Rendez-vous Expirants",
+      "expiringLeasesDescription1": "Dans les 3 prochains",
+      "expiringLeasesDescription2": "mois",
+      "latePaymentsTitle": "En Retard",
+      "latePaymentsDescription1": "Retards de paiement",
+      "latePaymentsDescription2": "actuels"
+    },
+    "tenantDetailView": {
+      "email": "Email",
+      "changeStatus": "Changer statut",
+      "edit": "Modifier",
+      "tenantNotFound": "Donneur non trouvé",
+      "leaseDetailsTab": "Détails du Rendez-vous",
+      "leaseHistoryTab": "Historique Rendez-vous",
+      "guarantorsTab": "Garants",
+      "documentsTab": "Documents",
+      "statusHistoryTab": "Historique Statuts"
+    },
+    "archiveDialog": {
+      "title": "Archiver le locataire",
+      "subtitle": "Cette action va désactiver le locataire",
+      "confirmTitle": "Confirmation d'archivage",
+      "confirmMessage": "Êtes-vous sûr de vouloir archiver {name} ?",
+      "warning": "Cette action archivera définitivement ce locataire. Il n'apparaîtra plus dans la liste principale.",
+      "cancel": "Annuler",
+      "confirm": "Confirmer l'archivage",
+      "archiving": "Archivage..."
+    },
+    "addTenant": {
+      "title": "Ajouter un nouveau locataire et un nouveau bail",
+      "description": "Suivez les étapes pour enregistrer toutes les informations essentielles du locataire et du contrat."
+    },
+    "addLease": {
+      "title": "Nouveau bail",
+      "unknownProperty": "Centre inconnue",
+      "loadUnitsError": "Impossible de charger les services disponibles",
+      "createSuccess": "Rendez-vous créé avec succès !",
+      "loadingUnits": "Chargement des services disponibles...",
+      "noUnitsAvailable": "Aucune service disponible pour le moment.",
+      "noUnitsHint": "Assurez-vous qu'il y a des services avec le statut \"disponible\"."
+    },
+    "addGuarantor": {
+      "titleAdd": "Ajouter un garant",
+      "titleEdit": "Modifier un garant",
+      "tenantIdRequired": "tenantId requis pour créer un garant",
+      "updateSuccess": "Garant modifié avec succès",
+      "updateSuccessDesc": "Les informations de {name} ont été mises à jour",
+      "createSuccess": "Garant ajouté avec succès",
+      "createSuccessDesc": "{name} a été ajouté comme garant",
+      "actionUpdate": "modification",
+      "actionCreate": "ajout",
+      "error": "Erreur lors de {action} du garant",
+      "errorDesc": "Une erreur est survenue lors de {action} du garant"
+    },
+    "addDocument": {
+      "title": "Ajouter des Documents",
+      "filePreview": "Aperçu du fichier",
+      "documentType": "Type de document",
+      "customName": "Nom personnalisé",
+      "documentNamePlaceholder": "Nom du document",
+      "selectType": "Sélectionner le type",
+      "selectTypeError": "Veuillez sélectionner un type pour {count} document(s)",
+      "fileSizeError": "{count} fichier(s) dépassent la limite de 10MB",
+      "fetchTypesError": "Erreur récupération types",
+      "uploadError": "Erreur lors de l'ajout des documents",
+      "guideTitle": "Guide des types de documents",
+      "guideTenant": "Documents Donneur",
+      "guideTenantList": "• Bulletin de salaire<br/>• Attestation de travail<br/>• Relevé bancaire<br/>• Photo du locataire",
+      "guideLease": "Documents de Rendez-vous",
+      "guideLeaseList": "• Contrat de bail<br/>• État des lieux d'entrée<br/>• Avenant au bail<br/>• Quittance de loyer",
+      "guideIdentity": "Documents d'Identité",
+      "guideIdentityList": "• CIN recto<br/>• CIN verso<br/>• CIN garant recto<br/>• CIN garant verso",
+      "dropzoneText": "Glissez-déposez ou cliquez pour sélectionner des fichiers",
+      "dropzoneHint": "JPG, PNG, PDF, DOCX (max 10MB)",
+      "filesToAdd": "Fichiers à ajouter ({count})",
+      "headerPreview": "APERÇU",
+      "headerFile": "FICHIER",
+      "headerType": "TYPE DE DOCUMENT",
+      "headerCustomName": "NOM PERSONNALISÉ",
+      "headerActions": "ACTIONS",
+      "cancel": "Annuler",
+      "uploading": "En cours...",
+      "addDocuments": "Ajouter {count} document(s)"
+    },
+    "details": {
+      "backButton": "Retour à la liste",
+      "editButton": "Modifier",
+      "archiveButton": "Archiver",
+      "tabs": {
+        "overview": "Aperçu",
+        "leases": "Rendez-vous",
+        "documents": "Documents",
+        "guarantors": "Garants",
+        "history": "Historique"
+      },
+      "overview": {
+        "personalInfo": "Informations Personnelles",
+        "contactInfo": "Informations de Contact",
+        "professionalInfo": "Informations Professionnelles",
+        "emergencyContact": "Contact d'Urgence",
+        "fullName": "Nom Complet",
+        "email": "Email",
+        "phone": "Téléphone",
+        "city": "Ville",
+        "profession": "Profession",
+        "status": "Statut"
+      }
+    },
+    "form": {
+      "add": {
+        "title": "Ajouter un Nouveau Donneur",
+        "subtitle": "Remplissez les informations du locataire",
+        "steps": {
+          "personal": "Infos Personnelles",
+          "contract": "Contrat",
+          "guarantor": "Garant",
+          "security": "Sécurité",
+          "review": "Révision"
+        }
+      },
+      "edit": {
+        "title": "Modifier le Donneur",
+        "subtitle": "Mettre à jour les informations du locataire"
+      },
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "city": "Ville",
+        "profession": "Profession",
+        "status": "Statut",
+        "emergencyContact": "Contact d'Urgence",
+        "emergencyPhone": "Téléphone d'Urgence"
+      },
+      "placeholders": {
+        "firstName": "Jean",
+        "lastName": "Dupont",
+        "email": "jean.dupont@exemple.com",
+        "phone": "+212 6XX XXX XXX",
+        "city": "Casablanca",
+        "profession": "Sélectionner une profession",
+        "emergencyContact": "Nom du contact",
+        "emergencyPhone": "+212 6XX XXX XXX"
+      },
+      "buttons": {
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "submit": "Soumettre"
+      },
+      "validation": {
+        "required": "Ce champ est requis",
+        "invalidEmail": "Adresse email invalide",
+        "invalidPhone": "Numéro de téléphone invalide"
+      },
+      "success": "Donneur {action} avec succès",
+      "error": "Erreur lors de {action} du locataire"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "delete": "Supprimer",
+      "refresh": "Actualiser"
+    },
+    "toast": {
+      "archiveSuccess": "Donneur archivé avec succès",
+      "archiveError": "Erreur lors de l'archivage du locataire",
+      "restoreSuccess": "Donneur restauré avec succès",
+      "restoreError": "Erreur lors de la restauration du locataire",
+      "deleteSuccess": "Donneur supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du locataire",
+      "updateSuccess": "Donneur mis à jour avec succès",
+      "updateError": "Erreur lors de la mise à jour du locataire"
+    }
+  },
+  "team": {
+    "title": "Gestion de l'équipe",
+    "description": "Gérer les membres de votre équipe et leurs permissions",
+    "addMember": "Ajouter un membre",
+    "members": "Membres",
+    "member": "Membre",
+    "noMembers": "Aucun membre trouvé",
+    "viewModes": {
+      "list": "Liste",
+      "grid": "Grille"
+    },
+    "status": {
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "revoked": "Révoqué"
+    },
+    "wizard": {
+      "step": "Étape",
+      "steps": {
+        "userInfo": "Informations",
+        "accessType": "Type d'accès",
+        "permissions": "Permissions",
+        "review": "Confirmation"
+      },
+      "userInfo": {
+        "title": "Informations utilisateur",
+        "description": "Entrez les informations de base du nouveau membre",
+        "infoMessage": "L'utilisateur recevra un email avec ces identifiants et pourra changer son mot de passe lors de sa première connexion.",
+        "fullName": "Nom complet",
+        "fullNamePlaceholder": "Ex: Hassan Alami",
+        "email": "Email",
+        "emailPlaceholder": "email@exemple.com",
+        "password": "Mot de passe",
+        "passwordPlaceholder": "••••••••",
+        "confirmPassword": "Confirmer le mot de passe",
+        "passwordStrength": {
+          "weak": "Faible",
+          "medium": "Moyen",
+          "good": "Bon",
+          "strong": "Fort"
+        },
+        "passwordRequirements": {
+          "title": "Le mot de passe doit contenir :",
+          "minLength": "Au moins 8 caractères",
+          "uppercase": "Au moins une majuscule (A-Z)",
+          "lowercase": "Au moins une minuscule (a-z)",
+          "number": "Au moins un chiffre (0-9)"
+        },
+        "passwordsMatch": "Les mots de passe correspondent",
+        "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe",
+        "showConfirmPassword": "Afficher la confirmation du mot de passe",
+        "hideConfirmPassword": "Masquer la confirmation du mot de passe"
+      },
+      "accessType": {
+        "title": "Type d'accès",
+        "description": "Choisissez le niveau d'accès pour ce membre",
+        "selectRole": "Sélectionnez le rôle",
+        "selectRolePlaceholder": " Choisir un rôle...",
+        "predefinedRoles": "Rôles prédéfinis",
+        "predefinedRolesDescription": "Sélectionner un rôle avec permissions personnalisables.",
+        "fullAccess": "Accès complet",
+        "fullAccessDescription": "Toutes les permissions activées.",
+        "fullAccessInfo": "✓ En choisissant \"Accès complet\", vous passerez directement à l'étape de confirmation.",
+        "roleInfo": "→ Vous allez sélectionner un rôle prédéfini avec des permissions personnalisables."
+      },
+      "permissions": {
+        "title": "Permissions du rôle",
+        "description": "Personnalisez les permissions pour ce membre",
+        "noRoleSelected": "Aucun rôle sélectionné. Veuillez revenir à l'étape précédente.",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner",
+        "selectProperties": "Sélectionner les centres",
+        "selectedCount": "{count} sélectionnée(s)",
+        "propertyScope": "Accès aux centres",
+        "keyFeatures": "Fonctionnalités clés"
+      },
+      "review": {
+        "title": "Confirmer l'ajout du membre",
+        "description": "Vérifiez les informations avant de confirmer",
+        "userInformation": "Informations utilisateur",
+        "accessType": "Type d'accès",
+        "permissions": "Permissions",
+        "permissionsSummary": "Résumé des permissions",
+        "propertiesAccess": "Accès aux centres",
+        "canAddProperties": "Peut ajouter de nouvelles centres",
+        "noAccess": "Aucun accès",
+        "accessFull": {
+          "title": "Accès complet activé",
+          "description": "Ce membre aura un accès complet à toutes les fonctionnalités de l'application sans aucune restriction."
+        },
+        "warning": "Attention : Ces permissions peuvent être modifiées ultérieurement"
+      },
+      "navigation": {
+        "previous": "Précédent",
+        "previousShort": "Préc.",
+        "next": "Suivant",
+        "nextShort": "Suiv.",
+        "confirm": "Confirmer",
+        "cancel": "Annuler"
+      }
+    },
+    "properties": {
+      "title": "Centres",
+      "canAddProperties": "Peut ajouter de nouvelles centres",
+      "canAddPropertiesDescription": "Permet de créer des centres et d'y ajouter des services",
+      "selectProperties": "Sélectionner les centres",
+      "selectedProperties": "{count} propriété(s) sélectionnée(s)",
+      "propertyPermissionsNote": "Les permissions par propriété peuvent être configurées après l'ajout du membre",
+      "view": "Voir les centres",
+      "create": "Créer des centres",
+      "edit": "Modifier les centres",
+      "archive": "Archiver les centres",
+      "addUnits": "Ajouter des services",
+      "propertiesAccessible": "Centres accessibles",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "searchPlaceholder": "Rechercher une propriété...",
+      "showingResults": "Affichage de {filtered} sur {total} centres",
+      "currentlyAssigned": "{count} propriété(s) actuellement assignée(s)",
+      "useWizardForDetails": "Utilisez l'assistant pour modifier les centres spécifiques",
+      "noPropertiesSelected": "Aucune propriété sélectionnée",
+      "noPropertiesAvailable": "Aucune propriété disponible",
+      "pagination": {
+        "previous": "Précédent",
+        "next": "Suivant",
+        "page": "Page {current} sur {total}"
+      },
+      "dialog": {
+        "title": "Sélectionner les centres",
+        "description": "Choisissez les centres auxquelles ce membre aura accès"
+      }
+    },
+    "charges": {
+      "title": "Dons",
+      "view": "Voir les charges",
+      "create": "Créer des charges",
+      "edit": "Modifier les charges",
+      "archive": "Archiver les charges"
+    },
+    "tenants": {
+      "title": "Donneurs",
+      "view": "Voir les locataires",
+      "add": "Ajouter des locataires",
+      "edit": "Modifier les locataires",
+      "archive": "Archiver les locataires"
+    },
+    "contacts": {
+      "title": "Contacts",
+      "view": "Voir les contacts",
+      "add": "Ajouter des contacts",
+      "edit": "Modifier les contacts",
+      "delete": "Supprimer les contacts",
+      "archive": "Archiver les contacts"
+    },
+    "documents": {
+      "title": "Documents",
+      "view": "Voir les documents",
+      "download": "Télécharger les documents"
+    },
+    "roles": {
+      "property_staff": "Personnel Immobilier",
+      "property_staff_description": "Assistant financier ou comptable",
+      "owner": "Propriétaire (Rendez-vousleur)",
+      "owner_description": "Propriétaire avec visibilité sur ses biens",
+      "tenant": "Donneur",
+      "tenant_description": "Donneur avec accès limité",
+      "auditor": "Auditeur",
+      "auditor_description": "Réviseur externe ou cabinet d'audit",
+      "vendor": "Fournisseur",
+      "vendor_description": "Fournisseur ou prestataire de services",
+      "system_support": "Support Système",
+      "system_support_description": "Support technique avec accès en lecture seule",
+      "assistant_pm": "Assistante Gestionnaire Immobilier"
+    },
+    "filters": {
+      "search": "Rechercher par nom ou email...",
+      "role": "Rôle",
+      "status": "Statut",
+      "allRoles": "Tous les rôles",
+      "allStatus": "Tous les statuts",
+      "clearFilters": "Effacer les filtres",
+      "showFilters": "Afficher les filtres",
+      "hideFilters": "Masquer les filtres",
+      "activeFilters": "{count} filtre(s) actif(s)",
+      "showingResults": "Affichage de {start} à {end} sur {total} membres",
+      "loading": "Chargement...",
+      "error": "Erreur lors du chargement",
+      "retry": "Réessayer",
+      "refresh": "Actualiser",
+      "noResults": "Aucun membre trouvé",
+      "noResultsDescription": "Essayez de modifier vos filtres",
+      "noMembersDescription": "Commencez par ajouter des membres à votre équipe",
+      "apply": "Appliquer"
+    },
+    "table": {
+      "columns": {
+        "name": "Nom",
+        "email": "Email",
+        "role": "Rôle",
+        "permissions": "Permissions",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "fullAccess": "Accès complet",
+      "noPermissions": "Aucun accès"
+    },
+    "actions": {
+      "viewDetails": "Voir détails",
+      "editPermissions": "Modifier permissions",
+      "delete": "Supprimer",
+      "viewProfile": "Voir le profil",
+      "moreOptions": "Plus d'options"
+    },
+    "view": {
+      "title": "Détails du membre",
+      "role": "Rôle",
+      "email": "Email",
+      "addedOn": "Ajouté le",
+      "accessType": "Type d'accès",
+      "fullAccess": "Accès complet",
+      "customAccess": "Accès personnalisé",
+      "customAccessDescription": "Permissions spécifiques définies ci-dessous",
+      "fullAccessDescription": "Toutes les permissions sur toutes les ressources",
+      "close": "Fermer",
+      "edit": "Modifier"
+    },
+    "edit": {
+      "title": "Modifier les permissions",
+      "fullAccess": "Accès complet",
+      "fullAccessDescription": "Toutes les permissions sur toutes les ressources",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "delete": {
+      "title": "Supprimer le membre",
+      "description": "Êtes-vous sûr de vouloir supprimer ce membre ?",
+      "warning": "Cette action est irréversible. Le membre perdra immédiatement tous ses accès.",
+      "memberName": "Membre : {name}",
+      "memberInformation": "Informations du membre",
+      "role": "Rôle",
+      "email": "Email",
+      "confirm": "Oui, supprimer",
+      "cancel": "Annuler",
+      "deleting": "Suppression..."
+    },
+    "notifications": {
+      "memberAdded": "Membre ajouté!",
+      "memberAddedDescription": "{name} a été ajouté à votre équipe",
+      "memberUpdated": "Permissions modifiées!",
+      "memberUpdatedDescription": "Les permissions de {name} ont été mises à jour",
+      "memberDeleted": "Membre supprimé!",
+      "memberDeletedDescription": "{name} a été retiré de votre équipe",
+      "refreshSuccess": "Données mises à jour avec succès",
+      "refreshError": "Erreur lors du rafraîchissement",
+      "error": "Erreur",
+      "errorAddingMember": "Impossible d'ajouter le membre",
+      "errorUpdatingMember": "Impossible de modifier les permissions",
+      "errorDeletingMember": "Impossible de supprimer le membre"
+    },
+    "confirmFullAccess": {
+      "title": "Confirmer l'accès complet",
+      "description": "Vous êtes sur le point de donner un accès complet à ce membre.",
+      "warning": "⚠️ L'accès complet donne tous les privilèges administrateur sur toutes les ressources.",
+      "features": "Cela inclut :",
+      "feature1": "Voir, créer, modifier et supprimer toutes les centres",
+      "feature2": "Gérer tous les locataires et baux",
+      "feature3": "Créer et modifier toutes les charges",
+      "feature4": "Accéder à tous les documents et contacts",
+      "feature5": "Modifier les paramètres de l'organisation",
+      "confirm": "Oui, donner l'accès complet",
+      "cancel": "Non, personnaliser les permissions"
+    },
+    "permissions": {
+      "noAccess": {
+        "title": "Accès refusé",
+        "description": "Vous n'avez pas la permission d'accéder à {module}",
+        "contact": "Contactez votre administrateur pour demander l'accès"
+      },
+      "noPermission": "Vous n'avez pas la permission pour cette action"
+    },
+    "unauthorized": {
+      "title": "Accès refusé",
+      "description": "Vous n'avez pas la permission d'accéder à cette page",
+      "message": "Veuillez contacter votre administrateur si vous pensez qu'il s'agit d'une erreur.",
+      "goHome": "Retour à l'accueil"
+    }
+  },
+  "regularisations": {
+    "title": "Régularisations",
+    "subtitle": "Consultez et exportez vos calculs de régularisation",
+    "kpis": {
+      "totalCalculations": {
+        "title": "Total Calculs",
+        "description": "finalisé(s) sur",
+        "info": "Nombre de calculs effectués avec leur statut de finalisation."
+      },
+      "totalDons": {
+        "title": "Dons Totales",
+        "description": "Toutes périodes confondues",
+        "info": "Montant total des charges réparties sur toutes les périodes."
+      },
+      "averagePerCalculation": {
+        "title": "Moyenne par Calcul",
+        "description": "Par période",
+        "info": "Montant moyen des charges par période de régularisation."
+      },
+      "availableDons": {
+        "title": "Dons Disponibles",
+        "description": "Dans la base de données",
+        "info": "Dons disponibles pour créer de nouvelles régularisations."
+      },
+      "labels": {
+        "finalized": "finalisé(s)",
+        "allPeriods": "Toutes périodes confondues",
+        "perPeriod": "Par période",
+        "inDatabase": "Dans la base de données"
+      }
+    },
+    "actions": {
+      "newCalculation": "Démarrer un calcul",
+      "viewArchives": "Voir les archives",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "delete": "Supprimer",
+      "export": "Exporter",
+      "details": "Détails",
+      "pdf": "PDF",
+      "excel": "Excel",
+      "back": "Retour",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "cancel": "Annuler",
+      "calculate": "Calculer",
+      "save": "Enregistrer le calcul",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "reset": "Réinitialiser",
+      "finalize": "Finaliser",
+      "recalculate": "Recalculer"
+    },
+    "table": {
+      "columns": {
+        "property": "Centre",
+        "period": "Période",
+        "units": "Services",
+        "total": "Total (MAD)",
+        "status": "Statut",
+        "actions": "Actions",
+        "tenant": "Donneur",
+        "factor": "Facteur",
+        "percentage": "%",
+        "amount": "Dons",
+        "provisions": "Provisions",
+        "archivedAt": "Archivé le"
+      },
+      "status": {
+        "finalized": "Finalisé",
+        "draft": "Brouillon"
+      },
+      "badges": {
+        "oldVersion": "Ancienne version"
+      },
+      "empty": "Aucun calcul disponible",
+      "emptyDescription": "Commencez par créer votre premier calcul de régularisation",
+      "selected": "sélectionné(s)",
+      "pagination": {
+        "page": "Page",
+        "of": "/"
+      },
+      "info": {
+        "factor": "Valeur utilisée pour le calcul (surface, tantièmes, etc.).",
+        "percentage": "Pourcentage de répartition des charges pour cette service.",
+        "amount": "Montant des charges attribué à cette service."
+      }
+    },
+    "filters": {
+      "title": "Filtrer les calculs",
+      "search": "Rechercher par nom, email...",
+      "property": "Filtrer par propriété...",
+      "method": "Filtrer par méthode...",
+      "period": "Sélectionner une période",
+      "allProperties": "Toutes les centres",
+      "allMethods": "Toutes les méthodes",
+      "reset": "Réinitialiser",
+      "resetAll": "Réinitialiser tous les filtres",
+      "results": "résultat",
+      "results_plural": "résultats",
+      "show": "Afficher les filtres",
+      "hide": "Masquer les filtres"
+    },
+    "wizard": {
+      "title": "Assistant de Calcul de Régularisation",
+      "description": "Suivez les étapes pour calculer la répartition des charges",
+      "steps": {
+        "property": "Centre",
+        "units": "Services",
+        "key": "Clé",
+        "period": "Période",
+        "result": "Résultat"
+      },
+      "step1": {
+        "title": "Sélectionnez la propriété",
+        "description": "Choisissez le centre de transfusion concerné",
+        "searchPlaceholder": "Rechercher par nom ou adresse...",
+        "unitsBadge": "{count} service(s)",
+        "filter": {
+          "propertyType": {
+            "aria": "Filtrer par type de bien",
+            "placeholder": "Tous les types",
+            "all": "Tous les types"
+          },
+          "units": {
+            "aria": "Filtrer par services",
+            "placeholder": "Toutes les services",
+            "allProperties": "Toutes les centres",
+            "withUnits": "Avec service(s)",
+            "withoutUnits": "Sans service"
+          }
+        },
+        "table": {
+          "property": "Centre",
+          "address": "Adresse",
+          "units": "Services"
+        }
+      },
+      "step2": {
+        "title": "Sélectionnez les services",
+        "description": "Cochez les services à inclure dans le calcul",
+        "selectedCount": "service(s) sélectionnée(s)",
+        "searchPlaceholder": "Rechercher (n° service, locataire)",
+        "vacant": "Vacant",
+        "occupied": "Occupée",
+        "surface": "Surface",
+        "selectionCount": "{selected} / {total} service(s)",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner",
+        "table": {
+          "unit": "Unité",
+          "tenant": "Donneur",
+          "surface": "Surface",
+          "status": "Statut"
+        },
+        "surfaceBadge": "Surface : {value} m²"
+      },
+      "step3": {
+        "title": "Choisissez la méthode de répartition",
+        "description": "Sélectionnez comment répartir les charges",
+        "titleProvisions": "Configurez les provisions mensuelles",
+        "changeMethod": "Changer la méthode",
+        "provisions": {
+          "title": "Provisions Mensuelles",
+          "description": "Définissez le montant des provisions pour toutes les services",
+          "amountLabel": "Montant mensuel appliqué à toutes les services",
+          "selectPlaceholder": "Sélectionner un montant...",
+          "customLabel": "Ou saisissez un montant personnalisé",
+          "customPlaceholder": "Montant personnalisé",
+          "previewTitle": "Aperçu",
+          "previewUnits": "service(s) sélectionnée(s)",
+          "perUnit": "Montant par service",
+          "totalMonthly": "Total mensuel",
+          "currency": "MAD/mois",
+          "currencyShort": "MAD"
+        },
+        "jit": {
+          "common": {
+            "unitLabel": "Unité {unitNumber}",
+            "invalidTitle": "Valeur invalide",
+            "genericUpdateError": "Erreur lors de la mise à jour",
+            "saveErrorTitle": "Échec de la mise à jour",
+            "saveButton": "Enregistrer"
+          },
+          "occupants": {
+            "title": "Saisie JIT — Occupants",
+            "description": "Renseignez le nombre d'occupants par service sélectionnée. La valeur sera enregistrée puis utilisée pour le calcul.",
+            "invalidDescription": "Le nombre d'occupants doit être un entier ≥ 0",
+            "successTitle": "Occupants mis à jour",
+            "successDescription": "Unité {unitNumber} : {value}"
+          },
+          "surface": {
+            "title": "Saisie JIT — Surface (m²)",
+            "description": "Ajustez la surface utilisée pour le calcul par service sélectionnée. La valeur sera enregistrée puis utilisée pour le calcul.",
+            "invalidDescription": "La surface doit être un nombre strictement positif",
+            "successTitle": "Surface mise à jour",
+            "successDescription": "Unité {unitNumber} : {value} m²",
+            "currentValue": "m² (actuel : {value})"
+          },
+          "tantieme": {
+            "title": "Saisie JIT — Tantièmes",
+            "description": "Renseignez les tantièmes utilisés pour la répartition par service sélectionnée. La valeur sera enregistrée puis utilisée pour le calcul.",
+            "invalidDescription": "Les tantièmes doivent être un entier strictement positif",
+            "successTitle": "Tantièmes mis à jour",
+            "successDescription": "Unité {unitNumber} : {value}"
+          }
+        }
+      },
+      "step4": {
+        "title": "Sélectionnez la période",
+        "description": "Définissez la période de calcul des charges (minimum 1 mois)",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "chooseStartDate": "Choisir une date de début",
+        "chooseEndDate": "Choisir une date de fin",
+        "chooseEndDateManually": "ou choisir manuellement",
+        "duration": "Durée de la période",
+        "startDatePlaceholder": "Choisir une date de début",
+        "durationLabel": "Durée de la période",
+        "presets": {
+          "quarter": "Trimestre",
+          "quarterSub": "3 mois",
+          "semester": "Semestre",
+          "semesterSub": "6 mois",
+          "year": "Année",
+          "yearSub": "12 mois"
+        },
+        "validation": {
+          "tooShort": "Période trop courte",
+          "tooShortDescription": "La période doit être d'au moins 30 jours (1 mois)",
+          "tooShortError": "jour(s) • Minimum : 30 jours",
+          "valid": "Période valide",
+          "validDescription": "jour(s)"
+        },
+        "validPeriodSummary": "Période valide : {days} jour(s)",
+        "tooShortSummary": "Période trop courte : {days} jour(s) • Minimum : {minDays} jours"
+      },
+      "step5": {
+        "calculating": "Calcul en cours...",
+        "calculatingDescription": "Veuillez patienter",
+        "completed": "Calcul terminé !",
+        "completedDescription": "Voici la répartition des charges pour",
+        "summary": {
+          "totalDons": "Total des charges",
+          "unitsCount": "Services concernées",
+          "method": "Méthode"
+        },
+        "breakdown": "Répartition par service",
+        "unitDetails": {
+          "unit": "Unité",
+          "factor": "Facteur",
+          "percentage": "Part",
+          "amount": "Montant"
+        },
+        "totalDonsLabel": "Total des charges",
+        "unitsLabel": "Services concernées",
+        "methodLabel": "Méthode",
+        "breakdownTitle": "Répartition par service",
+        "unitTitle": "Unité {unitNumber}",
+        "factorLabel": "Facteur",
+        "shareLabel": "Part",
+        "amountLabel": "Montant"
+      },
+      "allocationKeys": {
+        "equitable": {
+          "label": "Répartition Équitable",
+          "description": "Dons réparties de manière égale entre toutes les services sélectionnées."
+        },
+        "surface": {
+          "label": "Répartition par Surface",
+          "description": "Dons réparties selon la surface habitable de chaque service."
+        },
+        "tantieme": {
+          "label": "Répartition par Tantièmes",
+          "description": "Dons réparties selon les tantièmes de copropriété."
+        },
+        "occupants": {
+          "label": "Répartition par Occupants",
+          "description": "Dons réparties selon le nombre d'occupants par service."
+        }
+      },
+      "actions": {
+        "close": "Fermer",
+        "back": "Retour",
+        "cancel": "Annuler",
+        "next": "Suivant",
+        "calculate": "Calculer",
+        "save": "Enregistrer le calcul",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner"
+      },
+      "toast": {
+        "calculationSuccess": "Calcul terminé avec succès !",
+        "calculationSaved": "Calcul enregistré avec succès !",
+        "periodTooShort": "Période trop courte",
+        "periodTooShortDescription": "La période doit être d'au moins 30 jours (1 mois)",
+        "calculationError": "Erreur lors du calcul",
+        "calculationErrorDescription": "Une erreur est survenue pendant le calcul. Vérifiez les informations saisies et réessayez. Si le problème persiste, contactez votre administrateur."
+      },
+      "navigation": {
+        "back": "Retour",
+        "cancel": "Annuler",
+        "next": "Suivant",
+        "calculate": "Calculer",
+        "saveCalculation": "Enregistrer le calcul"
+      },
+      "drawer": {
+        "title": "Assistant de calcul de régularisation",
+        "description": "Suivez les étapes pour calculer la répartition des charges"
+      },
+      "common": {
+        "viewGridAria": "Vue grille",
+        "viewListAria": "Vue liste"
+      },
+      "pagination": {
+        "pageOf": "Page {page} / {total}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      }
+    },
+    "details": {
+      "title": "Détails du Calcul",
+      "generalInfo": "Informations Générales",
+      "property": "Centre",
+      "method": "Méthode",
+      "units": "Services",
+      "period": "Période",
+      "status": "Statut",
+      "totalDons": "Total des Dons",
+      "breakdown": "Répartition par Unité",
+      "breakdownHelp": {
+        "title": "Comprendre ces montants",
+        "chargesLabel": "Dons",
+        "chargesDescription": "part des charges réelles imputée à chaque service pour la période.",
+        "provisionsLabel": "Provisions",
+        "provisionsDescription": "montant déjà payé par le locataire pendant la même période.",
+        "balanceLabel": "Solde",
+        "balanceFormula": "Solde = Provisions − Dons.",
+        "balanceNegativeLabel": "Solde négatif",
+        "balanceNegativeDescription": "les provisions sont inférieures aux charges → montant restant à payer par le locataire.",
+        "balancePositiveLabel": "Solde positif",
+        "balancePositiveDescription": "les provisions sont supérieures aux charges → montant à rembourser ou à compenser au profit du locataire."
+      },
+      "close": "Fermer",
+      "from": "Du",
+      "to": "au"
+    },
+    "history": {
+      "title": "Historique",
+      "events": {
+        "create": "Création",
+        "finalize": "Finalisation",
+        "archive": "Archivage",
+        "restore": "Restauration",
+        "renew": "Renouvellement",
+        "correct": "Correction",
+        "recalculate": "Recalcul"
+      },
+      "recalculationLabel": "Recalcul",
+      "statusLabel": "Statut : {status}"
+    },
+    "archive": {
+      "title": "Archives",
+      "subtitle": "Calculs archivés",
+      "description": "Consultez vos calculs archivés",
+      "backToList": "Retour à la liste",
+      "empty": "Aucun calcul archivé",
+      "emptyDescription": "Les calculs archivés apparaîtront ici",
+      "selected": "calcul(s) sélectionné(s)",
+      "restoreSelected": "Restaurer la sélection",
+      "confirmRestore": {
+        "title": "Restaurer ce calcul",
+        "titleBulk": "Restaurer {count} calcul(s)",
+        "description": "Confirmez-vous la restauration de ce calcul ? Il sera réintégré dans la liste principale.",
+        "descriptionBulk": "Confirmez-vous la restauration de ces calculs ? Ils seront réintégrés dans la liste principale."
+      }
+    },
+    "confirmArchive": {
+      "title": "Archiver ce calcul",
+      "titleBulk": "Archiver {count} calcul(s)",
+      "description": "Êtes-vous sûr de vouloir archiver ce calcul de régularisation ? Vous pourrez le restaurer à tout moment depuis la page des archives.",
+      "descriptionBulk": "Êtes-vous sûr de vouloir archiver les {count} calculs sélectionnés ? Vous pourrez les restaurer à tout moment depuis la page des archives.",
+      "action": "Archiver",
+      "actionAll": "Archiver tout"
+    },
+    "toast": {
+      "archiveSuccess": "Calcul archivé avec succès",
+      "archiveSuccessBulk": "{count} calcul(s) archivé(s) avec succès",
+      "restoreSuccess": "Calcul restauré avec succès",
+      "restoreSuccessBulk": "{count} calcul(s) restauré(s)",
+      "exportPDF": "Export PDF en cours...",
+      "exportExcel": "Export Excel en cours...",
+      "deleteSuccess": "Calcul supprimé avec succès",
+      "error": "Une erreur est survenue"
+    }
+  }
+}

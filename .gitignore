@@ -1,76 +1,84 @@
-# Dependencies
+# --- Monorepo BloodLink Master Gitignore ---
+
+# 1. Dependencies (All levels)
 node_modules/
-*/node_modules/
-*/*/node_modules/
+**/node_modules/
+.pnp
+.pnp.*
 
-# Expo
-.expo/
-.expo-shared/
-dist/
-web-build/
-
-# Next.js
-.next/
-out/
-
-# Production builds
-build/
-*.apk
-*.ipa
-
-# Environment variables
+# 2. Environment Variables & Secrets (CRITICAL)
+# This covers all subdirectories: admin_web, center_web, mobile_app, air_service, etc.
 .env
 .env.local
-.env.*.local
-.env.development
-.env.test
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/.env*.local
 
-# IDE
+# 3. Next.js (Admin & Center)
+**/.next/
+**/out/
+**/build/
+
+# 4. Mobile App (Expo / React Native)
+.expo/
+.expo-shared/
+web-build/
+**/ios/build/
+**/android/build/
+**/android/app/build/
+**/android/.gradle/
+*.apk
+*.ipa
+*.app
+*.exe
+
+# 5. Python / AI Service (FastAPI)
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.venv
+**/venv
+**/env
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+.python-version
+
+# 6. IDE & OS
 .vscode/
 .idea/
+.cursor/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Logs
+# 7. Logs & Temporary
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-*.log
+.pnpm-debug.log*
+**/test-results/
+**/dist/
 
-# Testing
-coverage/
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
-
-# Supabase
+# 8. Database & Supabase
 .supabase/
-.temp/
+**/supabase/.temp/
 
-# TypeScript
-*.tsbuildinfo
-
-# Optional: Uncomment if using yarn
-# yarn-error.log
-# .pnp/
-# .pnp.js
-
-# Optional: Uncomment if using pnpm
-# pnpm-lock.yaml
-
-# macOS
-*.DS_Store
-
-# Windows
-*.cab
-*.msi
-*.msm
-*.msp
+# 9. Files to KEEP (Negations)
+!README.md
+!**/README.md
+!**/package.json
+!**/tsconfig.json
+!.gitignore
+!**/SPEC_*.md

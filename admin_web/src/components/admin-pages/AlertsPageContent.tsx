@@ -17,17 +17,7 @@ export default function AlertsPageContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [urgencyFilter, setUrgencyFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    center_id: "",
-    blood_type_required: "O+" as BloodType,
-    urgency_level: "medium" as UrgencyLevel,
-    radius_km: "20",
-    message: "",
-    deadline: "",
-    status: "active" as AlertStatus,
-  });
 
   useEffect(() => {
     let active = true;
@@ -54,7 +44,6 @@ export default function AlertsPageContent() {
         setContext(adminContext);
         setAlerts(Array.isArray(alertsRes.data) ? (alertsRes.data as AlertWithCenter[]) : []);
         setCenters(Array.isArray(centersRes.data) ? (centersRes.data as Center[]) : []);
-        setForm((current) => ({ ...current, center_id: centerId ?? current.center_id }));
       } catch (err) {
         if (active) setError(err instanceof Error ? err.message : "Chargement des alertes impossible.");
       } finally {
@@ -80,51 +69,9 @@ export default function AlertsPageContent() {
     setAlerts(Array.isArray(data) ? (data as AlertWithCenter[]) : []);
   }
 
-  async function handleCreate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!context) return;
-
-    const centerId = context.role === "center_admin" ? context.center?.id : form.center_id;
-    if (!centerId) {
-      setError("Veuillez sélectionner un centre.");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const { error: insertError } = await supabase.from("alerts").insert({
-        center_id: centerId,
-        blood_type_required: form.blood_type_required,
-        urgency_level: form.urgency_level,
-        radius_km: Number(form.radius_km),
-        message: form.message || null,
-        deadline: new Date(form.deadline).toISOString(),
-        status: form.status,
-      });
-
-      if (insertError) throw insertError;
-
-      await refreshAlerts(context);
-      setForm({
-        center_id: context.role === "center_admin" ? context.center?.id ?? "" : "",
-        blood_type_required: "O+",
-        urgency_level: "medium",
-        radius_km: "20",
-        message: "",
-        deadline: "",
-        status: "active",
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Création impossible.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   async function handleDelete(alertId: string) {
     if (!context) return;
+    if (!confirm("Voulez-vous vraiment supprimer cette alerte ? (Action administrative)")) return;
 
     try {
       const { error: deleteError } = await supabase.from("alerts").delete().eq("id", alertId);
@@ -132,18 +79,6 @@ export default function AlertsPageContent() {
       await refreshAlerts(context);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Suppression impossible.");
-    }
-  }
-
-  async function handleClose(alertId: string) {
-    if (!context) return;
-
-    try {
-      const { error: updateError } = await supabase.from("alerts").update({ status: "closed" }).eq("id", alertId);
-      if (updateError) throw updateError;
-      await refreshAlerts(context);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Mise à jour impossible.");
     }
   }
 
@@ -164,19 +99,12 @@ export default function AlertsPageContent() {
     return matchesQuery && matchesUrgency;
   });
 
-  const isCenterAdmin = context?.role === "center_admin" && !!context.center;
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-950">Alertes d&apos;urgence</h1>
-          {isCenterAdmin ? (
-            <p className="mt-3 text-sm text-slate-600">
-              Centre associé : {context?.center?.name ?? "Centre inconnu"} — {context?.center?.city ?? "Ville inconnue"}
-            </p>
-          ) : null}
-          <p className="mt-2 text-sm text-slate-500">Gérer les besoins urgents en sang.</p>
+          <h1 className="text-3xl font-semibold text-slate-950">Supervision des Alertes</h1>
+          <p className="mt-2 text-sm text-slate-500">Vue d&apos;ensemble de tous les besoins urgents actifs sur la plateforme.</p>
         </div>
         <div className="flex flex-col gap-3 md:flex-row">
           <label className="min-w-72 text-sm text-slate-600">
@@ -184,7 +112,7 @@ export default function AlertsPageContent() {
             <input
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Centre, ville, groupe ou message"
+              placeholder="Centre, ville, groupe..."
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-red-400"
             />
           </label>
@@ -207,58 +135,6 @@ export default function AlertsPageContent() {
       </div>
 
       {error ? <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
-
-      <form onSubmit={handleCreate} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-5 flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">Nouvelle alerte</h2>
-            <p className="mt-1 text-sm text-slate-500">Créer ou clôturer rapidement les besoins urgents.</p>
-          </div>
-          <button type="submit" disabled={submitting || loading} className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-70">
-            {submitting ? "Création..." : "+ Nouvelle alerte"}
-          </button>
-        </div>
-
-        {isCenterAdmin ? (
-          <p className="mb-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-            Cette alerte sera automatiquement liée à votre centre.
-          </p>
-        ) : null}
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {context?.role === "super_admin" ? (
-            <label className="text-sm text-slate-700">
-              <span className="mb-2 block font-medium">Centre</span>
-              <select
-                value={form.center_id}
-                onChange={(event) => setForm((current) => ({ ...current, center_id: event.target.value }))}
-                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-red-400"
-                required
-              >
-                <option value="">Sélectionnez un centre</option>
-                {centers.map((center) => (
-                  <option key={center.id} value={center.id}>{center.name} - {center.city}</option>
-                ))}
-              </select>
-            </label>
-          ) : null}
-          <SelectField label="Groupe sanguin" value={form.blood_type_required} onChange={(value) => setForm((current) => ({ ...current, blood_type_required: value as BloodType }))} options={bloodTypes} />
-          <SelectField label="Urgence" value={form.urgency_level} onChange={(value) => setForm((current) => ({ ...current, urgency_level: value as UrgencyLevel }))} options={urgencyLevels} />
-          <label className="text-sm text-slate-700">
-            <span className="mb-2 block font-medium">Rayon (km)</span>
-            <input type="number" min="1" value={form.radius_km} onChange={(event) => setForm((current) => ({ ...current, radius_km: event.target.value }))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-red-400" required />
-          </label>
-          <label className="text-sm text-slate-700">
-            <span className="mb-2 block font-medium">Échéance</span>
-            <input type="datetime-local" value={form.deadline} onChange={(event) => setForm((current) => ({ ...current, deadline: event.target.value }))} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-red-400" required />
-          </label>
-          <SelectField label="Statut" value={form.status} onChange={(value) => setForm((current) => ({ ...current, status: value as AlertStatus }))} options={alertStatuses} />
-        </div>
-        <label className="mt-4 block text-sm text-slate-700">
-          <span className="mb-2 block font-medium">Message</span>
-          <textarea value={form.message} onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))} className="min-h-28 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-red-400" placeholder="Message optionnel pour les donneurs" />
-        </label>
-      </form>
 
       <div>
         {loading ? (
@@ -290,7 +166,6 @@ export default function AlertsPageContent() {
                   <span>Échéance: {new Date(alert.deadline).toLocaleString("fr-FR")}</span>
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  {alert.status === "active" ? <button type="button" onClick={() => handleClose(alert.id)} className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50">Clôturer</button> : null}
                   <button type="button" onClick={() => handleDelete(alert.id)} className="rounded-xl border border-red-200 px-4 py-2 text-sm text-red-700 transition hover:bg-red-50">Supprimer</button>
                 </div>
               </div>
@@ -298,34 +173,11 @@ export default function AlertsPageContent() {
           </div>
         ) : (
           <p className="rounded-2xl border border-slate-200 bg-white px-4 py-6 text-sm text-slate-500">
-            {isCenterAdmin ? "Aucune alerte pour ce centre." : "Aucune alerte disponible."}
+            Aucune alerte disponible.
           </p>
         )}
       </div>
     </div>
-  );
-}
-
-function SelectField({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="text-sm text-slate-700">
-      <span className="mb-2 block font-medium">{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-red-400">
-        {options.map((option) => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
-    </label>
   );
 }
 
