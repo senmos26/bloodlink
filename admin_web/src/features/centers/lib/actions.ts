@@ -70,7 +70,6 @@ export async function createCenterAccount(payload: {
   responsibleFullName: string;
   responsibleEmail: string;
   responsiblePhone: string;
-  temporaryPassword: string;
   centerName: string;
   centerAddress: string;
   centerCity: string;

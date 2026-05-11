@@ -11,7 +11,6 @@ type CreateCenterAccountPayload = {
   responsibleFullName: string;
   responsibleEmail: string;
   responsiblePhone: string;
-  temporaryPassword: string;
   centerName: string;
   centerAddress: string;
   centerCity: string;
@@ -33,7 +32,6 @@ function validatePayload(payload: Partial<CreateCenterAccountPayload>) {
     "responsibleFullName",
     "responsibleEmail",
     "responsiblePhone",
-    "temporaryPassword",
     "centerName",
     "centerAddress",
     "centerCity",
@@ -45,11 +43,6 @@ function validatePayload(payload: Partial<CreateCenterAccountPayload>) {
     if (typeof payload[field] !== "string" || payload[field]?.trim().length === 0) {
       throw new Error(`Champ invalide: ${field}`);
     }
-  }
-
-  // Password policy: min 8 chars
-  if (payload.temporaryPassword && payload.temporaryPassword.length < 8) {
-    throw new Error("Le mot de passe temporaire doit contenir au moins 8 caractères.");
   }
 
   // Email format validation
@@ -140,7 +133,6 @@ Deno.serve(async (request) => {
       responsibleFullName,
       responsibleEmail,
       responsiblePhone,
-      temporaryPassword,
       centerName,
       centerAddress,
       centerCity,
@@ -153,13 +145,10 @@ Deno.serve(async (request) => {
     const normalizedEmail = responsibleEmail.trim().toLowerCase();
 
     // 4. Check email uniqueness before creating user
-    // Try to sign in with the email — if it works, the account exists
-    // Better approach: use admin listUsers with filter
     const { data: { users: existingUsers } } = await adminClient.auth.admin.listUsers({
       page: 1,
       perPage: 1,
     });
-    // Filter client-side for exact email match (Supabase doesn't support email filter in listUsers)
     const emailExists = existingUsers.some(
       (u) => u.email?.toLowerCase() === normalizedEmail
     );
@@ -175,27 +164,24 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Un compte avec cet email existe déjà." }, 409);
     }
 
-    // 5. Create the auth user with app_metadata to set role correctly
-    // This avoids the race condition with handle_new_user trigger setting role='donor'
-    const { data: createdUser, error: createUserError } =
-      await adminClient.auth.admin.createUser({
-        email: normalizedEmail,
-        password: temporaryPassword,
-        email_confirm: true,
-        user_metadata: {
+    // 5. Invite user by email — sends an invitation link to set their password
+    // The trigger handle_new_user will create the profile with role='donor'
+    // We update it to 'center_admin' right after
+    const redirectUrl = Deno.env.get("CENTER_WEB_URL") ?? "http://localhost:3001";
+    const { data: invitedUser, error: inviteError } =
+      await adminClient.auth.admin.inviteUserByEmail(normalizedEmail, {
+        data: {
           full_name: responsibleFullName.trim(),
           phone: responsiblePhone.trim(),
         },
-        app_metadata: {
-          role: "center_admin",
-        },
+        redirectTo: `${redirectUrl}/login`,
       });
 
-    if (createUserError || !createdUser.user) {
-      return jsonResponse({ error: createUserError?.message ?? "Unable to create user." }, 400);
+    if (inviteError || !invitedUser.user) {
+      return jsonResponse({ error: inviteError?.message ?? "Unable to invite user." }, 400);
     }
 
-    const userId = createdUser.user.id;
+    const userId = invitedUser.user.id;
 
     // 6. Update profile: set role to center_admin (override the trigger default of 'donor')
     const { error: updateProfileError } = await adminClient
