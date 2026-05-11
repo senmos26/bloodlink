@@ -70,10 +70,10 @@ export default async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Verify project-specific role (center_admin or super_admin)
+  // Verify project-specific role (center_admin or super_admin) and account active
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, is_active")
     .eq("id", user.id)
     .single();
 
@@ -82,6 +82,13 @@ export default async function middleware(request: NextRequest) {
   if (!profile || (profile.role !== "center_admin" && profile.role !== "super_admin")) {
     console.log(`[MW] 🛑 Invalid role: ${profile?.role || 'none'}, signing out`);
     // If user is logged in but not an admin, sign them out and redirect
+    await supabase.auth.signOut();
+    const loginUrl = new URL(`/${locale}/login`, request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (!profile.is_active) {
+    console.log(`[MW] 🛑 Account deactivated`);
     await supabase.auth.signOut();
     const loginUrl = new URL(`/${locale}/login`, request.url);
     return NextResponse.redirect(loginUrl);
