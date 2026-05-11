@@ -457,6 +457,28 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {!profile.blood_type && (
+          <Pressable
+            onPress={() => setEditMode(true)}
+            className="mx-4 mb-4 p-4 bg-primary/10 rounded-2xl border border-primary/20 active:bg-primary/15"
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
+                <MaterialIcons name="bloodtype" size={20} color="white" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-sm font-bold text-primary">
+                  Complétez votre profil
+                </Text>
+                <Text className="text-xs text-on-surface-variant mt-0.5">
+                  Ajoutez votre groupe sanguin pour recevoir des alertes adaptées.
+                </Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color="#b80035" />
+            </View>
+          </Pressable>
+        )}
+
         <View className="flex-row gap-3 px-4 mb-4">
           <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5">
             <Text className="text-on-surface-variant text-[10px] font-semibold uppercase tracking-widest mb-1">
