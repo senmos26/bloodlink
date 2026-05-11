@@ -63,6 +63,29 @@ export default function LoginScreen() {
       return;
     }
 
+    // Role guard: fetch profile to verify this user is a donor
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, is_active")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile?.is_active) {
+        await supabase.auth.signOut();
+        showToast("Votre compte a été désactivé. Contactez le support.", "error");
+        return;
+      }
+
+      if (profile?.role !== "donor") {
+        await supabase.auth.signOut();
+        const platform = profile?.role === "center_admin" ? "le portail Centre" : "le portail Administrateur";
+        showToast(`Ce compte est réservé aux centres de santé. Connectez-vous sur ${platform}.`, "error");
+        return;
+      }
+    }
+
     showToast("Connexion réussie !", "success");
     setTimeout(() => {
       router.replace("/(tabs)");
