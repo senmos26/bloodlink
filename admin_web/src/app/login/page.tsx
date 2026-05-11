@@ -1,12 +1,20 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-import { getCurrentAdminContext, signIn } from "@/lib/auth";
+import { signIn } from "@/features/auth/lib/actions";
+import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -21,16 +29,31 @@ export default function LoginPage() {
 
     async function checkSession() {
       try {
-        await getCurrentAdminContext();
+        const supabase = createSupabaseBrowserClient();
+        const { data: { session } } = await supabase.auth.getSession();
 
-        if (active) {
-          router.replace("/admin/dashboard");
+        if (session && active) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role, is_active")
+            .eq("id", session.user.id)
+            .single();
+
+          if (profile && profile.is_active && profile.role !== "donor") {
+            if (profile.role === "center_admin") {
+              const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
+              window.location.href = centerWebUrl;
+            } else {
+              router.replace("/admin/dashboard");
+            }
+            return;
+          }
         }
       } catch {
-        if (active) {
-          setCheckingSession(false);
-        }
+        // No valid session
       }
+
+      if (active) setCheckingSession(false);
     }
 
     checkSession();
@@ -46,15 +69,24 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await signIn(email, password);
-      await getCurrentAdminContext();
-      router.replace("/admin/dashboard");
+      const result = await signIn(email, password);
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      if (result.redirect === "center_web") {
+        const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
+        window.location.href = centerWebUrl;
+        return;
+      }
+
+      if (result.success) {
+        router.replace("/admin/dashboard");
+      }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Connexion impossible pour le moment."
-      );
+      setError(err instanceof Error ? err.message : "Connexion impossible.");
     } finally {
       setLoading(false);
     }
@@ -76,11 +108,11 @@ export default function LoginPage() {
               />
             </div>
             <h1 className="mt-6 max-w-xl text-5xl font-semibold leading-tight">
-              Connectez votre centre à une gestion plus fluide des dons.
+              Supervisez l&apos;ensemble de la plateforme BloodLink.
             </h1>
             <p className="mt-6 max-w-xl text-lg text-slate-300">
-              Suivez les alertes, les rendez-vous et les validations de dons
-              dans une interface simple, rapide et sécurisée.
+              Gérez les centres, les alertes, les donneurs et les statistiques
+              depuis une interface centralisée et sécurisée.
             </p>
           </section>
 
@@ -88,11 +120,11 @@ export default function LoginPage() {
             <div className="mx-auto max-w-md rounded-[2rem] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur">
               <div className="mb-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-300">
-                  Espace Administratif
+                  Espace Super Admin
                 </p>
                 <h2 className="mt-3 text-3xl font-semibold">Connexion</h2>
                 <p className="mt-2 text-sm text-slate-300">
-                  Utilisez votre compte centre ou administrateur.
+                  Réservé aux super administrateurs BloodLink.
                 </p>
               </div>
 
@@ -165,11 +197,6 @@ export default function LoginPage() {
                 </form>
               )}
 
-              {/* <div className="mt-8 text-center text-sm text-slate-300">
-                <Link href="/" className="transition hover:text-white">
-                  Retour à l&apos;accueil
-                </Link>
-              </div> */} 
             </div>
           </section>
         </div>

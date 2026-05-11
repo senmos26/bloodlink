@@ -1,9 +1,14 @@
-import ProtectedAdminShell from "@/components/ProtectedAdminShell";
+import { AdminShell } from "@/features/dashboard/components/layout/Shell";
+import { Providers } from "@/components/Providers";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedAdminShell>{children}</ProtectedAdminShell>;
+  return (
+    <Providers>
+      <AdminShell>{children}</AdminShell>
+    </Providers>
+  );
 }
