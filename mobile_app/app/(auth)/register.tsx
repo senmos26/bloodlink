@@ -15,16 +15,13 @@ import Input from "@/components/ui/Input";
 import Toast, { type ToastType } from "@/components/ui/Toast";
 import { supabase } from "@/services/supabase";
 
-const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const SUCCESS_REDIRECT_DELAY_MS = 1600;
 
 export default function RegisterScreen() {
-  const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [bloodGroup, setBloodGroup] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
     visible: false,
@@ -40,7 +37,7 @@ export default function RegisterScreen() {
     setToast((prev) => ({ ...prev, visible: false }));
   };
 
-  const validateStep1 = () => {
+  const validate = () => {
     if (!email || !password || !confirmPassword || !fullName) {
       showToast("Veuillez remplir tous les champs", "error");
       return false;
@@ -56,18 +53,10 @@ export default function RegisterScreen() {
     return true;
   };
 
-  const handleNext = () => {
-    hideToast();
-    if (step === 1) {
-      if (!validateStep1()) return;
-      setStep(2);
-    } else {
-      // blood_group is optional — user can complete profile later
-      handleRegister();
-    }
-  };
-
   const handleRegister = async () => {
+    hideToast();
+    if (!validate()) return;
+
     setLoading(true);
     const { error: authError, data } = await supabase.auth.signUp({
       email,
@@ -76,7 +65,7 @@ export default function RegisterScreen() {
         data: {
           full_name: fullName.trim(),
           phone: "",
-          blood_type: bloodGroup || null,
+          blood_type: null,
         },
       },
     });
@@ -124,107 +113,52 @@ export default function RegisterScreen() {
               Blood<Text className="text-primary">Link</Text>
             </Text>
             <Text className="text-sm text-on-surface-variant text-center mt-1">
-              Étape {step} sur 2
+              Créez votre compte en 30 secondes
             </Text>
           </View>
 
-          {/* Step indicator */}
-          <View className="flex-row justify-center gap-2 mb-6">
-            {[1, 2].map((s) => (
-              <View
-                key={s}
-                className={`h-1.5 rounded-full ${
-                  s <= step ? "w-8 bg-primary" : "w-4 bg-surface-container-highest"
-                }`}
-              />
-            ))}
+          <View className="gap-4">
+            <Input
+              label="Nom complet"
+              placeholder="Jean Dupont"
+              value={fullName}
+              onChangeText={setFullName}
+              icon={<MaterialIcons name="person" size={20} color="#906f70" />}
+            />
+            <Input
+              label="Email"
+              placeholder="exemple@email.com"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              icon={<MaterialIcons name="email" size={20} color="#906f70" />}
+            />
+            <Input
+              label="Mot de passe"
+              placeholder="••••••••"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              icon={<MaterialIcons name="lock" size={20} color="#906f70" />}
+            />
+            <Input
+              label="Confirmer le mot de passe"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              icon={<MaterialIcons name="lock" size={20} color="#906f70" />}
+            />
           </View>
 
-          {step === 1 ? (
-            <View className="gap-4">
-              <Input
-                label="Nom complet"
-                placeholder="Jean Dupont"
-                value={fullName}
-                onChangeText={setFullName}
-                icon={<MaterialIcons name="person" size={20} color="#906f70" />}
-              />
-              <Input
-                label="Email"
-                placeholder="exemple@email.com"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                icon={<MaterialIcons name="email" size={20} color="#906f70" />}
-              />
-              <Input
-                label="Mot de passe"
-                placeholder="••••••••"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                icon={<MaterialIcons name="lock" size={20} color="#906f70" />}
-              />
-              <Input
-                label="Confirmer le mot de passe"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-                icon={<MaterialIcons name="lock" size={20} color="#906f70" />}
-              />
-            </View>
-          ) : (
-            <View>
-              <Text className="text-base font-semibold text-on-surface mb-1">
-                Sélectionnez votre groupe sanguin
-              </Text>
-              <Text className="text-sm text-on-surface-variant mb-4">
-                Optionnel — vous pourrez le compléter plus tard
-              </Text>
-              <View className="flex-row flex-wrap gap-3">
-                {BLOOD_GROUPS.map((group) => (
-                  <Pressable
-                    key={group}
-                    onPress={() => setBloodGroup(group)}
-                    className={`px-5 py-3 rounded-xl border-2 ${
-                      bloodGroup === group
-                        ? "bg-primary border-primary"
-                        : "bg-surface-container-lowest border-surface-container-high"
-                    }`}
-                  >
-                    <Text
-                      className={`text-base font-bold ${
-                        bloodGroup === group ? "text-white" : "text-on-surface"
-                      }`}
-                    >
-                      {group}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-          )}
-
-          <View className="flex-row gap-3 mt-8">
-            {step > 1 && (
-              <Button
-                variant="outline"
-                onPress={() => setStep(step - 1)}
-                className="flex-1"
-              >
-                Retour
-              </Button>
-            )}
-            <Button
-              onPress={handleNext}
-              loading={loading}
-              className="flex-1"
-            >
-              {step === 2 ? "S'inscrire" : "Continuer"}
-            </Button>
-          </View>
+          <Button
+            onPress={handleRegister}
+            loading={loading}
+            className="mt-8"
+          >
+            S'inscrire
+          </Button>
 
           <Link href="/(auth)/login" asChild>
             <Pressable className="items-center py-4 mt-4">
