@@ -47,6 +47,20 @@ function validatePayload(payload: Partial<CreateCenterAccountPayload>) {
     }
   }
 
+  // Password policy: min 8 chars
+  if (payload.temporaryPassword && payload.temporaryPassword.length < 8) {
+    throw new Error("Le mot de passe temporaire doit contenir au moins 8 caractères.");
+  }
+
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (payload.responsibleEmail && !emailRegex.test(payload.responsibleEmail.trim())) {
+    throw new Error("Format d'email invalide pour le responsable.");
+  }
+  if (payload.centerEmail && !emailRegex.test(payload.centerEmail.trim())) {
+    throw new Error("Format d'email invalide pour le centre.");
+  }
+
   if (typeof payload.latitude !== "number" || Number.isNaN(payload.latitude)) {
     throw new Error("Champ invalide: latitude");
   }
@@ -92,15 +106,17 @@ Deno.serve(async (request) => {
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
   try {
+    // 1. Verify caller is authenticated
     const { data: authData, error: authError } = await userClient.auth.getUser();
 
     if (authError || !authData.user) {
       return jsonResponse({ error: "Unauthorized." }, 401);
     }
 
+    // 2. Verify caller is super_admin
     const { data: callerProfile, error: profileError } = await userClient
       .from("profiles")
-      .select("role")
+      .select("role, is_active")
       .eq("id", authData.user.id)
       .single();
 
@@ -108,10 +124,15 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Caller profile not found." }, 403);
     }
 
-    if (callerProfile.role !== "super_admin") {
-      return jsonResponse({ error: "Forbidden." }, 403);
+    if (!callerProfile.is_active) {
+      return jsonResponse({ error: "Votre compte est désactivé." }, 403);
     }
 
+    if (callerProfile.role !== "super_admin") {
+      return jsonResponse({ error: "Seul un super administrateur peut créer un compte centre." }, 403);
+    }
+
+    // 3. Validate payload
     const payload = (await request.json()) as Partial<CreateCenterAccountPayload>;
     validatePayload(payload);
 
@@ -129,14 +150,44 @@ Deno.serve(async (request) => {
       longitude,
     } = payload as CreateCenterAccountPayload;
 
+    const normalizedEmail = responsibleEmail.trim().toLowerCase();
+
+    // 4. Check email uniqueness before creating user
+    // Try to sign in with the email — if it works, the account exists
+    // Better approach: use admin listUsers with filter
+    const { data: { users: existingUsers } } = await adminClient.auth.admin.listUsers({
+      page: 1,
+      perPage: 1,
+    });
+    // Filter client-side for exact email match (Supabase doesn't support email filter in listUsers)
+    const emailExists = existingUsers.some(
+      (u) => u.email?.toLowerCase() === normalizedEmail
+    );
+
+    // Also check if a center already has this email
+    const { data: existingCenter } = await adminClient
+      .from("centers")
+      .select("id")
+      .eq("email", normalizedEmail)
+      .limit(1);
+
+    if (emailExists || (existingCenter && existingCenter.length > 0)) {
+      return jsonResponse({ error: "Un compte avec cet email existe déjà." }, 409);
+    }
+
+    // 5. Create the auth user with app_metadata to set role correctly
+    // This avoids the race condition with handle_new_user trigger setting role='donor'
     const { data: createdUser, error: createUserError } =
       await adminClient.auth.admin.createUser({
-        email: responsibleEmail.trim().toLowerCase(),
+        email: normalizedEmail,
         password: temporaryPassword,
         email_confirm: true,
         user_metadata: {
           full_name: responsibleFullName.trim(),
           phone: responsiblePhone.trim(),
+        },
+        app_metadata: {
+          role: "center_admin",
         },
       });
 
@@ -146,6 +197,7 @@ Deno.serve(async (request) => {
 
     const userId = createdUser.user.id;
 
+    // 6. Update profile: set role to center_admin (override the trigger default of 'donor')
     const { error: updateProfileError } = await adminClient
       .from("profiles")
       .update({
@@ -157,10 +209,12 @@ Deno.serve(async (request) => {
       .eq("id", userId);
 
     if (updateProfileError) {
+      // Rollback: delete user and profile
       await adminClient.auth.admin.deleteUser(userId);
       return jsonResponse({ error: updateProfileError.message }, 400);
     }
 
+    // 7. Create the center linked to the new admin
     const { data: createdCenter, error: createCenterError } = await adminClient
       .from("centers")
       .insert({
@@ -178,6 +232,7 @@ Deno.serve(async (request) => {
       .single();
 
     if (createCenterError || !createdCenter) {
+      // Rollback: delete user (profile will be cascade-deleted by FK or trigger)
       await adminClient.auth.admin.deleteUser(userId);
       return jsonResponse({ error: createCenterError?.message ?? "Unable to create center." }, 400);
     }
