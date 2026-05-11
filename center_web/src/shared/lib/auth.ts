@@ -1,17 +1,14 @@
 import "server-only";
 import { createClient } from "@/shared/lib/supabase/server";
 type UserRole = "center_admin" | "super_admin" | "donor";
-type Profile = { id: string; role: UserRole; full_name: string | null; [key: string]: unknown };
-type Center = { id: string; name: string; admin_id: string; [key: string]: unknown };
+type Profile = { id: string; role: UserRole; full_name: string | null; is_active: boolean; [key: string]: unknown };
+type Center = { id: string; name: string; admin_id: string; is_active: boolean; [key: string]: unknown };
 type AdminContext = { profile: Profile; role: UserRole; center: Center | null };
 
+const ALLOWED_ROLES: UserRole[] = ["center_admin", "super_admin"];
 
-export async function getAuthenticatedUserWithRole(
-  role: UserRole
-): Promise<{
-  user: Profile | null;
-  supabase: Awaited<ReturnType<typeof createClient>> | null;
-  center: Center | null;
+export async function getAdminContext(): Promise<{
+  context: AdminContext | null;
   error: string | null;
 }> {
   const supabase = await createClient();
@@ -21,7 +18,7 @@ export async function getAuthenticatedUserWithRole(
   } = await supabase.auth.getUser();
 
   if (authError || !authUser) {
-    return { user: null, supabase: null, center: null, error: "Authentication failed." };
+    return { context: null, error: "Authentication failed." };
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -31,40 +28,40 @@ export async function getAuthenticatedUserWithRole(
     .single();
 
   if (profileError || !profile) {
-    return { user: null, supabase: null, center: null, error: "Could not fetch profile." };
+    return { context: null, error: "Could not fetch profile." };
   }
 
-  if (profile.role !== role) {
-    return { user: null, supabase: null, center: null, error: "Forbidden." };
+  if (!ALLOWED_ROLES.includes(profile.role)) {
+    return { context: null, error: "Forbidden." };
+  }
+
+  if (!profile.is_active) {
+    return { context: null, error: "Compte désactivé." };
   }
 
   let center: Center | null = null;
-  if (role === "center_admin" && profile) {
+  if (profile.role === "center_admin") {
     const { data: centerData } = await supabase
       .from("centers")
       .select("*")
       .eq("admin_id", profile.id)
       .single();
-    center = centerData || null;
-  }
 
-  return { user: profile, supabase, center, error: null };
-}
+    if (!centerData) {
+      return { context: null, error: "Aucun centre associé à ce compte." };
+    }
 
-export async function getCenterAdminContext(): Promise<{
-  context: AdminContext | null;
-  error: string | null;
-}> {
-  const { user, center, error } = await getAuthenticatedUserWithRole("center_admin");
+    if (!centerData.is_active) {
+      return { context: null, error: "Votre centre est désactivé." };
+    }
 
-  if (error || !user) {
-    return { context: null, error: error || "Not authenticated." };
+    center = centerData;
   }
 
   return {
     context: {
-      profile: user,
-      role: "center_admin",
+      profile,
+      role: profile.role,
       center,
     },
     error: null,
@@ -72,7 +69,7 @@ export async function getCenterAdminContext(): Promise<{
 }
 
 export async function requireCenterAdmin() {
-  const { context, error } = await getCenterAdminContext();
+  const { context, error } = await getAdminContext();
 
   if (error || !context) {
     throw new Error(error || "Access denied.");

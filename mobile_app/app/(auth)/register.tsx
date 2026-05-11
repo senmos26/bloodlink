@@ -23,8 +23,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [bloodGroup, setBloodGroup] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
@@ -42,7 +41,7 @@ export default function RegisterScreen() {
   };
 
   const validateStep1 = () => {
-    if (!email || !password || !confirmPassword || !firstName || !lastName) {
+    if (!email || !password || !confirmPassword || !fullName) {
       showToast("Veuillez remplir tous les champs", "error");
       return false;
     }
@@ -63,10 +62,7 @@ export default function RegisterScreen() {
       if (!validateStep1()) return;
       setStep(2);
     } else {
-      if (!bloodGroup) {
-        showToast("Veuillez sélectionner votre groupe sanguin", "error");
-        return;
-      }
+      // blood_group is optional — user can complete profile later
       handleRegister();
     }
   };
@@ -78,9 +74,9 @@ export default function RegisterScreen() {
       password,
       options: {
         data: {
-          first_name: firstName,
-          last_name: lastName,
-          blood_group: bloodGroup,
+          full_name: fullName.trim(),
+          phone: "",
+          blood_type: bloodGroup || null,
         },
       },
     });
@@ -147,17 +143,10 @@ export default function RegisterScreen() {
           {step === 1 ? (
             <View className="gap-4">
               <Input
-                label="Prénom"
-                placeholder="Jean"
-                value={firstName}
-                onChangeText={setFirstName}
-                icon={<MaterialIcons name="person" size={20} color="#906f70" />}
-              />
-              <Input
-                label="Nom"
-                placeholder="Dupont"
-                value={lastName}
-                onChangeText={setLastName}
+                label="Nom complet"
+                placeholder="Jean Dupont"
+                value={fullName}
+                onChangeText={setFullName}
                 icon={<MaterialIcons name="person" size={20} color="#906f70" />}
               />
               <Input
@@ -188,8 +177,11 @@ export default function RegisterScreen() {
             </View>
           ) : (
             <View>
-              <Text className="text-base font-semibold text-on-surface mb-4">
+              <Text className="text-base font-semibold text-on-surface mb-1">
                 Sélectionnez votre groupe sanguin
+              </Text>
+              <Text className="text-sm text-on-surface-variant mb-4">
+                Optionnel — vous pourrez le compléter plus tard
               </Text>
               <View className="flex-row flex-wrap gap-3">
                 {BLOOD_GROUPS.map((group) => (

@@ -458,6 +458,10 @@
       "allFieldsRequired": "All fields are required.",
       "passwordTooShort": "Password must be at least 6 characters.",
       "passwordsMismatch": "Passwords do not match.",
+      "unauthorized": "Access reserved for health centers and administrators.",
+      "accountDeactivated": "Your account has been deactivated. Contact support.",
+      "noCenterAssigned": "No center is associated with your account.",
+      "centerDeactivated": "Your center has been deactivated. Contact support.",
       "unknownError": "An error occurred. Please try again."
     },
     "success": {

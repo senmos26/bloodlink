@@ -458,6 +458,10 @@
       "allFieldsRequired": "Todos los campos son obligatorios.",
       "passwordTooShort": "La contraseña debe contener al menos 6 caracteres.",
       "passwordsMismatch": "Las contraseñas no coinciden.",
+      "unauthorized": "Acceso reservado a centros de salud y administradores.",
+      "accountDeactivated": "Su cuenta ha sido desactivada. Contacte al soporte.",
+      "noCenterAssigned": "No hay centro asociado a su cuenta.",
+      "centerDeactivated": "Su centro ha sido desactivado. Contacte al soporte.",
       "unknownError": "Ha ocurrido un error. Por favor intente nuevamente."
     },
     "success": {

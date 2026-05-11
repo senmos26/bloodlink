@@ -89,13 +89,37 @@ export async function login(
   // Check role: only center_admin and super_admin can access Centre app
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, is_active")
     .eq("id", authData.user.id)
     .single();
 
   if (profile?.role !== "center_admin" && profile?.role !== "super_admin") {
     await supabase.auth.signOut();
     return { errorKey: "auth.serverErrors.unauthorized" };
+  }
+
+  if (!profile?.is_active) {
+    await supabase.auth.signOut();
+    return { errorKey: "auth.serverErrors.accountDeactivated" };
+  }
+
+  // For center_admin: verify center exists and is active
+  if (profile.role === "center_admin") {
+    const { data: center } = await supabase
+      .from("centers")
+      .select("id, is_active")
+      .eq("admin_id", authData.user.id)
+      .single();
+
+    if (!center) {
+      await supabase.auth.signOut();
+      return { errorKey: "auth.serverErrors.noCenterAssigned" };
+    }
+
+    if (!center.is_active) {
+      await supabase.auth.signOut();
+      return { errorKey: "auth.serverErrors.centerDeactivated" };
+    }
   }
 
   redirect(`/${locale}/`);

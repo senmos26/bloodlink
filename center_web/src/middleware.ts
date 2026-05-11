@@ -11,7 +11,7 @@ const intlMiddleware = createMiddleware({
   alternateLinks: true,
 });
 
-const publicRoutes = ["login", "signup", "forgot-password", "new-password", "email-confirmation"];
+const publicRoutes = ["login", "forgot-password", "new-password", "email-confirmation"];
 
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
