@@ -1,9 +1,12 @@
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
+import { View } from "react-native";
+import ChatWidget from "@/components/ai/ChatWidget";
 
 export default function TabLayout() {
   return (
-    <Tabs
+    <View className="flex-1">
+      <Tabs
       screenOptions={{
         tabBarActiveTintColor: "#b80035",
         tabBarInactiveTintColor: "#906f70",
@@ -58,5 +61,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+      <ChatWidget />
+    </View>
   );
 }

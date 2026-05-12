@@ -17,6 +17,7 @@
     "db:migrate": "npx supabase migration up --local --workdir ./supabase"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^2.0.59",
     "@gsap/react": "^2.1.2",
     "@heroicons/react": "^2.2.0",
@@ -101,7 +102,7 @@
     "typescript": "^5",
     "use-debounce": "^10.0.6",
     "vaul": "^1.1.2",
-    "zod": "^4.1.5",
+    "zod": "^4.4.3",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
