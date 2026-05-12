@@ -41,7 +41,7 @@ function LoginContent() {
 
           if (profile && profile.is_active && profile.role !== "donor") {
             if (profile.role === "center_admin") {
-              const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
+              const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "http://localhost:3000";
               window.location.href = centerWebUrl;
             } else {
               router.replace("/admin/dashboard");
@@ -77,7 +77,7 @@ function LoginContent() {
       }
 
       if (result.redirect === "center_web") {
-        const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
+        const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "http://localhost:3000";
         window.location.href = centerWebUrl;
         return;
       }

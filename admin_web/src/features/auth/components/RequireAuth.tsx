@@ -40,7 +40,7 @@ export async function RequireAuth({ children, requiredRole }: RequireAuthProps) 
 
   // center_admin should use center_web, not admin_web
   if (profile.role === "center_admin") {
-    const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
+    const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "http://localhost:3000";
     redirect(centerWebUrl);
   }
 

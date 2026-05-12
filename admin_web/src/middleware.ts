@@ -73,9 +73,8 @@ export async function middleware(request: NextRequest) {
 
   // center_admin → redirect to center_web (they should use center_web, not admin_web)
   if (profile.role === "center_admin") {
-    const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "/login";
-    const redirectUrl = new URL(centerWebUrl);
-    return NextResponse.redirect(redirectUrl);
+    const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "http://localhost:3000";
+    return NextResponse.redirect(new URL(centerWebUrl));
   }
 
   // super_admin → access granted
