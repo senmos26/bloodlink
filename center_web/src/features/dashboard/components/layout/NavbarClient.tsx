@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Menu } from "lucide-react"; // Import Menu icon
+import { Menu, AlertTriangle } from "lucide-react"; // Import Menu icon
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,10 +71,11 @@ export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
         {/* Alerts quick link */}
         <Link
           href={`/${locale}/alerts`}
-          className="relative p-2 rounded-full text-foreground/70 hover:bg-primary/10 hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
-          aria-label="Alertes"
+          className="relative p-2 rounded-full text-foreground/70 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400/50"
+          aria-label="Alertes d'urgence"
+          title="Alertes d'urgence"
         >
-          <Bell className="size-5" />
+          <AlertTriangle className="size-5" />
           {activeAlertsCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold px-1">
               {activeAlertsCount > 9 ? "9+" : activeAlertsCount}
