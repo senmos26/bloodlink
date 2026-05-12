@@ -1,12 +1,23 @@
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import ChatWidget from "@/components/ai/ChatWidget";
+
+function TabBarWithChat(props: BottomTabBarProps) {
+  return (
+    <View>
+      <ChatWidget />
+      <BottomTabBar {...props} />
+    </View>
+  );
+}
 
 export default function TabLayout() {
   return (
-    <View className="flex-1">
-      <Tabs
+    <Tabs
+      tabBar={(props) => <TabBarWithChat {...props} />}
       screenOptions={{
         tabBarActiveTintColor: "#b80035",
         tabBarInactiveTintColor: "#906f70",
@@ -61,7 +72,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-      <ChatWidget />
-    </View>
   );
 }

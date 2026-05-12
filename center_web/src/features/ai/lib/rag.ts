@@ -1,28 +1,38 @@
-import { createClient } from "@/shared/lib/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { RagResult } from "../types";
-import { embeddingModel } from "./models";
 
 /**
- * Generate embeddings via OpenRouter's compatible endpoint.
- * Uses Nomic Embed Text (free tier, 768 dimensions).
+ * Create a direct admin Supabase client (no cookies) for RAG operations.
+ */
+function createAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
+/**
+ * Generate embeddings via Google Generative AI (text-embedding-004).
+ * Gratuit, 768 dimensions, rapide.
  */
 async function generateEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) {
-    throw new Error("OPENROUTER_API_KEY is not set");
+    // Pas de clé embedding — RAG désactivé silencieusement
+    return [];
   }
 
-  const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: embeddingModel,
-      input: text,
-    }),
-  });
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "models/text-embedding-004",
+        content: { parts: [{ text }] },
+      }),
+    }
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -30,10 +40,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
   }
 
   const data = (await response.json()) as {
-    data: { embedding: number[] }[];
+    embedding: { values: number[] };
   };
 
-  return data.data[0].embedding;
+  return data.embedding.values;
 }
 
 /**
@@ -45,10 +55,13 @@ export async function searchKnowledge(
     category?: string;
     threshold?: number;
     limit?: number;
+    supabase?: any;
   }
 ): Promise<RagResult[]> {
-  const supabase = await createClient(true); // admin client for unrestricted read
+  const supabase = options?.supabase ?? createAdminClient();
   const embedding = await generateEmbedding(query);
+
+  if (embedding.length === 0) return []; // no embedding API configured
 
   const { data, error } = await supabase.rpc("match_knowledge", {
     query_embedding: embedding,

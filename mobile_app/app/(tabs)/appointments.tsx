@@ -175,7 +175,7 @@ export default function AppointmentsScreen() {
           <Text className="mt-3 text-sm text-on-surface-variant">Chargement de vos rendez-vous...</Text>
         </View>
       ) : displayed.length === 0 ? (
-        <EmptyState filter={activeFilter} />
+        <EmptyState filter={activeFilter} onBook={() => router.push("/booking" as any)} />
       ) : (
         <ScrollView
           className="flex-1 px-6"
@@ -284,8 +284,7 @@ function AppointmentCard({
 
 // ── Empty State ─────────────────────────────────────────────────────────
 
-function EmptyState({ filter }: { filter: "upcoming" | "past" }) {
-  const router = useRouter();
+function EmptyState({ filter, onBook }: { filter: "upcoming" | "past"; onBook: () => void }) {
   return (
     <View className="flex-1 items-center justify-center px-8">
       <View className="w-20 h-20 bg-surface-container-low rounded-3xl items-center justify-center mb-4">
@@ -304,7 +303,7 @@ function EmptyState({ filter }: { filter: "upcoming" | "past" }) {
           : "Vos rendez-vous passés apparaîtront ici."}
       </Text>
       {filter === "upcoming" && (
-        <Pressable className="mt-5 bg-primary px-6 py-3 rounded-full active:scale-95" onPress={() => router.push("/booking" as any)}>
+        <Pressable className="mt-5 bg-primary px-6 py-3 rounded-full active:scale-95" onPress={onBook}>
           <Text className="text-sm font-bold text-white">Prendre un RDV</Text>
         </Pressable>
       )}

@@ -1,7 +1,7 @@
 # Architecture Technique — BloodLink (Nouvelle Stack)
 
 > Document d'architecture complète basé sur les use cases du MVP.  
-> Stack : Supabase (Backend + DB + Auth) | React Native Expo (Mobile) | Next.js (Admin Web).
+> Stack : Supabase (Backend + DB + Auth) | React Native Expo (Mobile) | Next.js 15.4 (Centre Web) | Next.js 16.2 (Admin Web).
 
 ---
 
@@ -11,15 +11,22 @@
 
 | Couche | Technologie | Rôle |
 |--------|-------------|------|
-| **Base de données** | PostgreSQL (Supabase) | Stockage relationnel, géospatial (PostGIS), triggers |
+| **Base de données** | PostgreSQL (Supabase) | Stockage relationnel, géospatial (PostGIS), triggers, vector search (pgvector) |
 | **Auth & Session** | Supabase Auth | Register, login, logout, JWT, reset password, email confirmation |
-| **API** | Supabase REST + Edge Functions | CRUD auto + logique métier complexe (matching, éligibilité) |
+| **API** | Supabase REST + Edge Functions + Next.js API Routes | CRUD auto + logique métier + IA chat streaming |
 | **Temps réel** | Supabase Realtime | Notifications in-app, mises à jour live |
-| **Storage** | Supabase Storage | Images profil, documents (Post-MVP) |
-| **Mobile** | React Native + Expo | App donneur + interface centre |
-| **Admin Web** | Next.js 15 + TypeScript + Tailwind | Dashboard super_admin |
-| **Notifications push** | Firebase Cloud Messaging | Alertes ciblées sur mobile |
-| **Cartographie** | React Native Maps / Mapbox GL | Affichage des centres et alertes géolocalisées |
+| **Storage** | Supabase Storage | Images profil, avatars, documents |
+| **Mobile** | React Native + Expo SDK 54 + NativeWind | App donneur (Tailwind CSS natif) |
+| **Web Centre** | Next.js 15.4 + TypeScript + Tailwind 4 + shadcn/ui | Dashboard centre + IA SangBot |
+| **Web Admin** | Next.js 16.2 + TypeScript + Tailwind 4 + shadcn/ui | Dashboard super_admin |
+| **IA Chat** | Vercel AI SDK v6 + Groq (Llama 3.3 70B) | Assistant SangBot avec streaming SSE, tool calling, RAG |
+| **Notifications push** | expo-notifications + Firebase FCM | Alertes ciblées sur mobile |
+| **Cartographie mobile** | react-native-maps | Affichage des centres et alertes géolocalisées |
+| **Cartographie admin** | Leaflet + react-leaflet | Carte centres dans admin |
+| **i18n** | next-intl (fr/en/de/es) | Internationalisation centre web |
+| **Animations** | Framer Motion + GSAP | Animations UI avancées |
+| **Export** | jspdf + @react-pdf/renderer + exceljs | PDF et Excel |
+| **QR Code** | react-native-qrcode-svg + jsQR + @zxing | Génération et scan QR |
 
 ### 1.2. Principes directeurs
 
@@ -107,6 +114,11 @@ notifications
 | **UC13** | Valider un don | Centre | `donations` + `appointments` + `profiles` | `INSERT` + trigger MAJ éligibilité | — | Écran centre |
 | **UC14** | Gérer comptes centre | Admin | `profiles` + `centers` | `super_admin` bypass RLS | `create-center` | `admin/centers/page.tsx` |
 | **UC15** | Superviser | Admin | Toutes | `super_admin` bypass RLS | `admin-stats` | `admin/dashboard/page.tsx` |
+| **UC16** | Chat SangBot | Donneur | `knowledge_base` + tools | JWT verify | — | `components/ai/ChatWidget.tsx` |
+| **UC17** | Partager alerte | Donneur | `alert_shares` | `INSERT WHERE user_id = auth.uid()` | — | `app/share-alert.tsx` |
+| **UC18** | Analytics partage | Donneur | `share_activities` | `SELECT WHERE user_id = auth.uid()` | — | `app/share-analytics.tsx` |
+| **UC19** | Scanner QR donneur | Centre | `profiles` | Centre admin | — | `admin/scan-qr/page.tsx` |
+| **UC20** | Exporter PDF | Centre/Admin | Toutes | Rôle centre_admin / super_admin | — | Feature center_web/admin_web |
 
 ---
 
@@ -245,6 +257,54 @@ Extension métier de `auth.users`. Créée automatiquement par trigger à l'insc
 - `INSERT` : `super_admin` ou Edge Function (système).
 - `UPDATE` : `auth.uid() = user_id` (marquer comme lue).
 
+### 4.7. `alert_shares` 🆕
+
+Liens de partage d'alertes avec codes courts et QR.
+
+| Champ | Type | Contraintes | Description |
+|-------|------|-------------|-------------|
+| `id` | UUID | PK | Identifiant |
+| `short_code` | VARCHAR(8) | UNIQUE NOT NULL | Code court pour URL |
+| `original_url` | TEXT | NOT NULL | URL originale de l'alerte |
+| `share_data` | JSONB | NOT NULL | Données de l'alerte partagée |
+| `user_id` | UUID | FK → `auth.users.id` | Donneur qui partage |
+| `expires_at` | TIMESTAMPTZ | NOT NULL | Expiration du lien |
+| `click_count` | INTEGER | DEFAULT 0 | Nombre de clics |
+| `conversion_count` | INTEGER | DEFAULT 0 | Nombre de conversions (prises de RDV) |
+| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | Création |
+
+**RLS Policies :**
+- `SELECT` : tout le monde (liens publics).
+- `INSERT` : `auth.uid() = user_id`.
+- `UPDATE` : `auth.uid() = user_id` (incrémentation compteurs).
+
+### 4.8. `share_activities` 🆕
+
+Tracking des interactions sur les liens de partage.
+
+| Champ | Type | Contraintes | Description |
+|-------|------|-------------|-------------|
+| `id` | UUID | PK | Identifiant |
+| `share_link_id` | VARCHAR(8) | FK → `alert_shares.short_code` | Lien source |
+| `activity_type` | VARCHAR(20) | CHECK IN ('share','click','conversion') | Type d'activité |
+| `platform` | VARCHAR(50) | NULLABLE | Plateforme (whatsapp, facebook, etc.) |
+| `user_agent` | TEXT | NULLABLE | User agent |
+| `ip_address` | INET | NULLABLE | IP visiteur |
+| `created_at` | TIMESTAMPTZ | DEFAULT NOW() | Création |
+
+### 4.9. `knowledge_base` 🆕
+
+Base de connaissances vectorisée pour le RAG de SangBot.
+
+| Champ | Type | Contraintes | Description |
+|-------|------|-------------|-------------|
+| `id` | UUID | PK | Identifiant |
+| `content` | TEXT | NOT NULL | Texte de connaissance |
+| `embedding` | VECTOR(768) | NOT NULL | Embedding vectoriel (Google text-embedding-004) |
+| `category` | VARCHAR(100) | NULLABLE | Catégorie (éligibilité, effets, centres...) |
+| `source` | VARCHAR(200) | NULLABLE | Source du contenu |
+| `metadata` | JSONB | NULLABLE | Métadonnées additionnelles |
+
 ---
 
 ## 5. Triggers SQL
@@ -320,6 +380,9 @@ CREATE TRIGGER on_donation_validated
 | `send-push` | TypeScript (Deno) | Trigger ou Cron | Envoie FCM aux donneurs matchés. Utilise `profiles.fcm_token`. |
 | `create-center` | TypeScript (Deno) | Appelée par admin web | Crée un compte `auth.users` + `profiles` (role=center_admin) + `centers`. Envoi email temp password. |
 | `admin-stats` | TypeScript (Deno) | Appelée par admin web | Agrégations : nombre de dons ce mois, alertes actives, donneurs par groupe sanguin. |
+| `get_nearby_centers` | SQL RPC | Appelée par chat tools | Centres proches d'une position (PostGIS). |
+| `get_urgent_alerts` | SQL RPC | Appelée par chat tools | Alertes urgentes actives. |
+| `match_knowledge` | SQL RPC | Appelée par RAG | Recherche vectorielle dans knowledge_base (pgvector). |
 
 ---
 
@@ -461,17 +524,45 @@ sequenceDiagram
 
 ---
 
-## 10. Pages Admin (Next.js)
+## 10. Pages Centre Web (Next.js 15.4) 🆕
+
+| Route | Page | Rôle requis | UC |
+|-------|------|-------------|-----|
+| `/[locale]/login` | `LoginPage` | centre_admin | UC02 |
+| `/[locale]/(dashboard)` | `DashboardPage` | centre_admin | UC07, UC12, UC13 |
+| `/[locale]/(dashboard)/alerts` | `AlertsPage` | centre_admin | UC07 |
+| `/[locale]/(dashboard)/appointments` | `AppointmentsPage` | centre_admin | UC11, UC12 |
+| `/[locale]/(dashboard)/donations` | `DonationsPage` | centre_admin | UC13 |
+| `/[locale]/(dashboard)/donors` | `DonorsPage` | centre_admin | UC13 |
+| `/[locale]/(dashboard)/settings` | `SettingsPage` | centre_admin | UC05 |
+| `/[locale]/terms` | `TermsPage` | public | — |
+| `/api/chat` | `ChatAPI` (SSE) | JWT (donneur) | UC16 |
+
+**i18n** : Toutes les routes sont préfixées par `[locale]` (fr, en, de, es) via `next-intl`.
+
+**Middleware Next.js** : vérifie le `role` dans `profiles` avant d'autoriser l'accès à `/(dashboard)/*`.
+
+---
+
+## 10b. Pages Admin Web (Next.js 16.2)
 
 | Route | Page | Rôle requis | UC |
 |-------|------|-------------|-----|
 | `/login` | `LoginPage` | Tous | UC02 |
+| `/register` | `RegisterPage` | Tous | UC01 |
+| `/reset-password` | `ResetPasswordPage` | Tous | — |
 | `/admin/dashboard` | `DashboardPage` | `super_admin` | UC15 |
 | `/admin/centers` | `CentersPage` | `super_admin` | UC14 |
-| `/admin/centers/new` | `CreateCenterPage` | `super_admin` | UC14 |
 | `/admin/donors` | `DonorsPage` | `super_admin` | UC15 |
 | `/admin/appointments` | `AppointmentsPage` | `super_admin` | UC15 |
+| `/admin/appointments-full` | `AppointmentsFullPage` | `super_admin` | UC15 |
+| `/admin/donations` | `DonationsPage` | `super_admin` | UC15 |
 | `/admin/alerts` | `AlertsPage` | `super_admin` | UC15 |
+| `/admin/profiles` | `ProfilesPage` | `super_admin` | UC15 |
+| `/admin/notifications` | `NotificationsPage` | `super_admin` | UC15 |
+| `/admin/scan-qr` | `ScanQRPage` | `super_admin` | UC19 |
+| `/admin/statistics` | `StatisticsPage` | `super_admin` | UC15 |
+| `/admin/settings` | `SettingsPage` | `super_admin` | — |
 
 **Middleware Next.js** : vérifie le `role` dans `profiles` avant d'autoriser l'accès à `/admin/*`.
 
@@ -555,22 +646,30 @@ S6 — Tests + Déploiement
 ```mermaid
 flowchart TB
     subgraph Clients
-        MOB[React Native Expo<br/>Donneurs & Centres]
-        WEB[Next.js 15<br/>Dashboard Admin]
+        MOB[React Native Expo SDK 54<br/>Donneurs]
+        CW[Next.js 15.4<br/>Centre Web]
+        AW[Next.js 16.2<br/>Admin Web]
     end
 
     subgraph Supabase_Cloud
         AUTH[Supabase Auth<br/>JWT / Sessions]
-        DB[(PostgreSQL<br/>Tables + RLS)]
+        DB[(PostgreSQL<br/>Tables + RLS + pgvector)]
         RT[Realtime<br/>WebSocket]
         EF[Edge Functions<br/>Deno Runtime]
         ST[Storage<br/>Images/Documents]
     end
 
+    subgraph IA_Services
+        GROQ[Groq<br/>Llama 3.3 70B]
+        GEMINI[Google Gemini<br/>2.0 Flash]
+        OROUTER[OpenRouter<br/>Fallback]
+        EMBED[Google Embeddings<br/>text-embedding-004]
+    end
+
     subgraph External_Services
         FCM[Firebase Cloud Messaging<br/>Push Notifications]
-        MAP[Google Maps / Mapbox<br/>Cartographie]
-        EMAIL[Resend / SendGrid<br/>Emails transactionnels]
+        MAPRN[react-native-maps<br/>Cartographie Mobile]
+        MAPL[Leaflet<br/>Cartographie Admin]
     end
 
     MOB -->|REST API + Auth| AUTH
@@ -578,15 +677,22 @@ flowchart TB
     MOB <-->|WebSocket| RT
     MOB -->|Invoke| EF
     MOB -->|SDK| FCM
-    MOB -->|SDK| MAP
+    MOB -->|SDK| MAPRN
 
-    WEB -->|SSR Auth| AUTH
-    WEB -->|Server Client| DB
-    WEB -->|Invoke| EF
+    CW -->|SSR Auth| AUTH
+    CW -->|Server Client| DB
+    CW -->|streamText SSE| GROQ
+    GROQ -.->|fallback| GEMINI
+    GEMINI -.->|fallback| OROUTER
+    CW -->|embeddings| EMBED
+
+    AW -->|SSR Auth| AUTH
+    AW -->|Server Client| DB
+    AW -->|Invoke| EF
+    AW -->|SDK| MAPL
 
     EF -->|Query| DB
     EF -->|HTTP| FCM
-    EF -->|SMTP| EMAIL
 
     AUTH -->|Trigger| DB
     DB -->|Trigger| DB
@@ -661,11 +767,14 @@ sequenceDiagram
 │  │   Screens    │  │   Screens    │  │   Screens    │      │
 │  │  (Auth)      │  │   (Tabs)     │  │  (Modal)     │      │
 │  │              │  │              │  │              │      │
-│  │ • Login      │  │ • Home       │  │ • Alert      │      │
-│  │ • Register   │  │ • Map        │  │   Detail     │      │
-│  │ • Onboarding │  │ • Donations  │  │ • Appointment│      │
-│  └──────┬───────┘  │ • Profile    │  │   Detail     │      │
-│         │          │ • Notifs     │  └──────┬───────┘      │
+│  │ • Login      │  │ • Home       │  │ • Alert      │
+│  │ • Register   │  │ • Map        │  │   Detail     │
+│  │ • Verify OTP │  │ • Appointments│ │ • Appointment│
+│  │              │  │ • Profile    │  │   Booking    │
+│  └──────┬───────┘  │ • Notifs     │  │ • Share      │
+│         │          └──────┬───────┘  │   Alert      │
+│         │                 │          │ • Analytics  │
+│         │                 │          └──────┬───────┘      │
 │         │          └──────┬───────┘         │              │
 │         │                 │                 │              │
 │         └─────────────────┴─────────────────┘              │
@@ -708,10 +817,18 @@ sequenceDiagram
 **Variables d'environnement requises :**
 
 ```bash
-# Mobile (.env.local - jamais commit)
+# Mobile (.env - jamais commit)
 EXPO_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=AIza...
+
+# Center Web (.env.local)
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...  # Server-side only
+GROQ_API_KEY=gsk_...              # IA Chat primary
+GOOGLE_GENERATIVE_AI_API_KEY=AIza...  # IA Chat secondary + embeddings
+OPENROUTER_API_KEY=sk-or-...      # IA Chat fallback
+NEXT_PUBLIC_APP_URL=https://bloodlink.ma
 
 # Admin Web (.env.local)
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
@@ -759,6 +876,14 @@ donations           │        │        │        │        │
   - Donor view      │   ✅   │   ❌   │   ❌   │   ❌   │
   - Center manage   │   ✅   │   ✅   │   ✅   │   ❌   │
   - Super admin     │   ✅   │   ❌   │   ❌   │   ❌   │
+────────────────────┼────────┼────────┼────────┼────────┤
+alert_shares 🆕    │        │        │        │        │
+  - Public links   │   ✅   │   ❌   │   ❌   │   ❌   │
+  - Own shares     │   ✅   │   ✅   │   ✅   │   ❌   │
+────────────────────┼────────┼────────┼────────┼────────┤
+knowledge_base 🆕  │        │        │        │        │
+  - System only    │   ❌   │   ✅   │   ✅   │   ✅   │
+  (service_role)   │        │        │        │        │
 ```
 
 ### 15.4. Validation des données
@@ -959,6 +1084,75 @@ Deno.serve(async (req) => {
 
 ---
 
+## 16b. Architecture IA Chat — SangBot 🆕
+
+### 16b.1. Vue d'ensemble
+
+SangBot est l'assistant conversationnel BloodLink intégré dans l'app mobile. Il utilise le Vercel AI SDK v6 avec streaming SSE, tool calling, et RAG (Retrieval-Augmented Generation).
+
+### 16b.2. Flux de données
+
+```
+Mobile (useChat.ts)
+  │
+  ├── POST /api/chat { messages, accessToken }
+  │
+  ▼
+center_web API Route (route.ts)
+  ├── 1. JWT verify (accessToken → Supabase Auth)
+  ├── 2. Fetch user context (profile: name, blood_type, next_donation_date)
+  ├── 3. RAG search (query → Google embedding → match_knowledge RPC, 5s timeout)
+  ├── 4. Build system prompt (base + user context + RAG context)
+  ├── 5. streamText() avec Groq/Gemini/OpenRouter
+  │     ├── tools: getNearbyCenters, getUrgentAlerts
+  │     ├── stopWhen: stepCountIs(5)
+  │     ├── maxOutputTokens: 800
+  │     └── temperature: 0.7
+  └── 6. SSE stream → Mobile
+        ├── onChunk: tokens progressifs
+        └── onStepFinish: tool call results
+```
+
+### 16b.3. Composants
+
+| Composant | Chemin | Rôle |
+|-----------|--------|------|
+| **API Route** | `center_web/src/app/api/chat/route.ts` | Point d'entrée SSE, auth JWT, RAG, streamText |
+| **Modèles** | `center_web/src/features/ai/lib/models.ts` | Sélection provider (Groq > Gemini > OpenRouter) |
+| **Prompts** | `center_web/src/features/ai/lib/prompts.ts` | System prompt SangBot, contexte utilisateur |
+| **RAG** | `center_web/src/features/ai/lib/rag.ts` | Google text-embedding-004 + Supabase match_knowledge |
+| **Tools** | `center_web/src/features/ai/lib/tools.ts` | `getNearbyCenters`, `getUrgentAlerts` |
+| **useChat** | `mobile_app/components/ai/useChat.ts` | Hook SSE parsing, state, abort, erreurs |
+| **ChatDrawer** | `mobile_app/components/ai/ChatDrawer.tsx` | Drawer modal, liste messages, suggestions |
+| **ChatInput** | `mobile_app/components/ai/ChatInput.tsx` | Input texte, bouton envoi, bouton stop |
+| **ChatMessage** | `mobile_app/components/ai/ChatMessage.tsx` | Bulles user/assistant, avatar |
+| **ChatWidget** | `mobile_app/components/ai/ChatWidget.tsx` | Bouton flottant, ouverture drawer |
+
+### 16b.4. Modèles IA (fallback chain)
+
+| Priorité | Provider | Modèle | Quota gratuit | Caractéristiques |
+|----------|----------|--------|---------------|------------------|
+| 1 | **Groq** | llama-3.3-70b-versatile | 14400 req/jour | Ultra rapide, bon en français, tool calling |
+| 2 | **Google Gemini** | gemini-2.0-flash | 1500 req/jour | Rapide, multilingue |
+| 3 | **OpenRouter** | nvidia/nemotron-3-super-120b-a12b:free | Limité | Fallback ultime |
+
+### 16b.5. RAG (Retrieval-Augmented Generation)
+
+- **Embeddings** : Google `text-embedding-004` (768 dimensions)
+- **Stockage** : Supabase `knowledge_base` table avec `pgvector`
+- **Recherche** : RPC `match_knowledge(query_embedding, match_threshold, match_count)`
+- **Timeout** : 5 secondes max (Promise.race)
+- **Graceful degradation** : Si pas de clé embedding, RAG désactivé silencieusement
+
+### 16b.6. Sécurité
+
+- **Auth** : JWT vérifié via Supabase Auth sur chaque requête `/api/chat`
+- **Pas de Service Role Key** dans le mobile — utilisation du JWT utilisateur
+- **Rate limiting** : Vercel KV pour limiter les requêtes par utilisateur
+- **Sanitisation** : Les erreurs API sont nettoyées avant envoi au client (pas de leak de clés)
+
+---
+
 ## 17. Gestion des Erreurs
 
 ### 17.1. Codes HTTP et erreurs métier
@@ -1107,7 +1301,7 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
 
 | Environnement | URL | Base de données | Usage |
 |---------------|-----|-----------------|-------|
-| **Local** | `http://localhost:19000` | Local/Supabase dev | Développement quotidien |
+| **Local** | `http://localhost:8081` (mobile) / `:3000` (centre) / `:3001` (admin)` | Local/Supabase dev | Développement quotidien |
 | **Staging** | `https://bloodlink-staging.vercel.app` | Supabase staging | Tests QA, démo |
 | **Production** | `https://bloodlink.vercel.app` | Supabase prod | Live users |
 
@@ -1356,5 +1550,5 @@ vercel --prod
 
 ---
 
-*Document version 2.0 — BloodLink Architecture Complète.*  
-*Dernière mise à jour: 2026-04-24*
+*Document version 2.1 — BloodLink Architecture Complète.*  
+*Dernière mise à jour: 2026-05-12*

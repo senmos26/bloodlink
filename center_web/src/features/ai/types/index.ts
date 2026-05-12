@@ -7,6 +7,7 @@ export interface ChatMessage {
 
 export interface ChatContext {
   userId?: string;
+  fullName?: string | null;
   bloodType?: string | null;
   nextDonationDate?: string | null;
   recentDonations?: number;

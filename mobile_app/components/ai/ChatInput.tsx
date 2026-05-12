@@ -6,15 +6,19 @@ interface Props {
   onChangeText: (text: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
+  isStreaming?: boolean;
+  onStop?: () => void;
 }
 
-export default function ChatInput({ value, onChangeText, onSubmit, isLoading }: Props) {
+export default function ChatInput({ value, onChangeText, onSubmit, isLoading, isStreaming, onStop }: Props) {
+  const canSend = value.trim().length > 0 && !isLoading;
+
   return (
-    <View className="flex-row items-end px-3 py-2 bg-surface border-t border-outline-variant">
+    <View className="flex-row items-end px-3 py-2 bg-white border-t border-gray-100">
       <TextInput
-        className="flex-1 min-h-[40px] max-h-[100px] px-4 py-2.5 bg-surface-container-lowest rounded-2xl text-sm text-on-surface"
-        placeholder="Posez votre question à SangBot..."
-        placeholderTextColor="#906f70"
+        className="flex-1 min-h-[38px] max-h-[90px] px-3.5 py-2 bg-gray-50 rounded-2xl text-[13px] text-gray-800"
+        placeholder="Votre question..."
+        placeholderTextColor="#aaa"
         value={value}
         onChangeText={onChangeText}
         multiline
@@ -24,25 +28,28 @@ export default function ChatInput({ value, onChangeText, onSubmit, isLoading }: 
         onSubmitEditing={onSubmit}
         editable={!isLoading}
       />
-      <Pressable
-        onPress={onSubmit}
-        disabled={isLoading || !value.trim()}
-        className={`ml-2 w-10 h-10 rounded-full items-center justify-center ${
-          isLoading || !value.trim()
-            ? "bg-surface-container-high"
-            : "bg-primary"
-        }`}
-      >
-        {isLoading ? (
-          <ActivityIndicator size="small" color="#906f70" />
-        ) : (
+      {isLoading ? (
+        <Pressable
+          onPress={onStop}
+          className="ml-2 w-9 h-9 rounded-full bg-gray-200 items-center justify-center"
+        >
+          <MaterialIcons name="stop" size={18} color="#666" />
+        </Pressable>
+      ) : (
+        <Pressable
+          onPress={onSubmit}
+          disabled={!canSend}
+          className={`ml-2 w-9 h-9 rounded-full items-center justify-center ${
+            canSend ? "bg-[#b80035]" : "bg-gray-100"
+          }`}
+        >
           <MaterialIcons
             name="send"
-            size={20}
-            color={value.trim() ? "white" : "#906f70"}
+            size={18}
+            color={canSend ? "white" : "#ccc"}
           />
-        )}
-      </Pressable>
+        </Pressable>
+      )}
     </View>
   );
 }

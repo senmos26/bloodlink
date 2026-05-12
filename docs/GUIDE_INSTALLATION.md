@@ -6,13 +6,12 @@ Ce guide explique comment installer et configurer l'environnement de développem
 
 ## 1. Prérequis
 
-Tu dois avoir installé sur ta machine :
-
 | Outil | Version minimale | Vérification |
 |-------|-----------------|-------------|
 | Node.js | 20.x | `node --version` |
 | npm | 10.x | `npm --version` |
 | Git | 2.x | `git --version` |
+| Expo CLI | — | `npx expo --version` |
 
 Si un outil est manquant :
 
@@ -21,148 +20,119 @@ Si un outil est manquant :
 
 ---
 
-## 2. Outils du projet
+## 2. Architecture du projet
 
-### 2.1. TypeScript
+BloodLink est composé de **3 applications** + un backend Supabase :
 
-TypeScript est le **langage** utilisé dans tout le projet. C'est du JavaScript avec des types.
+| Application | Dossier | Port | Stack | Rôle |
+|-------------|---------|------|-------|------|
+| **Mobile App** | `mobile_app/` | 8081 | React Native + Expo SDK 54 + NativeWind | App donneur |
+| **Centre Web** | `center_web/` | 3000 | Next.js 15.4 + Tailwind 4 + shadcn/ui | Dashboard centre + IA SangBot |
+| **Admin Web** | `admin_web/` | 3001 | Next.js 16.2 + Tailwind 4 + shadcn/ui | Dashboard super admin |
+| **Backend** | Supabase Cloud | — | PostgreSQL + Auth + RLS + Edge Functions | Données, auth, logique métier |
 
-- Pas besoin d'installation globale : il est déjà inclus dans les dépendances de chaque projet (`mobile/` et `admin_web/`)
-- Le compilateur vérifie les types à chaque build
+---
 
-### 2.2. React Native (via Expo)
+## 3. Outils du projet
+
+### 3.1. TypeScript
+
+TypeScript est le **langage** utilisé dans tout le projet. Pas besoin d'installation globale : inclus dans les dépendances de chaque projet.
+
+### 3.2. React Native + Expo SDK 54
 
 **React Native** permet de créer des apps mobiles avec du code web (React).
 
 **Expo** est une surcouche qui simplifie React Native :
 - Pas besoin d'Android Studio ou Xcode pour tester
 - Hot reload instantané
-- Mises à jour "Over The Air" (OTA)
 - Build dans le cloud avec EAS
 
-Pour lancer l'app mobile :
-```bash
-cd mobile
-npx expo start
-```
+**NativeWind** apporte Tailwind CSS dans React Native.
 
-Ça ouvre un QR code. Tu scannes avec l'app **Expo Go** sur ton téléphone.
+### 3.3. Next.js (Centre + Admin)
 
-### 2.3. Next.js
-
-**Next.js** est un framework React pour le web.
-
+**Next.js** est un framework React pour le web avec :
 - App Router (routage par dossiers)
 - Rendu côté serveur (SSR)
-- API routes intégrées
+- API routes intégrées (utilisé pour `/api/chat` SSE)
 - Déploiement facile sur Vercel
 
-Pour lancer l'admin web :
-```bash
-cd admin_web
-npm run dev
-```
-
-L'app est accessible sur http://localhost:3000
-
-### 2.4. Supabase
-
-**Supabase** remplace tout un backend traditionnel.
+### 3.4. Supabase
 
 | Fonction | Ce que Supabase fournit |
 |----------|------------------------|
-| Base de données | PostgreSQL managé avec dashboard |
-| Authentification | Register, login, OAuth, magic link, JWT |
-| API | REST et GraphQL auto-générés |
-| Stockage fichiers | Upload images, PDF... |
+| Base de données | PostgreSQL managé + pgvector + PostGIS |
+| Authentification | Register, login, JWT, reset password |
+| API | REST auto-généré + RPC |
+| Stockage fichiers | Upload images, avatars |
 | Temps réel | WebSockets pour notifications |
-| Edge Functions | Petites fonctions serveur |
+| Edge Functions | Fonctions serveur Deno |
 
-### 2.5. Tailwind CSS
+### 3.5. shadcn/ui
 
-**Tailwind** est un framework CSS "utility-first".
+Composants UI basés sur Radix UI + Tailwind. 53 composants dans `center_web/`, utilisés aussi dans `admin_web/`.
 
-Tu écris des classes utilitaires directement dans le HTML :
+### 3.6. IA Chat — SangBot 🆕
 
-```tsx
-<div className="bg-red-500 text-white p-4 rounded-lg">
-  Urgence sang
-</div>
-```
+Assistant conversationnel intégré dans l'app mobile, utilisant :
+- **Vercel AI SDK v6** : streaming SSE, tool calling
+- **Groq** (Llama 3.3 70B) : provider principal (14400 req/jour gratuit)
+- **Google Gemini 2.0 Flash** : fallback
+- **OpenRouter** : fallback ultime
+- **RAG** : Google text-embedding-004 + Supabase pgvector
 
-Au lieu d'écrire du CSS traditionnel :
+### 3.7. Autres outils
 
-```css
-.alert {
-  background-color: red;
-  color: white;
-  padding: 16px;
-  border-radius: 8px;
-}
-```
-
-### 2.6. Zustand
-
-**Zustand** gère l'état global de l'application (login, données utilisateur...).
-
-C'est une alternative plus simple à Redux :
-
-```typescript
-const useStore = create((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-}));
-```
-
-### 2.7. React Query (TanStack Query)
-
-**React Query** gère les requêtes API (cache, retry, synchronisation).
-
-```typescript
-const { data: centers, isLoading } = useQuery({
-  queryKey: ["centers"],
-  queryFn: fetchCenters,
-});
-```
+| Outil | Usage |
+|-------|-------|
+| Zustand | État global mobile |
+| React Query | Data fetching + cache |
+| next-intl | i18n (fr/en/de/es) dans center_web |
+| Framer Motion + GSAP | Animations UI |
+| jspdf + @react-pdf/renderer | Export PDF |
+| react-native-qrcode-svg + jsQR | QR code génération + scan |
+| expo-notifications | Push notifications FCM |
+| Leaflet + react-leaflet | Cartes admin |
+| react-native-maps | Cartes mobile |
 
 ---
 
-## 3. Installation complète du projet
+## 4. Installation complète
 
-### 3.1. Cloner le repo
+### 4.1. Cloner le repo
 
 ```bash
 git clone https://github.com/senmos26/bloodlink.git
-cd bloodlink/bloodlink
+cd Boold_link
 ```
 
-### 3.2. Installer les dépendances mobile
+### 4.2. Installer les dépendances — Mobile
 
 ```bash
-cd mobile
+cd mobile_app
 npm install
 ```
 
-### 3.3. Installer les dépendances admin web
+### 4.3. Installer les dépendances — Centre Web
+
+```bash
+cd ../center_web
+npm install
+```
+
+### 4.4. Installer les dépendances — Admin Web
 
 ```bash
 cd ../admin_web
 npm install
 ```
 
-### 3.4. Installer Supabase CLI (optionnel mais recommandé)
-
-Le CLI Supabase te permet de gérer les migrations localement.
-
-```bash
-npm install supabase --save-dev
-```
-
 ---
 
-## 4. Configuration Supabase
+## 5. Configuration Supabase
 
-### 4.1. Créer un projet
+### 5.1. Créer un projet
 
 1. Va sur [supabase.com](https://supabase.com)
 2. Crée un compte (gratuit)
@@ -170,96 +140,171 @@ npm install supabase --save-dev
 4. Nomme-le `bloodlink`
 5. Attends que le projet soit prêt (2-3 minutes)
 
-### 4.2. Récupérer les clés
+### 5.2. Récupérer les clés
 
-1. Dans ton projet Supabase, va dans **Settings** → **API**
-2. Copie :
-   - `Project URL`
-   - `anon public` (clé publique)
+Dans **Settings** → **API**, copie :
+- `Project URL`
+- `anon public` (clé publique)
+- `service_role` (clé secrète, server-side uniquement)
 
-### 4.3. Créer les fichiers d'environnement
+### 5.3. Activer les extensions
 
-**Mobile** : `mobile/.env.local`
+Dans **Database** → **Extensions**, active :
+- `postgis` (géolocalisation)
+- `vector` (pgvector, pour RAG embeddings)
+
+### 5.4. Créer les fichiers d'environnement
+
+**Mobile** : `mobile_app/.env`
 ```
 EXPO_PUBLIC_SUPABASE_URL=https://votre-projet.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=votre-cle-anon
+```
+
+**Centre Web** : `center_web/.env.local`
+```
+NEXT_PUBLIC_SUPABASE_URL=https://votre-projet.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre-cle-anon
+SUPABASE_SERVICE_ROLE_KEY=votre-cle-service-role
+GROQ_API_KEY=gsk_votre-cle-groq
+GOOGLE_GENERATIVE_AI_API_KEY=AIza_votre-cle-google
+OPENROUTER_API_KEY=sk-or_votre-cle-openrouter
+NEXT_PUBLIC_APP_URL=https://bloodlink.ma
 ```
 
 **Admin Web** : `admin_web/.env.local`
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://votre-projet.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=votre-cle-anon
+SUPABASE_SERVICE_ROLE_KEY=votre-cle-service-role
 ```
 
-**Important** : `.env.local` est dans `.gitignore`. Ces clés ne seront **jamais** poussées sur GitHub.
+**Important** : `.env.local` et `.env` sont dans `.gitignore`. Ces clés ne seront **jamais** poussées sur GitHub.
 
-### 4.4. Appliquer les migrations SQL
+### 5.5. Appliquer les migrations SQL
 
-1. Dans le dashboard Supabase, va dans **SQL Editor**
-2. Copie-colle le contenu de `supabase/migrations/00001_initial.sql`
-3. Clique **Run**
+Les migrations sont dans `mobile_app/supabase/migrations/` :
 
-Ou avec le CLI :
+| # | Fichier | Description |
+|---|---------|-------------|
+| 001 | `create_profile_on_signup.sql` | Trigger auto-création profil |
+| 002 | `seed_blood_types.sql` | Types sanguins |
+| 003 | `fix_signup_trigger.sql` | Correction trigger |
+| 004 | `make_profile_phone_nullable.sql` | Phone nullable |
+| 005 | `profile_dashboard_rpc.sql` | RPCs dashboard profil |
+| 006 | `fix_profiles_rls_recursion.sql` | Fix RLS récursion |
+| 007 | `profile_avatar_storage.sql` | Storage avatars |
+
+**Via Dashboard** : SQL Editor → copier-coller chaque migration → Run
+
+**Via CLI** :
 ```bash
 npx supabase login
 npx supabase link --project-ref votre-project-ref
 npx supabase db push
 ```
 
+### 5.6. Clés IA (optionnel, pour SangBot)
+
+| Provider | Comment obtenir | Variable |
+|----------|----------------|----------|
+| **Groq** | [console.groq.com](https://console.groq.com) → Keys | `GROQ_API_KEY` |
+| **Google Gemini** | [aistudio.google.com](https://aistudio.google.com) → API Key | `GOOGLE_GENERATIVE_AI_API_KEY` |
+| **OpenRouter** | [openrouter.ai](https://openrouter.ai) → Keys | `OPENROUTER_API_KEY` |
+
+Sans ces clés, le chat IA ne fonctionnera pas mais le reste de l'app fonctionne normalement.
+
 ---
 
-## 5. Lancer les projets
+## 6. Lancer les projets
 
-### 5.1. Lancer l'app mobile
+### 6.1. Lancer l'app mobile
 
 ```bash
-cd mobile
+cd mobile_app
 npx expo start
 ```
 
 - Scanne le QR code avec l'app **Expo Go** (Android) ou l'appareil photo (iOS)
 - Ou appuie `a` pour lancer sur l'émulateur Android
 - Ou appuie `w` pour lancer sur le navigateur web
+- Accessible sur `http://localhost:8081`
 
-### 5.2. Lancer l'admin web
+### 6.2. Lancer le Centre Web
+
+```bash
+cd center_web
+npm run dev
+```
+
+- Ouvre http://localhost:3000 dans le navigateur
+- L'API chat SSE est sur http://localhost:3000/api/chat
+
+### 6.3. Lancer l'Admin Web
 
 ```bash
 cd admin_web
 npm run dev
 ```
 
-- Ouvre http://localhost:3000 dans le navigateur
+- Ouvre http://localhost:3001 dans le navigateur
+
+### 6.4. Lancer les 3 en parallèle
+
+```bash
+# Terminal 1 — Mobile
+cd mobile_app && npx expo start
+
+# Terminal 2 — Centre Web
+cd center_web && npm run dev
+
+# Terminal 3 — Admin Web
+cd admin_web && npm run dev
+```
 
 ---
 
-## 6. Commandes utiles
+## 7. Commandes utiles
 
 ### Mobile
 
 | Commande | Description |
 |----------|-------------|
 | `npx expo start` | Démarrer le serveur Expo |
+| `npx expo start --clear` | Démarrer en vidant le cache |
 | `npx expo start --android` | Lancer sur Android |
 | `npx expo start --web` | Lancer sur navigateur |
-| `npx expo build:android` | Build APK (besoin de EAS) |
+| `eas build --platform android` | Build APK (EAS) |
+
+### Centre Web
+
+| Commande | Description |
+|----------|-------------|
+| `npm run dev` | Démarrer en mode développement (port 3000) |
+| `npm run dev:frontend` | Next.js uniquement |
+| `npm run build` | Build pour production |
+| `npm run lint` | Vérifier ESLint |
+| `npm run test:unit` | Tests unitaires (Vitest) |
+| `npm run test` | Tests E2E (Playwright) |
 
 ### Admin Web
 
 | Commande | Description |
 |----------|-------------|
-| `npm run dev` | Démarrer en mode développement |
+| `npm run dev` | Démarrer en mode développement (port 3001) |
 | `npm run build` | Build pour production |
-| `npm run start` | Lancer le build de production |
 | `npm run lint` | Vérifier ESLint |
 
 ### Supabase
 
 | Commande | Description |
 |----------|-------------|
-| `npx supabase db reset` | Réinitialiser la base locale |
-| `npx supabase migration new nom_migration` | Créer une migration |
+| `npx supabase login` | Se connecter |
+| `npx supabase link --project-ref xxx` | Lier le projet |
 | `npx supabase db push` | Pousser les migrations |
-| `npx supabase gen types typescript --project-id xxx` | Générer les types TypeScript |
+| `npx supabase db reset` | Réinitialiser la base locale |
+| `npx supabase migration new nom` | Créer une migration |
+| `npx supabase functions deploy nom` | Déployer une Edge Function |
 
 ### Git
 
@@ -268,73 +313,55 @@ npm run dev
 | `git checkout -b feature/nom` | Créer une branche feature |
 | `git add . && git commit -m "feat: ..."` | Commiter |
 | `git push origin feature/nom` | Pousser la branche |
-| `git checkout dev && git pull origin dev` | Mettre à jour dev |
 
 ---
 
-## 7. Structure du code expliquée
+## 8. Structure du code expliquée
 
-### Mobile — `mobile/src/`
+### Mobile — `mobile_app/`
 
-- **`app/`** : Les écrans de l'application. Expo Router se base sur la structure des fichiers.
-  - `index.tsx` = écran d'accueil
-  - `(auth)/` = groupe d'écrans d'authentification
-  - `(tabs)/` = groupe d'écrans en onglets
-  - `_layout.tsx` = layout partagé (header, navigation...)
-
+- **`app/`** : Écrans Expo Router
+  - `(auth)/` : login, register, verify-otp
+  - `(tabs)/` : index (home), appointments, profile, map
+  - `alerts.tsx`, `appointment.tsx`, `booking.tsx`, `notifications.tsx`, `share-alert.tsx`, `share-analytics.tsx`
+  - `_layout.tsx` : layout racine
 - **`components/`** : Composants réutilisables
-  - `ui/` : Boutons, inputs, cartes (atomiques)
-  - `forms/` : Composants de formulaire
-
+  - `ai/` : ChatDrawer, ChatInput, ChatMessage, ChatWidget, useChat
+  - `ui/` : Composants atomiques
+  - `profile/` : Composants profil
+  - `screens/` : Écrans composites
 - **`services/`** : Clients API
-  - `supabase.ts` : Configuration du client Supabase
+  - `supabase.ts`, `alerts.ts`, `appointments.ts`, `dashboard.ts`, `map.ts`, `notifications.ts`, `profile.ts`, `push.native.ts`, `alert-sharing.ts`
+- **`hooks/`** : Custom hooks
+- **`supabase/migrations/`** : 7 migrations SQL
 
-- **`stores/`** : État global avec Zustand
-  - `authStore.ts` : État de l'authentification
-  - `donationStore.ts` : État des dons
+### Centre Web — `center_web/src/`
 
-- **`types/`** : Interfaces TypeScript partagées
-  - `user.ts`, `donation.ts`, `center.ts`...
-
-- **`utils/`** : Fonctions utilitaires
-  - `formatDate.ts` : Formatage de dates
-  - `geolocation.ts` : Calcul de distances
+- **`app/`** : Pages Next.js (App Router avec i18n)
+  - `[locale]/(auth)/` : login, forgot-password, new-password
+  - `[locale]/(dashboard)/` : page, alerts, appointments, donations, donors, settings
+  - `[locale]/terms/` : page conditions
+  - `api/chat/` : SSE streaming SangBot
+  - `api/auth/` : callbacks Supabase
+- **`components/ui/`** : 53 composants shadcn/ui
+- **`features/`** : Modules métier
+  - `ai/` : models, prompts, rag, tools, types
+  - `alerts/`, `appointments/`, `auth/`, `center-dashboard/`, `center-settings/`, `dashboard/`, `donations/`, `donors/`, `notifications/`
+- **`entities/`** : alert, appointment, center, donation, donor
+- **`shared/`** : i18n (fr/en/de/es), supabase, auth, utils, types
 
 ### Admin Web — `admin_web/src/`
 
-- **`app/`** : Pages Next.js (App Router)
-  - `layout.tsx` : Layout racine (providers, fonts)
-  - `(auth)/login/page.tsx` : Page de connexion
-  - `(dashboard)/page.tsx` : Tableau de bord
-  - `(dashboard)/users/page.tsx` : Liste des utilisateurs
-
-- **`components/ui/`** : Composants réutilisables
-  - `Button.tsx`, `Table.tsx`, `Modal.tsx`...
-
-- **`lib/supabase.ts`** : Client Supabase configuré
-
-- **`hooks/`** : Custom hooks
-  - `useAuth.ts` : Hook d'authentification
-  - `useCenters.ts` : Hook de récupération des centres
-
-### Supabase — `supabase/`
-
-- **`migrations/`** : Scripts SQL versionnés
-  - `00001_initial.sql` : Création des tables de base
-  - `00002_add_profiles.sql` : Ajout de la table profiles
-  - Les migrations s'appliquent **dans l'ordre**
-
-- **`seed.sql`** : Données de test
-  - Centres de transfusion fictifs
-  - Utilisateurs de test
-
-- **`functions/`** : Edge Functions
-  - Petites fonctions serveur en TypeScript
-  - Exécutées sur les serveurs Supabase
+- **`app/`** : Pages Next.js
+  - `admin/` : dashboard, centers, donors, appointments, appointments-full, donations, alerts, profiles, notifications, scan-qr, statistics, settings
+  - `login/`, `register/`, `reset-password/`
+- **`components/`** : Composants UI shadcn
+- **`features/`** : alerts, appointments, auth, centers, dashboard, donations, notifications, profiles, settings
+- **`lib/`** : supabase, utils
 
 ---
 
-## 8. Dépannage
+## 9. Dépannage
 
 ### Erreur : "Cannot find module"
 
@@ -347,43 +374,56 @@ Les dépendances ne sont pas installées. Lance `npm install` dans le dossier co
 ### Erreur : "Failed to connect to Supabase"
 
 Vérifie que les variables d'environnement sont bien configurées :
-- Fichier `.env.local` présent dans `mobile/` ou `admin_web/`
+- Fichier `.env` présent dans `mobile_app/`
+- Fichier `.env.local` présent dans `center_web/` et `admin_web/`
 - Les clés correspondent bien à ton projet Supabase
 
 ### Erreur : "Port 3000 already in use"
 
 ```bash
-# Trouver le processus qui utilise le port 3000
 npx kill-port 3000
-
 # Ou lancer sur un autre port
-npm run dev -- --port 3001
+npm run dev -- --port 3002
 ```
 
 ### Erreur : "Metro bundler" sur mobile
 
 ```bash
-cd mobile
+cd mobile_app
 npx expo start --clear
 ```
 
-Le flag `--clear` vide le cache du bundler.
+### Erreur : Chat IA ne répond pas
+
+Vérifie :
+1. `GROQ_API_KEY` (ou `GOOGLE_GENERATIVE_AI_API_KEY`) dans `center_web/.env.local`
+2. Le serveur centre_web est lancé sur le port 3000
+3. Le mobile envoie bien le `accessToken` JWT dans la requête
+
+### Erreur : RAG ne fonctionne pas
+
+Le RAG nécessite `GOOGLE_GENERATIVE_AI_API_KEY` pour les embeddings. Sans cette clé, le RAG est désactivé silencieusement et le chat fonctionne sans contexte de connaissances.
 
 ---
 
-## 9. Ressources d'apprentissage
+## 10. Ressources d'apprentissage
 
 | Sujet | Ressource |
 |-------|-----------|
 | TypeScript | [typescriptlang.org/docs](https://www.typescriptlang.org/docs/) |
 | React Native | [reactnative.dev](https://reactnative.dev/) |
-| Expo | [docs.expo.dev](https://docs.expo.dev/) |
-| Next.js | [nextjs.org/docs](https://nextjs.org/docs) |
+| Expo SDK 54 | [docs.expo.dev](https://docs.expo.dev/) |
+| NativeWind | [www.nativewind.dev](https://www.nativewind.dev/) |
+| Next.js 15 | [nextjs.org/docs](https://nextjs.org/docs) |
 | Supabase | [supabase.com/docs](https://supabase.com/docs) |
-| Tailwind CSS | [tailwindcss.com/docs](https://tailwindcss.com/docs) |
+| Tailwind CSS 4 | [tailwindcss.com/docs](https://tailwindcss.com/docs) |
+| shadcn/ui | [ui.shadcn.com](https://ui.shadcn.com/) |
 | Zustand | [github.com/pmndrs/zustand](https://github.com/pmndrs/zustand) |
 | React Query | [tanstack.com/query](https://tanstack.com/query) |
+| Vercel AI SDK | [sdk.vercel.ai](https://sdk.vercel.ai/) |
+| Groq | [console.groq.com](https://console.groq.com/) |
+| next-intl | [next-intl.dev](https://next-intl.dev/) |
 
 ---
 
-*Ce guide est maintenu à jour. Si tu bloques, demande de l'aide dans l'équipe avant de perdre du temps.*
+*Dernière mise à jour : 2026-05-12*

@@ -9,7 +9,7 @@
 | Rubrique | Détail |
 |---|---|
 | **Nom du projet** | BloodLink |
-| **Type** | Application mobile (donneur) + interface web admin (centre / super admin) |
+| **Type** | Application mobile (donneur) + interface web centre + interface web super admin |
 | **Durée** | 6 semaines (1,5 mois) |
 | **Rythme** | 3 jours par semaine |
 | **Mode** | Collaboratif — pair programming rotatif, aucun rôle figé |
@@ -66,16 +66,21 @@ BloodLink propose une plateforme qui met en relation les **donneurs** (mobile), 
 - Auth Supabase Auth (email + JWT)
 - Profils donneur et centre
 - Alertes urgentes + matching
-- Notifications push FCM
+- Notifications push FCM (expo-notifications)
 - Rendez-vous
 - Validation don + éligibilité auto
 - Dashboard admin minimal
 - Carte des centres
 - RLS sur toutes les tables
+- 🆕 Chat IA SangBot (streaming SSE, tool calling, RAG)
+- 🆕 Partage d'alertes (liens courts, QR code, analytics)
+- 🆕 i18n multilingue (fr/en/de/es) via next-intl
+- 🆕 QR code donneur (scan par centre)
+- 🆕 Export PDF (certificats, rapports)
 
 ### 4.2. Exclu (Post-MVP)
 
-- Certificats PDF, gamification, chat, stock sanguin, stats avancées, audit trail, RDV récurrents, paiements, multilingue
+- Gamification, stock sanguin, stats avancées, audit trail, RDV récurrents, paiements
 
 ---
 
@@ -84,8 +89,9 @@ BloodLink propose une plateforme qui met en relation les **donneurs** (mobile), 
 | Acteur | Interface | Description |
 |---|---|---|
 | **Donneur** | 📱 Mobile | Personne qui donne son sang |
-| **Centre (admin)** | 💻 Web | Structure qui collecte le sang |
-| **Super admin** | 💻 Web | Superviseur plateforme |
+| **Centre (admin)** | 💻 Web (center_web) | Structure qui collecte le sang |
+| **Super admin** | 💻 Web (admin_web) | Superviseur plateforme |
+| **SangBot** | 🤖 IA (center_web) | Assistant conversationnel pour le don de sang |
 | **Système** | Edge Functions + Triggers | Matching, notifications, règles métier |
 | **FCM** | Externe | Notifications push |
 | **Supabase** | Externe | Backend as a Service |
@@ -142,6 +148,11 @@ BloodLink propose une plateforme qui met en relation les **donneurs** (mobile), 
 | UC13 | Valider un don | Centre | Web |
 | UC14 | Gérer comptes centres | Admin | Web |
 | UC15 | Superviser plateforme | Admin | Web |
+| UC16 | Chat avec SangBot | Donneur | Mobile |
+| UC17 | Partager une alerte | Donneur | Mobile |
+| UC18 | Voir analytics partage | Donneur | Mobile |
+| UC19 | Scanner QR donneur | Centre | Web |
+| UC20 | Exporter PDF | Centre/Admin | Web |
 
 ### Diagramme des cas d'utilisation
 
@@ -217,12 +228,19 @@ graph LR
 
 | Couche | Technologie |
 |---|---|
-| App mobile | React Native + Expo |
-| Dashboard web | Next.js 15 + TypeScript + Tailwind |
+| App mobile | React Native + Expo SDK 54 + NativeWind (Tailwind) |
+| Web centre | Next.js 15.4 + TypeScript + Tailwind 4 + shadcn/ui |
+| Web admin | Next.js 16.2 + TypeScript + Tailwind 4 + shadcn/ui |
 | Backend/DB | Supabase (PostgreSQL, Auth, RLS, Edge Functions, Storage) |
+| IA Chat | Vercel AI SDK v6 + Groq (Llama 3.3 70B) + RAG (Google embeddings) |
 | State mobile | Zustand |
-| Push | Firebase FCM |
-| Cartes | Google Maps / Mapbox |
+| Push | expo-notifications + Firebase FCM |
+| Cartes mobile | react-native-maps |
+| Cartes admin | Leaflet + react-leaflet |
+| i18n | next-intl (fr/en/de/es) |
+| Animations | Framer Motion + GSAP |
+| Export | jspdf + @react-pdf/renderer + exceljs |
+| QR Code | react-native-qrcode-svg + jsQR + @zxing |
 | Déploiement mobile | EAS Build (Expo) |
 | Déploiement web | Vercel |
 | Versionning | Git + GitHub |
@@ -232,8 +250,9 @@ graph LR
 ```mermaid
 graph TB
     subgraph Clients
-        Mobile[React Native + Expo]
-        Web[Next.js + Tailwind]
+        Mobile[React Native + Expo SDK 54]
+        CenterWeb[Next.js 15.4 Centre]
+        AdminWeb[Next.js 16.2 Admin]
     end
     subgraph Supabase
         Auth[Auth JWT]
@@ -242,33 +261,57 @@ graph TB
         EF[Edge Functions]
         Storage[Storage]
     end
+    subgraph IA
+        Groq[Groq Llama 3.3 70B]
+        Gemini[Google Gemini 2.0 Flash]
+        OpenRouter[OpenRouter Fallback]
+        RAG[RAG Google Embeddings]
+    end
     subgraph Externe
         FCM[FCM]
         Maps[Maps]
     end
     Mobile --> API
     Mobile --> Auth
-    Web --> API
-    Web --> Auth
+    CenterWeb --> API
+    CenterWeb --> Auth
+    CenterWeb --> Groq
+    AdminWeb --> API
+    AdminWeb --> Auth
     API --> DB
     EF --> DB
     EF --> FCM
     Mobile --> Maps
+    Groq --> RAG
 ```
 
 ### 9.3. Structure projet
 
 ```
-bloodlink/
-├── mobile/          # React Native + Expo
-│   └── src/         # app/, components/, services/, stores/, hooks/, types/
-├── admin_web/       # Next.js 15
-│   └── src/         # app/, components/, lib/, middleware.ts
-├── supabase/        # Backend
-│   ├── migrations/  # SQL versionné
-│   └── functions/   # Edge Functions
-├── shared/          # Types partagés
-└── docs/            # Documentation
+Boold_link/
+├── mobile_app/          # React Native + Expo SDK 54 + NativeWind
+│   ├── app/             # Expo Router (auth, tabs, modals)
+│   ├── components/      # UI, AI chat, profile, screens
+│   ├── services/        # Supabase, alerts, appointments, push, map, dashboard
+│   ├── hooks/           # Custom hooks
+│   ├── supabase/        # Migrations SQL (7 migrations)
+│   └── constants/       # Thème, config
+├── center_web/          # Next.js 15.4 — Dashboard Centre + IA Chat
+│   └── src/
+│       ├── app/         # App Router [locale]/(auth), (dashboard), api/chat
+│       ├── components/  # 53 composants shadcn/ui
+│       ├── features/    # ai, alerts, appointments, auth, center-dashboard, donations, donors, notifications
+│       ├── entities/    # alert, appointment, center, donation, donor
+│       ├── shared/      # i18n (fr/en/de/es), supabase, auth, utils, types
+│       └── middleware.ts
+├── admin_web/           # Next.js 16.2 — Dashboard Super Admin
+│   └── src/
+│       ├── app/         # admin/*, login, register, reset-password
+│       ├── components/  # UI shadcn
+│       ├── features/    # alerts, appointments, auth, centers, dashboard, donations, notifications, profiles
+│       └── middleware.ts
+├── supabase/            # Backend (si migrations centralisées)
+└── docs/                # Documentation
 ```
 
 ---
@@ -364,6 +407,41 @@ bloodlink/
 | is_read | BOOLEAN | DEFAULT FALSE |
 | data | JSONB | NULLABLE |
 
+### Table alert_shares 🆕
+
+| Champ | Type | Contraintes |
+|---|---|---|
+| id | UUID | PK |
+| short_code | VARCHAR(8) | UNIQUE NOT NULL |
+| original_url | TEXT | NOT NULL |
+| share_data | JSONB | NOT NULL |
+| user_id | UUID | FK → auth.users |
+| expires_at | TIMESTAMPTZ | NOT NULL |
+| click_count | INTEGER | DEFAULT 0 |
+| conversion_count | INTEGER | DEFAULT 0 |
+
+### Table share_activities 🆕
+
+| Champ | Type | Contraintes |
+|---|---|---|
+| id | UUID | PK |
+| share_link_id | VARCHAR(8) | FK → alert_shares |
+| activity_type | VARCHAR(20) | CHECK IN ('share','click','conversion') |
+| platform | VARCHAR(50) | NULLABLE |
+| user_agent | TEXT | NULLABLE |
+| ip_address | INET | NULLABLE |
+
+### Table knowledge_base 🆕
+
+| Champ | Type | Contraintes |
+|---|---|---|
+| id | UUID | PK |
+| content | TEXT | NOT NULL |
+| embedding | VECTOR(768) | NOT NULL |
+| category | VARCHAR(100) | NULLABLE |
+| source | VARCHAR(200) | NULLABLE |
+| metadata | JSONB | NULLABLE |
+
 ---
 
 ## 11. Diagramme UML
@@ -376,12 +454,16 @@ classDiagram
     class Appointment { +UUID id +datetime scheduled_date +AppointmentStatus status +confirm() }
     class Donation { +UUID id +DonationStatus status +validate() }
     class Notification { +UUID id +string title/body +markAsRead() }
+    class AlertShare { +UUID id +string short_code +int click_count +int conversion_count }
+    class KnowledgeBase { +UUID id +string content +vector embedding +string category }
     Profile "1" --> "*" Appointment : prend
     Profile "1" --> "*" Donation : effectue
     Center "1" --> "*" Alert : publie
     Center "1" --> "*" Appointment : gère
     Alert "1" --> "*" Appointment : génère
     Appointment "1" --> "0..1" Donation : produit
+    Alert "1" --> "*" AlertShare : partage
+    Profile "1" --> "*" AlertShare : crée
 ```
 
 ---
@@ -393,11 +475,15 @@ erDiagram
     PROFILES ||--o{ APPOINTMENTS : prend
     PROFILES ||--o{ DONATIONS : effectue
     PROFILES ||--o{ NOTIFICATIONS : recoit
+    PROFILES ||--o{ ALERT_SHARES : cree
     CENTERS ||--o| PROFILES : administre
     CENTERS ||--o{ ALERTS : publie
     CENTERS ||--o{ APPOINTMENTS : accueille
     ALERTS ||--o{ APPOINTMENTS : genere
+    ALERTS ||--o{ ALERT_SHARES : partage
+    ALERT_SHARES ||--o{ SHARE_ACTIVITIES : tracke
     APPOINTMENTS ||--o| DONATIONS : produit
+    KNOWLEDGE_BASE ||--o{ RAG_SEARCH : utilise
 ```
 
 ---
@@ -447,6 +533,46 @@ sequenceDiagram
 | send-push | Envoie push FCM | service_role |
 | admin-stats | Stats dashboard admin | JWT super_admin |
 | expire-alerts | Marque alertes dépassées (cron) | service_role |
+| get_nearby_centers | Centres proches d'une position | JWT |
+| get_urgent_alerts | Alertes urgentes actives | JWT |
+
+---
+
+## 15b. IA Chat — SangBot 🆕
+
+### Architecture
+
+| Composant | Fichier | Rôle |
+|---|---|---|
+| API Route | `center_web/src/app/api/chat/route.ts` | SSE streaming, JWT auth, RAG context, tool calls |
+| Modèles | `center_web/src/features/ai/lib/models.ts` | Groq (primary) → Gemini → OpenRouter (fallback) |
+| Prompt | `center_web/src/features/ai/lib/prompts.ts` | System prompt SangBot, contexte utilisateur |
+| RAG | `center_web/src/features/ai/lib/rag.ts` | Google embeddings + Supabase `match_knowledge` RPC |
+| Tools | `center_web/src/features/ai/lib/tools.ts` | `getNearbyCenters`, `getUrgentAlerts` |
+| Hook mobile | `mobile_app/components/ai/useChat.ts` | SSE parsing, state management, abort, erreurs |
+| Chat UI | `mobile_app/components/ai/ChatDrawer.tsx` | Drawer modal, messages, suggestions |
+| Input | `mobile_app/components/ai/ChatInput.tsx` | Text input, send, stop button |
+| Message | `mobile_app/components/ai/ChatMessage.tsx` | Bulles user/assistant, avatar |
+| Widget | `mobile_app/components/ai/ChatWidget.tsx` | Bouton flottant, ouverture drawer |
+
+### Flux de données
+
+```
+Mobile (useChat) ──POST──► /api/chat ──► JWT verify
+                                    ──► RAG search (5s timeout)
+                                    ──► Build system prompt
+                                    ──► streamText (Groq/Gemini/OpenRouter)
+                                    ──► Tool calls (getNearbyCenters, getUrgentAlerts)
+                                    ──► SSE stream ──► Mobile
+```
+
+### Modèles IA (priorité)
+
+| Priorité | Provider | Modèle | Quota gratuit |
+|---|---|---|---|
+| 1 | Groq | llama-3.3-70b-versatile | 14400 req/jour |
+| 2 | Google Gemini | gemini-2.0-flash | 1500 req/jour |
+| 3 | OpenRouter | nvidia/nemotron-3-super-120b-a4b:free | Limité |
 
 ---
 
@@ -529,6 +655,11 @@ sequenceDiagram
 - [ ] Admin crée/suspend compte centre
 - [ ] Bout en bout fonctionnel Android + web
 - [ ] RLS active et testée
+- [ ] 🆕 Chat SangBot fonctionnel (streaming, tool calls)
+- [ ] 🆕 Partage d'alertes (lien court, QR, analytics)
+- [ ] 🆕 i18n multilingue (fr/en/de/es)
+- [ ] 🆕 QR code donneur scannable par centre
+- [ ] 🆕 Export PDF fonctionnel
 
 ---
 
@@ -549,7 +680,13 @@ sequenceDiagram
 | RLS | Row Level Security |
 | Edge Function | Fonction serveur Deno (Supabase) |
 | EAS | Expo Application Services |
+| SSE | Server-Sent Events (streaming IA) |
+| RAG | Retrieval-Augmented Generation |
+| SangBot | Assistant IA BloodLink pour le don de sang |
+| NativeWind | Tailwind CSS pour React Native |
+| shadcn/ui | Librairie composants React basée sur Radix UI |
 
 ---
 
 *Fin du cahier des charges BloodLink v2.0 — MVP 6 semaines.*
+*Dernière mise à jour : 2026-05-12*

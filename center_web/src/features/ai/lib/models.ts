@@ -1,14 +1,21 @@
+import { createGroq } from "@ai-sdk/groq";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 
-const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
+// ── Groq (primary — 14400 req/jour, ultra rapide) ──
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
-/**
- * OpenRouter client compatible with Vercel AI SDK.
- * Uses the free tier models (no credit card required).
- */
-export const openrouter = createOpenAI({
+// ── Google Gemini (secondary) ──
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
+
+// ── OpenRouter (fallback) ──
+const openrouter = createOpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: OPENROUTER_BASE_URL,
+  baseURL: "https://openrouter.ai/api/v1",
   headers: {
     "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://bloodlink.ma",
     "X-Title": "BloodLink AI Assistant",
@@ -16,18 +23,18 @@ export const openrouter = createOpenAI({
 });
 
 /**
- * Default chat model: Llama 3.1 8B Instruct (free tier)
- * Fast, good at French, sufficient for FAQ and medical guidance.
+ * Priority: Groq > Gemini > OpenRouter
+ * Groq: llama-3.3-70b — rapide, bon en français, tool calling, 14400 req/jour gratuit
  */
-export const defaultChatModel = openrouter.chat("meta-llama/llama-3.1-8b-instruct:free");
+function pickChatModel() {
+  if (process.env.GROQ_API_KEY) {
+    return groq("llama-3.3-70b-versatile");
+  }
+  if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    return google("gemini-2.0-flash");
+  }
+  return openrouter.chat("nvidia/nemotron-3-super-120b-a12b:free");
+}
 
-/**
- * Creative model for social content generation.
- */
-export const creativeModel = openrouter.chat("mistralai/mistral-7b-instruct:free");
-
-/**
- * Embedding model for RAG via OpenRouter.
- * Nomic Embed Text v1 (free tier, 768 dimensions).
- */
-export const embeddingModel = "nomic-ai/nomic-embed-text-v1";
+export const defaultChatModel = pickChatModel();
+export const creativeModel = pickChatModel();

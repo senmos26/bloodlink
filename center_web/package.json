@@ -17,6 +17,8 @@
     "db:migrate": "npx supabase migration up --local --workdir ./supabase"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.73",
+    "@ai-sdk/groq": "^3.0.39",
     "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^2.0.59",
     "@gsap/react": "^2.1.2",
@@ -58,7 +60,7 @@
     "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.2.0",
     "aceternity-ui": "^0.2.2",
-    "ai": "^5.0.59",
+    "ai": "^6.0.177",
     "autoprefixer": "^10.4.21",
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.1",
