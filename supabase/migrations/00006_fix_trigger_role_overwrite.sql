@@ -32,15 +32,15 @@ BEGIN
     'donor'::public.user_role
   );
 
+  -- CRITICAL FIX: Use ON CONFLICT DO NOTHING.
+  -- Previously the trigger was ON INSERT/UPDATE on auth.users. When a user logs in,
+  -- Supabase updates auth.users (last_sign_in_at, etc.), firing this trigger.
+  -- The old ON CONFLICT DO UPDATE was overwriting role, full_name, and blood_type
+  -- on every login, silently reverting any manual changes (e.g. super_admin -> donor).
+  -- Now we only create the profile on first auth user creation, and never touch it again.
   INSERT INTO public.profiles (id, full_name, blood_type, role)
   VALUES (NEW.id, v_full_name, v_blood_type, v_role)
-  ON CONFLICT (id) DO UPDATE SET
-    full_name = COALESCE(EXCLUDED.full_name, public.profiles.full_name),
-    blood_type = COALESCE(EXCLUDED.blood_type, public.profiles.blood_type),
-    -- CRITICAL: Never overwrite role on existing profiles.
-    -- The role is only set once on initial insert (by app_metadata for admin accounts,
-    -- or default 'donor' for self-registered accounts). Manual role changes must persist.
-    updated_at = NOW();
+  ON CONFLICT (id) DO NOTHING;
 
   RETURN NEW;
 EXCEPTION WHEN OTHERS THEN
