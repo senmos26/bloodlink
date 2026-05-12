@@ -7,7 +7,6 @@ import {
   Users,
   Building2,
   HeartPulse,
-  BarChart3,
   BellRing,
   ChevronLeft,
   ChevronRight,
@@ -49,12 +48,6 @@ const navSections = [
       { key: "profiles", label: "Donneurs / Profils", icon: Users, href: "/admin/profiles" },
       { key: "centers", label: "Centres de Santé", icon: Building2, href: "/admin/centers" },
       { key: "notifications", label: "Notifications", icon: BellRing, href: "/admin/notifications" },
-    ],
-  },
-  {
-    title: "Analyse",
-    items: [
-      { key: "statistics", label: "Statistiques", icon: BarChart3, href: "/admin/statistics" },
     ],
   },
   {
