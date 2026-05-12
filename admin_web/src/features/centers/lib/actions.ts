@@ -11,15 +11,40 @@ export async function getCenters(filters?: { isActive?: boolean }) {
 
   let query = supabase
     .from("centers")
-    .select("*, profiles:admin_id(full_name, email)")
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (filters?.isActive !== undefined) query = query.eq("is_active", filters.isActive);
 
-  const { data, error } = await query;
+  const { data: centers, error: centersError } = await query;
 
-  if (error) return { error: error.message };
-  return { data: data as (Center & { profiles?: { full_name: string; email: string } | null })[] };
+  if (centersError) return { error: centersError.message };
+  if (!centers || centers.length === 0) return { data: [] };
+
+  // Fetch admin profiles separately to handle NULL admin_id gracefully
+  const adminIds = centers
+    .map((c) => c.admin_id)
+    .filter((id): id is string => !!id);
+
+  let profilesMap: Record<string, { full_name: string; email: string }> = {};
+
+  if (adminIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, full_name, email")
+      .in("id", adminIds);
+
+    profilesMap = Object.fromEntries(
+      (profiles ?? []).map((p) => [p.id, { full_name: p.full_name, email: p.email }])
+    );
+  }
+
+  const enriched = centers.map((center) => ({
+    ...center,
+    profiles: center.admin_id ? profilesMap[center.admin_id] ?? null : null,
+  }));
+
+  return { data: enriched as (Center & { profiles?: { full_name: string; email: string } | null })[] };
 }
 
 export async function toggleCenterActive(centerId: string, isActive: boolean) {
