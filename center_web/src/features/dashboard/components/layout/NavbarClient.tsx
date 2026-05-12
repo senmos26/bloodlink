@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, AlertTriangle } from "lucide-react"; // Import Menu icon
+import { Menu } from "lucide-react"; // Import Menu icon
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { GlobalLanguageSelector } from "@/shared/components/GlobalLanguageSelector";
 import { useLocale, useTranslations } from "next-intl";
-import { useActiveAlertsCount } from "@/features/alerts/lib/hooks";
 import { NotificationDropdown } from "@/features/notifications/components/NotificationDropdown";
 
 interface ProfileLite {
@@ -32,7 +31,6 @@ export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
   const { toggleMobileSidebar } = useLayout();
   const locale = useLocale();
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const { data: activeAlertsCount = 0 } = useActiveAlertsCount();
 
   const fullName = profile?.full_name || "User";
 
@@ -67,21 +65,6 @@ export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
 
         {/* Notifications dropdown */}
         <NotificationDropdown />
-
-        {/* Alerts quick link */}
-        <Link
-          href={`/${locale}/alerts`}
-          className="relative p-2 rounded-full text-foreground/70 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400/50"
-          aria-label="Alertes d'urgence"
-          title="Alertes d'urgence"
-        >
-          <AlertTriangle className="size-5" />
-          {activeAlertsCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold px-1">
-              {activeAlertsCount > 9 ? "9+" : activeAlertsCount}
-            </span>
-          )}
-        </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="group flex items-center gap-2 sm:gap-3 cursor-pointer rounded-md p-1 hover:bg-primary/10 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50">

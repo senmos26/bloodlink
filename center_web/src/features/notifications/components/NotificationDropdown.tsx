@@ -39,6 +39,7 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from "@/features/notifications/lib/actions";
+import { useActiveAlertsCount } from "@/features/alerts/lib/hooks";
 
 interface NotificationItem {
   id: string;
@@ -64,8 +65,10 @@ export function NotificationDropdown() {
   const [open, setOpen] = React.useState(false);
   const [notifications, setNotifications] = React.useState<NotificationItem[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const { data: activeAlertsCount = 0 } = useActiveAlertsCount();
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
+  const totalBadge = unreadCount + activeAlertsCount;
 
   React.useEffect(() => {
     if (open) {
@@ -111,9 +114,9 @@ export function NotificationDropdown() {
           aria-label="Notifications"
         >
           <Bell className="size-5" />
-          {unreadCount > 0 && (
+          {totalBadge > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
-              {unreadCount > 9 ? "9+" : unreadCount}
+              {totalBadge > 9 ? "9+" : totalBadge}
             </span>
           )}
         </button>
@@ -140,6 +143,26 @@ export function NotificationDropdown() {
             </Button>
           )}
         </div>
+
+        {/* Active Alerts Banner */}
+        {activeAlertsCount > 0 && (
+          <Link
+            href="/alerts"
+            className="flex items-center gap-3 px-4 py-3 bg-red-50 border-b border-red-100 hover:bg-red-100 transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-red-700">
+                {activeAlertsCount} alerte{activeAlertsCount > 1 ? "s" : ""} d'urgence active{activeAlertsCount > 1 ? "s" : ""}
+              </p>
+              <p className="text-xs text-red-500">Cliquez pour voir les détails</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-red-400 shrink-0" />
+          </Link>
+        )}
 
         <ScrollArea className="h-80">
           {loading && notifications.length === 0 ? (
