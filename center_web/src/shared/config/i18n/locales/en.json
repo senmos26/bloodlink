@@ -323,6 +323,25 @@
         "fieldsRequired": "Email and password are required."
       }
     },
+    "forgotPassword": {
+      "title": "Forgot password?",
+      "titleSent": "Email sent",
+      "subtitle": "Enter your email to receive a reset link.",
+      "subtitleSent": "Check your inbox.",
+      "labelEmail": "Email",
+      "placeholderEmail": "name@example.com",
+      "buttons": {
+        "submit": "Send reset link",
+        "submitting": "Sending..."
+      },
+      "toast": {
+        "errorTitle": "Error",
+        "successTitle": "Success",
+        "emailSent": "A password reset email has been sent."
+      },
+      "checkEmail": "Check your inbox and follow the instructions.",
+      "backToLogin": "Back to login"
+    },
     "signup": {
       "title": "Create your account",
       "subtitle": "Manage your properties in minutes.",

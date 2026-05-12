@@ -318,6 +318,25 @@
         "fieldsRequired": "L'email et le mot de passe sont requis."
       }
     },
+    "forgotPassword": {
+      "title": "Mot de passe oublié ?",
+      "titleSent": "Email envoyé",
+      "subtitle": "Entrez votre email pour recevoir un lien de réinitialisation.",
+      "subtitleSent": "Vérifiez votre boîte de réception.",
+      "labelEmail": "Email",
+      "placeholderEmail": "nom@exemple.com",
+      "buttons": {
+        "submit": "Envoyer le lien",
+        "submitting": "Envoi..."
+      },
+      "toast": {
+        "errorTitle": "Erreur",
+        "successTitle": "Succès",
+        "emailSent": "Un email de réinitialisation a été envoyé."
+      },
+      "checkEmail": "Vérifiez votre boîte de réception et suivez les instructions.",
+      "backToLogin": "Retour à la connexion"
+    },
     "signup": {
       "title": "Créer votre compte",
       "subtitle": "Gérez vos centres de transfusion en quelques minutes.",

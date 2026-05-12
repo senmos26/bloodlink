@@ -323,6 +323,25 @@
         "fieldsRequired": "E-Mail und Passwort sind erforderlich."
       }
     },
+    "forgotPassword": {
+      "title": "Passwort vergessen?",
+      "titleSent": "E-Mail gesendet",
+      "subtitle": "Geben Sie Ihre E-Mail ein, um einen Reset-Link zu erhalten.",
+      "subtitleSent": "Überprüfen Sie Ihren Posteingang.",
+      "labelEmail": "E-Mail",
+      "placeholderEmail": "name@beispiel.de",
+      "buttons": {
+        "submit": "Reset-Link senden",
+        "submitting": "Senden..."
+      },
+      "toast": {
+        "errorTitle": "Fehler",
+        "successTitle": "Erfolg",
+        "emailSent": "Eine Passwort-Reset-E-Mail wurde gesendet."
+      },
+      "checkEmail": "Überprüfen Sie Ihren Posteingang und folgen Sie den Anweisungen.",
+      "backToLogin": "Zurück zur Anmeldung"
+    },
     "signup": {
       "title": "Konto erstellen",
       "subtitle": "Verwalten Sie Ihre Immobilien in wenigen Minuten.",

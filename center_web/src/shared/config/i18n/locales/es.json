@@ -323,6 +323,25 @@
         "fieldsRequired": "El correo electrónico y la contraseña son obligatorios."
       }
     },
+    "forgotPassword": {
+      "title": "¿Olvidó su contraseña?",
+      "titleSent": "Correo enviado",
+      "subtitle": "Ingrese su correo para recibir un enlace de restablecimiento.",
+      "subtitleSent": "Revise su bandeja de entrada.",
+      "labelEmail": "Correo electrónico",
+      "placeholderEmail": "nombre@ejemplo.com",
+      "buttons": {
+        "submit": "Enviar enlace",
+        "submitting": "Enviando..."
+      },
+      "toast": {
+        "errorTitle": "Error",
+        "successTitle": "Éxito",
+        "emailSent": "Se ha enviado un correo de restablecimiento de contraseña."
+      },
+      "checkEmail": "Revise su bandeja de entrada y siga las instrucciones.",
+      "backToLogin": "Volver al inicio de sesión"
+    },
     "signup": {
       "title": "Crear su cuenta",
       "subtitle": "Gestione sus propiedades inmobiliarias en pocos minutos.",
