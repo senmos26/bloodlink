@@ -150,18 +150,59 @@ export async function signInWithGoogle() {
   }
 }
 
-// ---- Sign Up / Reset Password / Update Password actions are temporarily
-// commented out because the SignUpSchema import from @/entities was removed
-// during cleanup. Re-enable by adding a local Zod schema if needed.
+/**
+ * Server action to send a password reset email.
+ */
+export async function sendPasswordReset(prevState: FormState, formData: FormData): Promise<FormState> {
+  const supabase = await createClient();
+  const email = (formData.get("email") ?? "").toString().trim().toLowerCase();
 
-// export type SignUpResult =
-//   | { ok: true; status: "confirm_email" | "signed_up"; successKey?: string }
-//   | { ok: false; errorKey: string; fieldErrors?: Record<string, string> };
+  if (!email) {
+    return { errorKey: "auth.serverErrors.fieldsRequired" };
+  }
 
-// export async function signUp(formData: FormData): Promise<SignUpResult> { ... }
-// function mapSupabaseErrorToKey(original: string): string { ... }
-// export async function resetPassword(...) { ... }
-// export async function updatePassword(...) { ... }
+  const siteUrl = await getSiteURL();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}new-password`,
+  });
+
+  if (error) {
+    console.error("[SEND_PASSWORD_RESET] Error:", error.message);
+    return { errorKey: "auth.serverErrors.unknownError" };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Server action to update the user's password after recovery.
+ */
+export async function updatePassword(prevState: FormState, formData: FormData): Promise<FormState> {
+  const supabase = await createClient();
+  const password = (formData.get("password") ?? "").toString();
+  const confirm = (formData.get("confirm") ?? "").toString();
+
+  if (!password || !confirm) {
+    return { errorKey: "auth.serverErrors.fieldsRequired" };
+  }
+
+  if (password.length < 6) {
+    return { errorKey: "auth.serverErrors.passwordTooShort" };
+  }
+
+  if (password !== confirm) {
+    return { errorKey: "auth.serverErrors.passwordsDoNotMatch" };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    console.error("[UPDATE_PASSWORD] Error:", error.message);
+    return { errorKey: "auth.serverErrors.unknownError" };
+  }
+
+  return { success: true };
+}
 
 /**
  * Server action to handle user sign out.
