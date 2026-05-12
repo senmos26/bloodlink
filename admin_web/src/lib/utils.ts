@@ -16,3 +16,10 @@ export function formatDate(value: string | null | undefined): string {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "Date indisponible" : date.toLocaleDateString("fr-FR");
 }
+
+export function getURL(): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
+  if (siteUrl) return siteUrl.replace(/\/$/, "");
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3001";
+}

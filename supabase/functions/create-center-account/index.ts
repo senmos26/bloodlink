@@ -167,7 +167,7 @@ Deno.serve(async (request) => {
     // 5. Invite user by email — sends an invitation link to set their password
     // The trigger handle_new_user will create the profile with role='donor'
     // We update it to 'center_admin' right after
-    const redirectUrl = Deno.env.get("CENTER_WEB_URL") ?? "http://localhost:3001";
+    const redirectUrl = Deno.env.get("CENTER_WEB_URL") ?? "http://localhost:3000";
     const { data: invitedUser, error: inviteError } =
       await adminClient.auth.admin.inviteUserByEmail(normalizedEmail, {
         data: {

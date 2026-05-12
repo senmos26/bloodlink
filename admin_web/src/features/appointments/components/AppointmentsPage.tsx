@@ -1,17 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CalendarDays,
   Clock,
   CheckCircle2,
   XCircle,
-  Search,
   User,
   Building2,
+  Droplets,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn, formatDateTime } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/shared/components/PageHeader";
+import { FilterBar } from "@/shared/components/FilterBar";
+import { DataTable, type Column } from "@/shared/components/DataTable";
+import { Pagination } from "@/shared/components/Pagination";
+import { DetailsDrawer } from "@/shared/components/DetailsDrawer";
 import { updateAppointmentStatus } from "@/features/appointments/lib/actions";
 import type { AppointmentStatus } from "@/types/database";
 
@@ -31,11 +40,11 @@ interface AppointmentRow {
 
 // ─── Constants ──────────────────────────────────────────────────────
 
-const STATUS_CONFIG: Record<AppointmentStatus, { label: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  pending: { label: "En attente", color: "bg-yellow-100 text-yellow-700", icon: Clock },
-  confirmed: { label: "Confirmé", color: "bg-blue-100 text-blue-700", icon: CheckCircle2 },
-  completed: { label: "Complété", color: "bg-green-100 text-green-700", icon: CheckCircle2 },
-  cancelled: { label: "Annulé", color: "bg-red-100 text-red-700", icon: XCircle },
+const STATUS_CONFIG: Record<AppointmentStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success"; icon: React.ComponentType<{ className?: string }> }> = {
+  pending: { label: "En attente", variant: "secondary", icon: Clock },
+  confirmed: { label: "Confirmé", variant: "default", icon: CheckCircle2 },
+  completed: { label: "Complété", variant: "success", icon: CheckCircle2 },
+  cancelled: { label: "Annulé", variant: "destructive", icon: XCircle },
 };
 
 const VALID_TRANSITIONS: Record<AppointmentStatus, AppointmentStatus[]> = {
@@ -51,27 +60,33 @@ interface AppointmentsPageProps {
   initialAppointments: AppointmentRow[];
 }
 
+const PAGE_SIZE = 10;
+
 export function AppointmentsPage({ initialAppointments }: AppointmentsPageProps) {
-  const [appointments, setAppointments] = useState(initialAppointments);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [appointments, setAppointments] = React.useState(initialAppointments);
+  const [actionLoading, setActionLoading] = React.useState<string | null>(null);
+  const [selectedApt, setSelectedApt] = React.useState<AppointmentRow | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
-  const filteredAppointments = appointments.filter((apt) => {
-    const query = searchTerm.trim().toLowerCase();
-    const matchesSearch =
-      query.length === 0 ||
-      [
-        apt.profiles?.full_name,
-        apt.centers?.name,
-        apt.notes,
-      ]
-        .filter(Boolean)
-        .some((field) => field!.toLowerCase().includes(query));
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const statusFilter = searchParams.get("status") || "all";
+  const q = (searchParams.get("q") || "").toLowerCase();
 
-    const matchesStatus = statusFilter === "all" || apt.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filtered = React.useMemo(() => {
+    return appointments.filter((apt) => {
+      const matchesSearch =
+        !q ||
+        [apt.profiles?.full_name, apt.centers?.name, apt.notes]
+          .filter(Boolean)
+          .some((f) => f!.toLowerCase().includes(q));
+      const matchesStatus = statusFilter === "all" || apt.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [appointments, q, statusFilter]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   async function handleStatusChange(appointmentId: string, newStatus: AppointmentStatus) {
     setActionLoading(appointmentId);
@@ -80,9 +95,7 @@ export function AppointmentsPage({ initialAppointments }: AppointmentsPageProps)
       toast.error(result.error);
     } else {
       toast.success("Rendez-vous mis à jour.");
-      setAppointments((prev) =>
-        prev.map((a) => (a.id === appointmentId ? { ...a, status: newStatus } : a))
-      );
+      setAppointments((prev) => prev.map((a) => (a.id === appointmentId ? { ...a, status: newStatus } : a)));
     }
     setActionLoading(null);
   }
@@ -92,140 +105,209 @@ export function AppointmentsPage({ initialAppointments }: AppointmentsPageProps)
   const todayStr = new Date().toISOString().split("T")[0];
   const todayCount = appointments.filter((a) => a.scheduled_date?.startsWith(todayStr)).length;
 
+  const columns: Column<AppointmentRow>[] = [
+    {
+      key: "date",
+      header: "Date",
+      cell: (apt) => {
+        const config = STATUS_CONFIG[apt.status];
+        const StatusIcon = config.icon;
+        return (
+          <div className="flex items-center gap-3">
+            <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg border", apt.status === "cancelled" ? "bg-red-50 border-red-200" : apt.status === "completed" ? "bg-green-50 border-green-200" : apt.status === "confirmed" ? "bg-blue-50 border-blue-200" : "bg-yellow-50 border-yellow-200")}>
+              <StatusIcon className={cn("h-4 w-4", apt.status === "cancelled" ? "text-red-600" : apt.status === "completed" ? "text-green-600" : apt.status === "confirmed" ? "text-blue-600" : "text-yellow-600")} />
+            </div>
+            <div>
+              <p className="font-medium text-slate-900">{formatDateTime(apt.scheduled_date)}</p>
+              <p className="text-xs text-slate-400">{apt.centers?.name || "Centre inconnu"}</p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: "donor",
+      header: "Donneur",
+      cell: (apt) => (
+        <div className="text-xs text-slate-600">
+          <div className="flex items-center gap-1.5">
+            <User className="h-3 w-3 text-slate-400" />
+            {apt.profiles?.full_name || "—"}
+          </div>
+          {apt.profiles?.blood_type && (
+            <div className="flex items-center gap-1.5 mt-0.5 font-bold text-rose-600">
+              <Droplets className="h-3 w-3" />
+              {apt.profiles.blood_type}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      header: "Statut",
+      cell: (apt) => {
+        const s = STATUS_CONFIG[apt.status];
+        return <Badge variant={s.variant}>{s.label}</Badge>;
+      },
+    },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      cell: (apt) => {
+        const isLoading = actionLoading === apt.id;
+        const validNext = VALID_TRANSITIONS[apt.status];
+        return (
+          <div className="flex items-center justify-end gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-slate-200 bg-white hover:bg-slate-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedApt(apt);
+                setIsDrawerOpen(true);
+              }}
+              title="Voir détails"
+            >
+              <Eye className="h-4 w-4 text-slate-500" />
+            </Button>
+            {validNext.map((next) => {
+              const nc = STATUS_CONFIG[next];
+              if (next === "cancelled") {
+                return (
+                  <Button
+                    key={next}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 hover:border-red-300"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStatusChange(apt.id, next);
+                    }}
+                    disabled={isLoading}
+                    title="Annuler le rendez-vous"
+                  >
+                    <XCircle className="mr-1.5 h-3.5 w-3.5" />
+                    Annuler
+                  </Button>
+                );
+              }
+              if (next === "completed") {
+                return (
+                  <Button
+                    key={next}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 hover:border-green-300"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStatusChange(apt.id, next);
+                    }}
+                    disabled={isLoading}
+                    title="Marquer comme complété"
+                  >
+                    <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />
+                    Compléter
+                  </Button>
+                );
+              }
+              return (
+                <Button
+                  key={next}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 hover:border-blue-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStatusChange(apt.id, next);
+                  }}
+                  disabled={isLoading}
+                  title="Confirmer le rendez-vous"
+                >
+                  <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />
+                  Confirmer
+                </Button>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const drawerFields = selectedApt
+    ? [
+        { label: "Date", value: formatDateTime(selectedApt.scheduled_date) },
+        { label: "Centre", value: (
+          <div className="flex items-center gap-1.5">
+            <Building2 className="h-3.5 w-3.5 text-slate-400" />
+            {selectedApt.centers?.name || "—"}
+          </div>
+        )},
+        { label: "Donneur", value: (
+          <div className="flex items-center gap-1.5">
+            <User className="h-3.5 w-3.5 text-slate-400" />
+            {selectedApt.profiles?.full_name || "—"}
+            {selectedApt.profiles?.blood_type && (
+              <span className="font-bold text-rose-600 ml-1">{selectedApt.profiles.blood_type}</span>
+            )}
+          </div>
+        )},
+        { label: "Statut", value: <Badge variant={STATUS_CONFIG[selectedApt.status].variant}>{STATUS_CONFIG[selectedApt.status].label}</Badge> },
+        { label: "Notes", value: selectedApt.notes || "—" },
+      ]
+    : [];
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Rendez-vous</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {todayCount} aujourd&apos;hui · {pendingCount} en attente · {confirmedCount} confirmés
-        </p>
-      </div>
+      <PageHeader
+        title="Rendez-vous"
+        description={`${todayCount} aujourd'hui · ${pendingCount} en attente · ${confirmedCount} confirmés`}
+      />
 
-      {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {Object.entries(STATUS_CONFIG).map(([status, config]) => {
-          const Icon = config.icon;
-          const count = appointments.filter((a) => a.status === status).length;
-          return (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(statusFilter === status ? "all" : status)}
-              className={cn(
-                "flex items-center gap-3 rounded-xl border p-3 transition-colors",
-                statusFilter === status ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-white hover:bg-slate-50"
-              )}
-            >
-              <div className={cn("flex size-8 items-center justify-center rounded-lg", config.color)}>
-                <Icon className="size-4" />
-              </div>
-              <div className="text-left">
-                <p className="text-lg font-bold text-slate-900">{count}</p>
-                <p className="text-xs text-slate-500">{config.label}</p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      <FilterBar
+        searchPlaceholder="Rechercher par donneur, centre, notes..."
+        resultsCount={filtered.length}
+        filters={[
+          {
+            key: "status",
+            label: "Statut",
+            options: [
+              { value: "pending", label: "En attente" },
+              { value: "confirmed", label: "Confirmé" },
+              { value: "completed", label: "Complété" },
+              { value: "cancelled", label: "Annulé" },
+            ],
+          },
+        ]}
+      />
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-        <input
-          type="text"
-          placeholder="Rechercher par donneur, centre, notes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        data={paginated}
+        keyExtractor={(apt) => apt.id}
+        emptyMessage="Aucun rendez-vous trouvé."
+        onRowClick={(apt) => {
+          setSelectedApt(apt);
+          setIsDrawerOpen(true);
+        }}
+      />
 
-      {/* Appointments list */}
-      <div className="space-y-3">
-        {filteredAppointments.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
-            Aucun rendez-vous trouvé.
-          </div>
-        ) : (
-          filteredAppointments.map((apt) => {
-            const statusConfig = STATUS_CONFIG[apt.status];
-            const StatusIcon = statusConfig.icon;
-            const validNext = VALID_TRANSITIONS[apt.status];
-            const isLoading = actionLoading === apt.id;
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        resultsCount={filtered.length}
+        pageSize={PAGE_SIZE}
+      />
 
-            return (
-              <div
-                key={apt.id}
-                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  {/* Left: info */}
-                  <div className="flex items-start gap-3">
-                    <div className={cn("flex size-10 items-center justify-center rounded-xl", statusConfig.color)}>
-                      <CalendarDays className="size-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">
-                        {formatDateTime(apt.scheduled_date)}
-                      </p>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                        <User className="size-3" />
-                        <span>{apt.profiles?.full_name || "Donneur inconnu"}</span>
-                        {apt.profiles?.blood_type && (
-                          <span className="font-bold text-rose-600">{apt.profiles.blood_type}</span>
-                        )}
-                      </div>
-                      <div className="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
-                        <Building2 className="size-3" />
-                        <span>{apt.centers?.name || "Centre inconnu"}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: status + actions */}
-                  <div className="flex items-center gap-3">
-                    <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", statusConfig.color)}>
-                      {statusConfig.label}
-                    </span>
-
-                    {validNext.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        {validNext.map((nextStatus) => {
-                          const nextConfig = STATUS_CONFIG[nextStatus];
-                          const NextIcon = nextConfig.icon;
-                          return (
-                            <button
-                              key={nextStatus}
-                              onClick={() => handleStatusChange(apt.id, nextStatus)}
-                              disabled={isLoading}
-                              className={cn(
-                                "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50",
-                                nextStatus === "cancelled"
-                                  ? "bg-red-50 text-red-600 hover:bg-red-100"
-                                  : nextStatus === "completed"
-                                  ? "bg-green-50 text-green-600 hover:bg-green-100"
-                                  : "bg-blue-50 text-blue-600 hover:bg-blue-100"
-                              )}
-                            >
-                              {nextConfig.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {apt.notes && (
-                  <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                    {apt.notes}
-                  </p>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
+      <DetailsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title={`Rendez-vous — ${selectedApt?.profiles?.full_name || "Détails"}`}
+        fields={drawerFields}
+      />
     </div>
   );
 }

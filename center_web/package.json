@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently --kill-others-on-fail false \"npm run dev:next\" \"npm run dev:ai\" --names \"Next.js,FastAPI\" --prefix-colors \"cyan,magenta\"",
-    "dev:next": "next dev --turbopack",
+    "dev:next": "next dev --turbopack -p 3000",
     "dev:ai": "cd ai_service && poetry run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
     "dev:frontend": "npm run dev:next",
     "dev:backend": "npm run dev:ai",

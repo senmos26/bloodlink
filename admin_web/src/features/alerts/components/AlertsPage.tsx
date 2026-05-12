@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Bell,
   AlertTriangle,
   XCircle,
   TrendingUp,
   RotateCcw,
-  ChevronDown,
-  ChevronUp,
-  Filter,
-  Search,
+  MapPin,
+  Droplets,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn, formatDate, formatDateTime } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/shared/components/PageHeader";
+import { FilterBar } from "@/shared/components/FilterBar";
+import { DataTable, type Column } from "@/shared/components/DataTable";
+import { Pagination } from "@/shared/components/Pagination";
+import { DetailsDrawer } from "@/shared/components/DetailsDrawer";
 import { closeAlert, escalateAlert, relaunchAlert } from "@/features/alerts/lib/actions";
 import type { AlertStatus, BloodType, UrgencyLevel } from "@/types/database";
 
@@ -37,17 +44,17 @@ interface AlertWithCenter {
 
 // ─── Constants ──────────────────────────────────────────────────────
 
-const URGENCY_CONFIG: Record<UrgencyLevel, { label: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  low: { label: "Basse", color: "bg-green-100 text-green-700 border-green-200", icon: Bell },
-  medium: { label: "Moyenne", color: "bg-yellow-100 text-yellow-700 border-yellow-200", icon: Bell },
-  high: { label: "Haute", color: "bg-orange-100 text-orange-700 border-orange-200", icon: AlertTriangle },
-  critical: { label: "Critique", color: "bg-red-100 text-red-700 border-red-200", icon: AlertTriangle },
+const URGENCY_CONFIG: Record<UrgencyLevel, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success"; icon: React.ComponentType<{ className?: string }> }> = {
+  low: { label: "Basse", variant: "success", icon: Bell },
+  medium: { label: "Moyenne", variant: "secondary", icon: Bell },
+  high: { label: "Haute", variant: "default", icon: AlertTriangle },
+  critical: { label: "Critique", variant: "destructive", icon: AlertTriangle },
 };
 
-const STATUS_CONFIG: Record<AlertStatus, { label: string; color: string }> = {
-  active: { label: "Active", color: "bg-green-100 text-green-700" },
-  expired: { label: "Expirée", color: "bg-slate-100 text-slate-600" },
-  closed: { label: "Fermée", color: "bg-slate-100 text-slate-500" },
+const STATUS_CONFIG: Record<AlertStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" | "success" }> = {
+  active: { label: "Active", variant: "success" },
+  expired: { label: "Expirée", variant: "secondary" },
+  closed: { label: "Fermée", variant: "outline" },
 };
 
 // ─── Component ──────────────────────────────────────────────────────
@@ -56,32 +63,35 @@ interface AlertsPageProps {
   initialAlerts: AlertWithCenter[];
 }
 
+const PAGE_SIZE = 10;
+
 export function AlertsPage({ initialAlerts }: AlertsPageProps) {
-  const [alerts, setAlerts] = useState(initialAlerts);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [urgencyFilter, setUrgencyFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [expandedAlert, setExpandedAlert] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [alerts, setAlerts] = React.useState(initialAlerts);
+  const [actionLoading, setActionLoading] = React.useState<string | null>(null);
+  const [selectedAlert, setSelectedAlert] = React.useState<AlertWithCenter | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
-  const filteredAlerts = alerts.filter((alert) => {
-    const query = searchTerm.trim().toLowerCase();
-    const matchesSearch =
-      query.length === 0 ||
-      [
-        alert.centers?.name,
-        alert.centers?.city,
-        alert.blood_type_required,
-        alert.message,
-      ]
-        .filter(Boolean)
-        .some((field) => field!.toLowerCase().includes(query));
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const urgencyFilter = searchParams.get("urgency") || "all";
+  const statusFilter = searchParams.get("status") || "all";
+  const q = (searchParams.get("q") || "").toLowerCase();
 
-    const matchesUrgency = urgencyFilter === "all" || alert.urgency_level === urgencyFilter;
-    const matchesStatus = statusFilter === "all" || alert.status === statusFilter;
+  const filtered = React.useMemo(() => {
+    return alerts.filter((alert) => {
+      const matchesSearch =
+        !q ||
+        [alert.centers?.name, alert.centers?.city, alert.blood_type_required, alert.message]
+          .filter(Boolean)
+          .some((f) => f!.toLowerCase().includes(q));
+      const matchesUrgency = urgencyFilter === "all" || alert.urgency_level === urgencyFilter;
+      const matchesStatus = statusFilter === "all" || alert.status === statusFilter;
+      return matchesSearch && matchesUrgency && matchesStatus;
+    });
+  }, [alerts, q, urgencyFilter, statusFilter]);
 
-    return matchesSearch && matchesUrgency && matchesStatus;
-  });
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   async function handleClose(alertId: string) {
     if (!confirm("Voulez-vous fermer cette alerte ? Les donneurs ne recevront plus de notifications.")) return;
@@ -102,17 +112,12 @@ export function AlertsPage({ initialAlerts }: AlertsPageProps) {
     if (result.error) {
       toast.error(result.error);
     } else {
-      toast.success("Alerte escaladée. L'urgence a été augmentée.");
+      toast.success("Alerte escaladée.");
       setAlerts((prev) =>
         prev.map((a) => {
           if (a.id !== alertId) return a;
-          const escalationMap: Record<UrgencyLevel, UrgencyLevel> = {
-            low: "medium",
-            medium: "high",
-            high: "critical",
-            critical: "critical",
-          };
-          return { ...a, urgency_level: escalationMap[a.urgency_level] };
+          const map: Record<UrgencyLevel, UrgencyLevel> = { low: "medium", medium: "high", high: "critical", critical: "critical" };
+          return { ...a, urgency_level: map[a.urgency_level] };
         })
       );
     }
@@ -125,10 +130,8 @@ export function AlertsPage({ initialAlerts }: AlertsPageProps) {
     if (result.error) {
       toast.error(result.error);
     } else {
-      toast.success("Alerte relancée. Les donneurs ont été notifiés à nouveau.");
-      setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, status: "active" as AlertStatus } : a))
-      );
+      toast.success("Alerte relancée.");
+      setAlerts((prev) => prev.map((a) => (a.id === alertId ? { ...a, status: "active" as AlertStatus } : a)));
     }
     setActionLoading(null);
   }
@@ -136,155 +139,196 @@ export function AlertsPage({ initialAlerts }: AlertsPageProps) {
   const activeCount = alerts.filter((a) => a.status === "active").length;
   const criticalCount = alerts.filter((a) => a.status === "active" && a.urgency_level === "critical").length;
 
+  const columns: Column<AlertWithCenter>[] = [
+    {
+      key: "center",
+      header: "Centre",
+      cell: (a) => {
+        const urgency = URGENCY_CONFIG[a.urgency_level];
+        const UrgencyIcon = urgency.icon;
+        return (
+          <div className="flex items-center gap-3">
+            <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg border", urgency.variant === "destructive" ? "bg-red-50 border-red-200" : urgency.variant === "default" ? "bg-orange-50 border-orange-200" : "bg-green-50 border-green-200")}>
+              <UrgencyIcon className={cn("h-4 w-4", urgency.variant === "destructive" ? "text-red-600" : urgency.variant === "default" ? "text-orange-600" : "text-green-600")} />
+            </div>
+            <div>
+              <p className="font-medium text-slate-900">{a.centers?.name || "Centre inconnu"}</p>
+              <p className="text-xs text-slate-400 flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> {a.centers?.city}
+              </p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: "blood",
+      header: "Groupe",
+      cell: (a) => (
+        <span className="inline-flex items-center gap-1 font-bold text-rose-600">
+          <Droplets className="h-3.5 w-3.5" />
+          {a.blood_type_required}
+        </span>
+      ),
+    },
+    {
+      key: "urgency",
+      header: "Urgence",
+      cell: (a) => {
+        const u = URGENCY_CONFIG[a.urgency_level];
+        return <Badge variant={u.variant}>{u.label}</Badge>;
+      },
+    },
+    {
+      key: "status",
+      header: "Statut",
+      cell: (a) => {
+        const s = STATUS_CONFIG[a.status];
+        return <Badge variant={s.variant}>{s.label}</Badge>;
+      },
+    },
+    {
+      key: "deadline",
+      header: "Échéance",
+      cell: (a) => <span className="text-xs text-slate-500">{formatDate(a.deadline)}</span>,
+    },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      cell: (a) => {
+        const isLoading = actionLoading === a.id;
+        return (
+          <div className="flex items-center justify-end gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-slate-200 bg-white hover:bg-slate-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedAlert(a);
+                setIsDrawerOpen(true);
+              }}
+              title="Voir détails"
+            >
+              <Eye className="h-4 w-4 text-slate-500" />
+            </Button>
+            {a.status === "active" && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-800 hover:border-orange-300 disabled:opacity-40"
+                  onClick={(e) => { e.stopPropagation(); handleEscalate(a.id); }}
+                  disabled={isLoading || a.urgency_level === "critical"}
+                  title="Augmenter l'urgence"
+                >
+                  <TrendingUp className="mr-1.5 h-3.5 w-3.5" />
+                  Escalader
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 hover:border-blue-300 disabled:opacity-40"
+                  onClick={(e) => { e.stopPropagation(); handleRelaunch(a.id); }}
+                  disabled={isLoading}
+                  title="Relancer l'alerte"
+                >
+                  <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                  Relancer
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-800 hover:border-slate-300 disabled:opacity-40"
+                  onClick={(e) => { e.stopPropagation(); handleClose(a.id); }}
+                  disabled={isLoading}
+                  title="Fermer l'alerte"
+                >
+                  <XCircle className="mr-1.5 h-3.5 w-3.5" />
+                  Fermer
+                </Button>
+              </>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const drawerFields = selectedAlert
+    ? [
+        { label: "Centre", value: selectedAlert.centers?.name || "—" },
+        { label: "Ville", value: selectedAlert.centers?.city || "—" },
+        { label: "Groupe sanguin requis", value: (
+          <span className="font-bold text-rose-600">{selectedAlert.blood_type_required}</span>
+        )},
+        { label: "Urgence", value: <Badge variant={URGENCY_CONFIG[selectedAlert.urgency_level].variant}>{URGENCY_CONFIG[selectedAlert.urgency_level].label}</Badge> },
+        { label: "Statut", value: <Badge variant={STATUS_CONFIG[selectedAlert.status].variant}>{STATUS_CONFIG[selectedAlert.status].label}</Badge> },
+        { label: "Rayon", value: `${selectedAlert.radius_km} km` },
+        { label: "Échéance", value: formatDate(selectedAlert.deadline) },
+        { label: "Message", value: selectedAlert.message || "—" },
+        { label: "Créée le", value: formatDateTime(selectedAlert.created_at) },
+      ]
+    : [];
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Alertes d&apos;urgence</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {activeCount} alerte{activeCount !== 1 ? "s" : ""} active{activeCount !== 1 ? "s" : ""}
-          {criticalCount > 0 && <span className="text-red-600 font-medium"> · {criticalCount} critique{criticalCount !== 1 ? "s" : ""}</span>}
-        </p>
-      </div>
+      <PageHeader
+        title="Alertes d'urgence"
+        description={`${activeCount} alertes actives${criticalCount > 0 ? ` · ${criticalCount} critique${criticalCount !== 1 ? "s" : ""}` : ""}`}
+      />
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-md">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Rechercher par centre, ville, groupe sanguin..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-          />
-        </div>
+      <FilterBar
+        searchPlaceholder="Rechercher par centre, ville, groupe sanguin..."
+        resultsCount={filtered.length}
+        filters={[
+          {
+            key: "urgency",
+            label: "Urgence",
+            options: [
+              { value: "low", label: "Basse" },
+              { value: "medium", label: "Moyenne" },
+              { value: "high", label: "Haute" },
+              { value: "critical", label: "Critique" },
+            ],
+          },
+          {
+            key: "status",
+            label: "Statut",
+            options: [
+              { value: "active", label: "Active" },
+              { value: "expired", label: "Expirée" },
+              { value: "closed", label: "Fermée" },
+            ],
+          },
+        ]}
+      />
 
-        <select
-          value={urgencyFilter}
-          onChange={(e) => setUrgencyFilter(e.target.value)}
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rose-300"
-        >
-          <option value="all">Toutes urgences</option>
-          <option value="low">Basse</option>
-          <option value="medium">Moyenne</option>
-          <option value="high">Haute</option>
-          <option value="critical">Critique</option>
-        </select>
+      <DataTable
+        columns={columns}
+        data={paginated}
+        keyExtractor={(a) => a.id}
+        emptyMessage="Aucune alerte trouvée."
+        onRowClick={(a) => {
+          setSelectedAlert(a);
+          setIsDrawerOpen(true);
+        }}
+      />
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rose-300"
-        >
-          <option value="all">Tous statuts</option>
-          <option value="active">Active</option>
-          <option value="expired">Expirée</option>
-          <option value="closed">Fermée</option>
-        </select>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        resultsCount={filtered.length}
+        pageSize={PAGE_SIZE}
+      />
 
-      {/* Alerts list */}
-      <div className="space-y-3">
-        {filteredAlerts.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
-            Aucune alerte trouvée.
-          </div>
-        ) : (
-          filteredAlerts.map((alert) => {
-            const urgency = URGENCY_CONFIG[alert.urgency_level];
-            const status = STATUS_CONFIG[alert.status];
-            const UrgencyIcon = urgency.icon;
-            const isExpanded = expandedAlert === alert.id;
-            const isLoading = actionLoading === alert.id;
-
-            return (
-              <div
-                key={alert.id}
-                className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
-              >
-                {/* Main row */}
-                <div className="flex items-center gap-4 p-4">
-                  {/* Urgency indicator */}
-                  <div className={cn("flex size-10 items-center justify-center rounded-xl border", urgency.color)}>
-                    <UrgencyIcon className="size-5" />
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-slate-900">
-                        {alert.centers?.name || "Centre inconnu"}
-                      </span>
-                      <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", status.color)}>
-                        {status.label}
-                      </span>
-                    </div>
-                    <div className="mt-0.5 flex items-center gap-3 text-xs text-slate-500">
-                      <span className="font-bold text-rose-600">{alert.blood_type_required}</span>
-                      <span>{alert.centers?.city}</span>
-                      <span>Échéance: {formatDate(alert.deadline)}</span>
-                    </div>
-                  </div>
-
-                  {/* Urgency badge */}
-                  <span className={cn("hidden sm:inline-flex rounded-full px-3 py-1 text-xs font-semibold border", urgency.color)}>
-                    {urgency.label}
-                  </span>
-
-                  {/* Actions */}
-                  {alert.status === "active" && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleEscalate(alert.id)}
-                        disabled={isLoading}
-                        className="rounded-lg p-2 text-orange-500 hover:bg-orange-50 transition-colors disabled:opacity-50"
-                        title="Escalader"
-                      >
-                        <TrendingUp className="size-4" />
-                      </button>
-                      <button
-                        onClick={() => handleRelaunch(alert.id)}
-                        disabled={isLoading}
-                        className="rounded-lg p-2 text-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-50"
-                        title="Relancer"
-                      >
-                        <RotateCcw className="size-4" />
-                      </button>
-                      <button
-                        onClick={() => handleClose(alert.id)}
-                        disabled={isLoading}
-                        className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 transition-colors disabled:opacity-50"
-                        title="Fermer"
-                      >
-                        <XCircle className="size-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Expand toggle */}
-                  <button
-                    onClick={() => setExpandedAlert(isExpanded ? null : alert.id)}
-                    className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 transition-colors"
-                  >
-                    {isExpanded ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-                  </button>
-                </div>
-
-                {/* Expanded details */}
-                {isExpanded && (
-                  <div className="border-t border-slate-100 px-4 py-3 text-sm text-slate-600 space-y-1">
-                    {alert.message && <p><strong>Message:</strong> {alert.message}</p>}
-                    <p><strong>Rayon:</strong> {alert.radius_km} km</p>
-                    <p><strong>Créée le:</strong> {formatDateTime(alert.created_at)}</p>
-                    <p><strong>Mise à jour:</strong> {formatDateTime(alert.updated_at)}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
+      <DetailsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title={`Alerte — ${selectedAlert?.centers?.name || "Détails"}`}
+        fields={drawerFields}
+      />
     </div>
   );
 }

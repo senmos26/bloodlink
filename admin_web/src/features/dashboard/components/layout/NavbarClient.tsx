@@ -4,13 +4,14 @@ import { Bell, Menu, Search } from "lucide-react";
 import { useLayout } from "@/features/dashboard/lib/LayoutContext";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/types/database";
+import { NotificationPanel } from "@/features/notifications/components/NotificationPanel";
 
 interface NavbarClientProps {
   profile: Profile | null;
 }
 
 export function NavbarClient({ profile }: NavbarClientProps) {
-  const { toggleMobileSidebar, config, toggleSidebar } = useLayout();
+  const { toggleMobileSidebar } = useLayout();
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -47,13 +48,7 @@ export function NavbarClient({ profile }: NavbarClientProps) {
           </button>
 
           {/* Notifications */}
-          <button
-            type="button"
-            className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-500 transition hover:text-slate-900"
-            aria-label="Notifications"
-          >
-            <Bell className="size-4" />
-          </button>
+          <NotificationPanel />
 
           {/* User info */}
           {profile && (

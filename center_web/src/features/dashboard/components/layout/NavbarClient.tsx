@@ -19,6 +19,7 @@ import { useRef } from "react";
 import { GlobalLanguageSelector } from "@/shared/components/GlobalLanguageSelector";
 import { useLocale, useTranslations } from "next-intl";
 import { useActiveAlertsCount } from "@/features/alerts/lib/hooks";
+import { NotificationDropdown } from "@/features/notifications/components/NotificationDropdown";
 
 interface ProfileLite {
   full_name: string | null;
@@ -26,22 +27,9 @@ interface ProfileLite {
   role: "donor" | "center_admin" | "super_admin" | null;
 }
 
-// const roleToFr = (role: ProfileLite["role"]): string | null => {
-//   switch (role) {
-//     case "ADMIN":
-//       return "Admin";
-//     case "PROPERTY_MANAGER":
-//       return "Propriétaire";
-//     case "TENANT":
-//       return "Donneur";
-//     default:
-//       return null;
-//   }
-// };
-
 export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
-  const t = useTranslations("common.navigation.account"); // Add translations
-  const { toggleMobileSidebar } = useLayout(); // Get the toggle function
+  const t = useTranslations("common.navigation.account");
+  const { toggleMobileSidebar } = useLayout();
   const locale = useLocale();
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const { data: activeAlertsCount = 0 } = useActiveAlertsCount();
@@ -62,7 +50,7 @@ export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
         {/* Mobile hamburger menu icon */}
         <button
           type="button"
-          className="p-2 rounded hover:bg-light transition-colors lg:hidden" // Show only on small screens
+          className="p-2 rounded hover:bg-light transition-colors lg:hidden"
           aria-label="Ouvrir le menu"
           onClick={toggleMobileSidebar}
         >
@@ -77,14 +65,18 @@ export function NavbarClient({ profile }: { profile: ProfileLite | null }) {
         {/* Language Switcher - Visible on all screens */}
         <GlobalLanguageSelector />
 
+        {/* Notifications dropdown */}
+        <NotificationDropdown />
+
+        {/* Alerts quick link */}
         <Link
           href={`/${locale}/alerts`}
           className="relative p-2 rounded-full text-foreground/70 hover:bg-primary/10 hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
-          aria-label="Notifications"
+          aria-label="Alertes"
         >
           <Bell className="size-5" />
           {activeAlertsCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+            <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold px-1">
               {activeAlertsCount > 9 ? "9+" : activeAlertsCount}
             </span>
           )}
