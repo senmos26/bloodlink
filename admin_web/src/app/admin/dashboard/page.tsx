@@ -1,7 +1,9 @@
+/*
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 
+import { useAdminTheme } from "@/components/AdminThemeContext";
 import { getCurrentAdminContext, type AdminContext } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import type { Alert, Appointment, BloodType, Donation, Profile } from "@/types/database";
@@ -25,9 +27,10 @@ function formatDateTime(value: string | null | undefined) {
 }
 
 const bloodTypes: BloodType[] = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-const chartColors = ["#b91c1c", "#dc2626", "#ef4444", "#f87171", "#0f172a", "#1e293b", "#475569", "#94a3b8"];
+const chartColors = ["#dc2626", "#ef4444", "#f87171", "#fca5a5", "#38bdf8", "#60a5fa", "#818cf8", "#c4b5fd"];
 
 export default function DashboardPage() {
+  const { theme } = useAdminTheme();
   const [context, setContext] = useState<AdminContext | null>(null);
   const [state, setState] = useState<DashboardState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -177,25 +180,35 @@ export default function DashboardPage() {
     };
   }, [state]);
 
-  if (loading) return <PageMessage message="Chargement du tableau de bord..." tone="neutral" />;
-  if (error) return <PageMessage message={error} tone="error" />;
+  if (loading) return <PageMessage message="Chargement du tableau de bord..." theme={theme} tone="neutral" />;
+  if (error) return <PageMessage message={error} theme={theme} tone="error" />;
   if (!state || !context) return <PageMessage message="Aucune donnée disponible." tone="neutral" />;
 
   const latestAlerts = Array.isArray(state.alerts) ? state.alerts.slice(0, 5) : [];
   const latestAppointments = Array.isArray(state.appointments) ? state.appointments.slice(0, 5) : [];
   const maxMonthlyCount = Math.max(...monthlyDonations.map((item) => item.count), 1);
   const isCenterAdmin = context.role === "center_admin" && !!context.center;
+  const heroClasses =
+    theme === "dark"
+      ? "rounded-3xl bg-[linear-gradient(135deg,#0f172a_0%,#111827_55%,#1f2937_100%)] px-6 py-8 text-white"
+      : "rounded-3xl border border-sky-100 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_40%),linear-gradient(135deg,#dbeafe_0%,#eff6ff_55%,#ffffff_100%)] px-6 py-8 text-slate-900 shadow-sm";
+  const sectionClasses =
+    theme === "dark"
+      ? "rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-sm"
+      : "rounded-3xl border border-sky-100 bg-white p-6 shadow-sm";
+  const faintTextClasses =
+    theme === "dark" ? "text-slate-400" : "text-slate-500";
 
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl bg-slate-950 px-6 py-8 text-white">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">BloodLink</p>
+      <div className={heroClasses}>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-400">BloodLink</p>
         <h1 className="mt-3 text-3xl font-semibold">{state.title}</h1>
-        <p className="mt-2 text-sm text-slate-300">{state.subtitle}</p>
+        <p className={`mt-2 text-sm ${theme === "dark" ? "text-slate-300" : "text-slate-600"}`}>{state.subtitle}</p>
       </div>
 
       {isCenterAdmin ? (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className={sectionClasses}>
           <h2 className="text-xl font-semibold text-slate-900">Centre associé</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <p className="text-sm text-slate-600">
@@ -225,38 +238,38 @@ export default function DashboardPage() {
       ) : null}
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total Donneurs" value={stats.totalDonors} />
-        <StatCard label="Alertes Actives" value={stats.activeAlerts} />
+        <StatCard label="Total Donneurs" theme={theme} value={stats.totalDonors} />
+        <StatCard label="Alertes Actives" theme={theme} value={stats.activeAlerts} />
         <StatCard label="Dons Validés" value={stats.validatedDonations} />
-        <StatCard label="RDV Aujourd'hui" value={stats.appointmentsToday} />
+        <StatCard label="RDV Aujourd'hui" theme={theme} value={stats.appointmentsToday} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900">Dons mensuels</h2>
+        <div className={sectionClasses}>
+          <h2 className="text-xl font-semibold">Dons mensuels</h2>
           {monthlyDonations.length > 0 ? (
             <div className="mt-6 flex items-end gap-4">
               {monthlyDonations.map((item) => (
                 <div key={item.label} className="flex flex-1 flex-col items-center gap-3">
-                  <div className="flex h-48 w-full items-end rounded-2xl bg-slate-100 p-2">
+                  <div className={`flex h-48 w-full items-end rounded-2xl p-2 ${theme === "dark" ? "bg-slate-800" : "bg-sky-50"}`}>
                     <div
                       className="w-full rounded-xl bg-red-600"
                       style={{ height: `${Math.max((item.count / maxMonthlyCount) * 100, item.count > 0 ? 12 : 0)}%` }}
                     />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-slate-900">{item.count}</p>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">{item.label}</p>
+                    <p className="text-sm font-semibold">{item.count}</p>
+                    <p className={`text-xs uppercase tracking-wide ${faintTextClasses}`}>{item.label}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <EmptyState message="Aucun historique de don pour le moment." />
+            <EmptyState message="Aucun historique de don pour le moment." theme={theme} />
           )}
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className={sectionClasses}>
           <h2 className="text-xl font-semibold text-slate-900">Répartition des groupes sanguins</h2>
           <div className="mt-6 flex flex-col items-center gap-6">
             <div className="h-48 w-48 rounded-full" style={bloodTypeBreakdown.style} />
@@ -301,54 +314,119 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
+function StatCard({
+  label,
+  value,
+  theme = "light",
+}: {
+  label: string;
+  value: number;
+  theme?: "light" | "dark";
+}) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-3 text-3xl font-semibold text-slate-950">{value}</p>
+    <div
+      className={`rounded-3xl p-5 shadow-sm ${
+        theme === "dark"
+          ? "border border-slate-800 bg-slate-900"
+          : "border border-sky-100 bg-white"
+      }`}
+    >
+      <p className={`text-sm ${theme === "dark" ? "text-slate-400" : "text-slate-500"}`}>{label}</p>
+      <p className={`mt-3 text-3xl font-semibold ${theme === "dark" ? "text-slate-100" : "text-slate-950"}`}>{value}</p>
     </div>
   );
 }
+*/
+export { default } from "@/components/admin-pages/DashboardOverview";
+/*
 
 function ListCard({
   title,
   emptyMessage,
   items,
+  theme = "light",
 }: {
   title: string;
   emptyMessage: string;
   items: { id: string; title: string; subtitle: string; meta: string }[];
+  theme?: "light" | "dark";
 }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
+    <div
+      className={`rounded-3xl p-6 shadow-sm ${
+        theme === "dark"
+          ? "border border-slate-800 bg-slate-900"
+          : "border border-sky-100 bg-white"
+      }`}
+    >
+      <h2 className={`text-xl font-semibold ${theme === "dark" ? "text-slate-100" : "text-slate-900"}`}>{title}</h2>
       {Array.isArray(items) && items.length > 0 ? (
         <div className="mt-5 space-y-4">
           {items.map((item) => (
-            <div key={item.id} className="rounded-2xl bg-slate-50 px-4 py-4">
+            <div
+              key={item.id}
+              className={`rounded-2xl px-4 py-4 ${
+                theme === "dark" ? "bg-slate-800" : "bg-slate-50"
+              }`}
+            >
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="font-medium text-slate-900">{item.title}</p>
-                <span className="text-xs uppercase tracking-wide text-slate-500">{item.meta}</span>
+                <p className={`font-medium ${theme === "dark" ? "text-slate-100" : "text-slate-900"}`}>{item.title}</p>
+                <span className={`text-xs uppercase tracking-wide ${theme === "dark" ? "text-slate-400" : "text-slate-500"}`}>{item.meta}</span>
               </div>
-              <p className="mt-2 text-sm text-slate-600">{item.subtitle}</p>
+              <p className={`mt-2 text-sm ${theme === "dark" ? "text-slate-300" : "text-slate-600"}`}>{item.subtitle}</p>
             </div>
           ))}
         </div>
       ) : (
-        <EmptyState message={emptyMessage} />
+        <EmptyState message={emptyMessage} theme={theme} />
       )}
     </div>
   );
 }
 
-function EmptyState({ message }: { message: string }) {
-  return <p className="mt-6 rounded-2xl bg-slate-50 px-4 py-6 text-sm text-slate-500">{message}</p>;
+function EmptyState({
+  message,
+  theme = "light",
+}: {
+  message: string;
+  theme?: "light" | "dark";
+}) {
+  return (
+    <p
+      className={`mt-6 rounded-2xl px-4 py-6 text-sm ${
+        theme === "dark"
+          ? "bg-slate-800 text-slate-300"
+          : "bg-slate-50 text-slate-500"
+      }`}
+    >
+      {message}
+    </p>
+  );
 }
 
-function PageMessage({ message, tone }: { message: string; tone: "neutral" | "error" }) {
+function PageMessage({
+  message,
+  tone,
+  theme = "light",
+}: {
+  message: string;
+  tone: "neutral" | "error";
+  theme?: "light" | "dark";
+}) {
   return (
-    <div className={`rounded-3xl border px-5 py-4 text-sm ${tone === "error" ? "border-red-200 bg-red-50 text-red-700" : "border-slate-200 bg-white text-slate-600"}`}>
+    <div
+      className={`rounded-3xl border px-5 py-4 text-sm ${
+        tone === "error"
+          ? theme === "dark"
+            ? "border-red-500/30 bg-red-500/10 text-red-200"
+            : "border-red-200 bg-red-50 text-red-700"
+          : theme === "dark"
+            ? "border-slate-800 bg-slate-900 text-slate-300"
+            : "border-sky-100 bg-white text-slate-600"
+      }`}
+    >
       {message}
     </div>
   );
 }
+*/

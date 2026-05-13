@@ -29,15 +29,7 @@ export default function ScanQRPage() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    startCamera();
-    
-    return () => {
-      stopCamera();
-    };
-  }, []);
-
-  const startCamera = async () => {
+  async function startCamera() {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
@@ -54,9 +46,9 @@ export default function ScanQRPage() {
       console.error("Erreur d'accès à la caméra:", err);
       setError("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
     }
-  };
+  }
 
-  const stopCamera = () => {
+  function stopCamera() {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
@@ -65,7 +57,16 @@ export default function ScanQRPage() {
       cancelAnimationFrame(animationRef.current);
     }
     setIsScanning(false);
-  };
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    startCamera();
+    
+    return () => {
+      stopCamera();
+    };
+  }, []);
 
   const scanQRCode = () => {
     if (!videoRef.current || !canvasRef.current || !isScanning) return;

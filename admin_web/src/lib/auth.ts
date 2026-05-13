@@ -24,12 +24,77 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
+export async function verifyCurrentPassword(email: string, password: string) {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    throw new Error("L'ancien mot de passe est incorrect.");
+  }
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
     throw new Error(error.message);
   }
+}
+
+export async function updateAdminProfile(
+  userId: string,
+  updates: Pick<Profile, "full_name" | "phone">
+) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      ...updates,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
+    .select("*")
+    .single<Profile>();
+
+  if (error) {
+    throw new Error("Impossible de mettre à jour le profil.");
+  }
+
+  return data;
+}
+
+export async function updateAdminEmail(email: string) {
+  const { data, error } = await supabase.auth.updateUser({ email });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data.user;
+}
+
+export async function sendPasswordResetEmail(
+  email: string,
+  redirectTo: string
+) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function updatePassword(password: string) {
+  const { data, error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data.user;
 }
 
 export async function getSession() {

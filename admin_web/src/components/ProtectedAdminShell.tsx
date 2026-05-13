@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 import Image from "next/image";
 
@@ -5,6 +6,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  AdminThemeContext,
+  type AdminTheme,
+} from "@/components/AdminThemeContext";
 import { getCurrentAdminContext, signOut, type AdminContext } from "@/lib/auth";
 
 type ProtectedAdminShellProps = {
@@ -19,6 +24,7 @@ type NavItem = {
 
 const centerAdminLinks: NavItem[] = [
   { href: "/admin/dashboard", label: "Tableau de bord", icon: <DashboardIcon /> },
+  { href: "/admin/account", label: "Mon profil", icon: <ProfileIcon /> },
   { href: "/admin/alerts", label: "Alertes d'urgence", icon: <AlertIcon /> },
   { href: "/admin/appointments", label: "Rendez-vous", icon: <CalendarIcon /> },
   { href: "/admin/donations", label: "Dons", icon: <DropIcon /> },
@@ -28,6 +34,7 @@ const centerAdminLinks: NavItem[] = [
 
 const superAdminLinks: NavItem[] = [
   { href: "/admin/dashboard", label: "Tableau de bord", icon: <DashboardIcon /> },
+  { href: "/admin/account", label: "Mon profil", icon: <ProfileIcon /> },
   { href: "/admin/alerts", label: "Alertes d'urgence", icon: <AlertIcon /> },
   { href: "/admin/appointments", label: "Rendez-vous", icon: <CalendarIcon /> },
   { href: "/admin/profiles", label: "Donneurs / Profils", icon: <UsersIcon /> },
@@ -45,6 +52,27 @@ export default function ProtectedAdminShell({
   const [context, setContext] = useState<AdminContext | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState<AdminTheme>("light");
+
+  useEffect(() => {
+    const savedTheme =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("admin-theme")
+        : null;
+
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("admin-theme", theme);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   useEffect(() => {
     let active = true;
@@ -78,6 +106,10 @@ export default function ProtectedAdminShell({
     return context.role === "super_admin" ? superAdminLinks : centerAdminLinks;
   }, [context]);
 
+  function toggleTheme() {
+    setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
+  }
+
   async function handleLogout() {
     try {
       await signOut();
@@ -85,6 +117,25 @@ export default function ProtectedAdminShell({
       router.replace("/login");
     }
   }
+
+  const shellBackground =
+    theme === "dark"
+      ? "bg-[linear-gradient(180deg,#020617_0%,#0f172a_100%)] text-slate-100"
+      : "bg-[linear-gradient(180deg,#eff6ff_0%,#f8fafc_100%)] text-slate-900";
+  const sidebarClasses =
+    theme === "dark"
+      ? "fixed left-0 top-0 hidden h-screen w-72 flex-col overflow-hidden border-r border-slate-800 bg-slate-950 text-white lg:flex"
+      : "fixed left-0 top-0 hidden h-screen w-72 flex-col overflow-hidden border-r border-sky-100 bg-[linear-gradient(180deg,#e0f2fe_0%,#f8fafc_100%)] text-slate-900 lg:flex";
+  const headerClasses =
+    theme === "dark"
+      ? "sticky top-0 z-10 border-b border-slate-800 bg-slate-950/85 backdrop-blur"
+      : "sticky top-0 z-10 border-b border-sky-100 bg-white/80 backdrop-blur";
+  const cardClasses =
+    theme === "dark"
+      ? "rounded-2xl bg-white/5 p-4"
+      : "rounded-2xl border border-sky-100 bg-white/70 p-4";
+  const secondaryText = theme === "dark" ? "text-slate-300" : "text-slate-600";
+  const subtleText = theme === "dark" ? "text-slate-400" : "text-slate-500";
 
   if (loading) {
     return (

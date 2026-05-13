@@ -1,4 +1,4 @@
-export { default } from "@/components/admin-pages/StatisticsPageContent";
+export { default } from "@/components/admin-pages/StatisticsDashboard";
 
 /*
 "use client";
