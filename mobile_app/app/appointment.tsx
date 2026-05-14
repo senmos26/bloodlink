@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -13,7 +13,13 @@ import { useAuth } from "@/hooks/useAuth";
 import Toast, { type ToastType } from "@/components/ui/Toast";
 import Button from "@/components/ui/Button";
 import { getAlert, type Alert } from "@/services/alerts";
-import { createAppointment, type AppointmentSlot } from "@/services/appointments";
+import {
+  createAppointment,
+  generateTimeSlots,
+  getBookedSlots,
+  type TimeSlot,
+} from "@/services/appointments";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 function getUrgencyColor(urgency: Alert["urgency_level"]) {
   switch (urgency) {
@@ -54,36 +60,6 @@ function formatDate(date: string) {
   });
 }
 
-function generateTimeSlots(): AppointmentSlot[] {
-  const slots: AppointmentSlot[] = [];
-  const today = new Date();
-  
-  // Générer des créneaux pour les 7 prochains jours
-  for (let day = 0; day < 7; day++) {
-    const currentDate = new Date(today);
-    currentDate.setDate(today.getDate() + day);
-    
-    // Générer des créneaux horaires (8h-18h)
-    for (let hour = 8; hour <= 17; hour++) {
-      const date = new Date(currentDate);
-      date.setHours(hour, 0, 0, 0);
-      
-      slots.push({
-        id: `${date.getTime()}`,
-        date: date.toISOString(),
-        time: date.toLocaleTimeString("fr-FR", { 
-          hour: "2-digit", 
-          minute: "2-digit" 
-        }),
-        available: Math.random() > 0.3, // 70% de disponibilité
-        centerId: "", // Sera rempli plus tard
-      });
-    }
-  }
-  
-  return slots;
-}
-
 export default function AppointmentScreen() {
   const router = useRouter();
   const { user } = useAuth();
@@ -92,8 +68,12 @@ export default function AppointmentScreen() {
   const [alert, setAlert] = useState<Alert | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<AppointmentSlot | null>(null);
-  const [availableSlots, setAvailableSlots] = useState<AppointmentSlot[]>([]);
+  
+  // Sélection de date et créneaux
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [slots, setSlots] = useState<TimeSlot[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
     visible: false,
     message: "",
@@ -107,6 +87,24 @@ export default function AppointmentScreen() {
   const hideToast = () => {
     setToast((prev) => ({ ...prev, visible: false }));
   };
+
+  // Quand la date change, recalculer les créneaux
+  const refreshSlots = useCallback(async () => {
+    if (!alert) return;
+    const generated = generateTimeSlots(selectedDate);
+    try {
+      const dateStr = selectedDate.toISOString().split("T")[0];
+      const booked = await getBookedSlots(alert.center_id, dateStr);
+      const updated = generated.map((s) => ({
+        ...s,
+        available: !booked.includes(s.label),
+      }));
+      setSlots(updated);
+    } catch {
+      setSlots(generated);
+    }
+    setSelectedSlot(null);
+  }, [alert, selectedDate]);
 
   useEffect(() => {
     if (!alertId) {
@@ -125,10 +123,6 @@ export default function AppointmentScreen() {
         }
         
         setAlert(alertData);
-        
-        // Générer des créneaux disponibles
-        const slots = generateTimeSlots();
-        setAvailableSlots(slots.filter(slot => slot.available));
       } catch (error) {
         showToast("Impossible de charger l'alerte", "error");
       } finally {
@@ -139,7 +133,18 @@ export default function AppointmentScreen() {
     void loadAlert();
   }, [alertId]);
 
-  const handleSlotSelect = (slot: AppointmentSlot) => {
+  useEffect(() => {
+    if (alert) refreshSlots();
+  }, [alert, refreshSlots]);
+
+  const handleDateChange = (_event: unknown, date?: Date) => {
+    setShowDatePicker(false);
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
+  const handleSlotSelect = (slot: TimeSlot) => {
     setSelectedSlot(slot);
   };
 
@@ -157,9 +162,8 @@ export default function AppointmentScreen() {
     }
 
     const isCompatible = user.blood_type === alert.blood_type_required;
-    const canDonateNow = !user.last_donation || 
-      new Date(user.last_donation).getTime() < Date.now() - 
-      (user.gender === "female" ? 90 * 24 * 60 * 60 * 1000 : 60 * 24 * 60 * 60 * 1000);
+    const canDonateNow = !user.next_donation_date || 
+      new Date(user.next_donation_date) <= new Date();
 
     if (!isCompatible) {
       showToast(`Votre groupe ${user.blood_type} n'est pas compatible avec ${alert.blood_type_required}`, "error");
@@ -173,9 +177,12 @@ export default function AppointmentScreen() {
     }
 
     // Confirmation
+    const appointmentDate = new Date(selectedDate);
+    appointmentDate.setHours(selectedSlot.hour, selectedSlot.minute, 0, 0);
+    
     NativeAlert.alert(
       "Confirmer le rendez-vous",
-      `Êtes-vous sûr de vouloir prendre rendez-vous le ${new Date(selectedSlot.date).toLocaleDateString("fr-FR")} à ${selectedSlot.time} pour un don de groupe ${alert.blood_type_required} ?`,
+      `Êtes-vous sûr de vouloir prendre rendez-vous le ${appointmentDate.toLocaleDateString("fr-FR")} à ${selectedSlot.label} pour un don de groupe ${alert.blood_type_required} ?`,
       [
         { text: "Annuler", style: "cancel" },
         { 
@@ -191,10 +198,13 @@ export default function AppointmentScreen() {
 
     setBookingLoading(true);
     try {
+      const appointmentDate = new Date(selectedDate);
+      appointmentDate.setHours(selectedSlot.hour, selectedSlot.minute, 0, 0);
+      
       await createAppointment(user.id, {
         alertId: alert.id,
         centerId: alert.center_id,
-        scheduledDate: selectedSlot.date,
+        scheduledDate: appointmentDate.toISOString(),
       });
 
       showToast("Rendez-vous confirmé avec succès !", "success");
@@ -332,61 +342,61 @@ export default function AppointmentScreen() {
           </View>
         )}
 
+        {/* Date picker */}
+        <View className="bg-surface-container-lowest rounded-2xl p-4 mb-4 border border-black/5">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-base font-bold text-on-surface">Choisir une date</Text>
+            <Pressable
+              className="flex-row items-center gap-1 bg-surface-container-low px-3 py-2 rounded-xl"
+              onPress={() => setShowDatePicker(true)}
+            >
+              <MaterialIcons name="calendar-today" size={14} color="#b80035" />
+              <Text className="text-xs font-bold text-primary">
+                {selectedDate.getDate()} {["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][selectedDate.getMonth()]}
+              </Text>
+            </Pressable>
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="default"
+              minimumDate={new Date()}
+              onChange={handleDateChange}
+              locale="fr-FR"
+            />
+          )}
+        </View>
+
         {/* Time Slots */}
         <View className="bg-surface-container-lowest rounded-2xl p-5 mb-4 border border-black/5">
           <Text className="text-sm font-bold text-on-surface mb-3">
             Choisissez un créneau horaire
           </Text>
           
-          <View className="space-y-3">
-            {availableSlots.slice(0, 20).map((slot) => {
-              const isSelected = selectedSlot?.id === slot.id;
-              const slotDate = new Date(slot.date);
-              const isToday = slotDate.toDateString() === new Date().toDateString();
-              
-              return (
+          {slots.length === 0 ? (
+            <View className="items-center py-8">
+              <MaterialIcons name="schedule" size={32} color="#5c3f40" />
+              <Text className="text-sm text-on-surface-variant mt-2">Aucun créneau disponible pour cette date.</Text>
+            </View>
+          ) : (
+            <View className="flex-row flex-wrap gap-2 mb-6">
+              {slots.map((slot) => (
                 <Pressable
-                  key={slot.id}
+                  key={slot.label}
+                  className={`py-2.5 px-4 rounded-xl ${!slot.available ? "bg-surface-container opacity-40" : selectedSlot?.label === slot.label ? "bg-primary/10 border-2 border-primary" : "bg-surface-container-low"}`}
+                  disabled={!slot.available}
                   onPress={() => handleSlotSelect(slot)}
-                  className={`p-3 rounded-xl border ${
-                    isSelected 
-                      ? "bg-primary border-primary" 
-                      : "bg-surface-container-highest border-black/5"
-                  } active:scale-[0.98]`}
                 >
-                  <View className="flex-row items-center justify-between">
-                    <View>
-                      <Text className={`font-semibold ${
-                        isSelected ? "text-white" : "text-on-surface"
-                      }`}>
-                        {isToday ? "Aujourd'hui" : slotDate.toLocaleDateString("fr-FR", {
-                          weekday: "short",
-                          day: "numeric",
-                          month: "short"
-                        })}
-                      </Text>
-                      <Text className={`text-sm ${
-                        isSelected ? "text-white/80" : "text-on-surface-variant"
-                      }`}>
-                        {slot.time}
-                      </Text>
-                    </View>
-                    <View className={`w-5 h-5 rounded-full border-2 ${
-                      isSelected 
-                        ? "bg-white border-white" 
-                        : "border-surface-container-high"
-                    }`}>
-                      {isSelected && (
-                        <View className="w-full h-full rounded-full bg-primary flex items-center justify-center">
-                          <MaterialIcons name="check" size={12} color="#ffffff" />
-                        </View>
-                      )}
-                    </View>
-                  </View>
+                  <Text
+                    className={`text-xs font-bold ${!slot.available ? "text-on-surface-variant" : selectedSlot?.label === slot.label ? "text-primary" : "text-on-surface"}`}
+                  >
+                    {slot.label}
+                  </Text>
                 </Pressable>
-              );
-            })}
-          </View>
+              ))}
+            </View>
+          )}
         </View>
 
         {/* Booking Button */}
@@ -397,7 +407,7 @@ export default function AppointmentScreen() {
           className="w-full mb-4"
         >
           {selectedSlot 
-            ? `Confirmer le ${new Date(selectedSlot.date).toLocaleDateString("fr-FR")} à ${selectedSlot.time}`
+            ? `Confirmer le ${selectedDate.toLocaleDateString("fr-FR")} à ${selectedSlot.label}`
             : "Sélectionnez un créneau horaire"
           }
         </Button>
