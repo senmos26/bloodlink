@@ -7,9 +7,10 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  StyleSheet,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -18,6 +19,7 @@ import {
   type Appointment,
   type AppointmentStatus,
 } from "@/services/appointments";
+import { supabase } from "@/services/supabase";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -53,27 +55,72 @@ function isPast(dateStr: string): boolean {
 function getStatusConfig(status: AppointmentStatus) {
   switch (status) {
     case "pending":
-      return { label: "En attente", color: "#dd6b20", bgColor: "#fff7ed", icon: "schedule" };
+      return { label: "En attente", color: "#dd6b20", bgColor: "#fff7ed", icon: "schedule" as const };
     case "confirmed":
-      return { label: "Confirmé", color: "#006847", bgColor: "#ecfdf5", icon: "check-circle" };
+      return { label: "Confirmé", color: "#006847", bgColor: "#ecfdf5", icon: "check-circle" as const };
     case "cancelled":
-      return { label: "Annulé", color: "#b80035", bgColor: "#fff1f2", icon: "cancel" };
+      return { label: "Annulé", color: "#b80035", bgColor: "#fff1f2", icon: "cancel" as const };
     case "completed":
-      return { label: "Terminé", color: "#006591", bgColor: "#eff4ff", icon: "verified" };
+      return { label: "Terminé", color: "#006591", bgColor: "#eff4ff", icon: "verified" as const };
     default:
-      return { label: status, color: "#5c3f40", bgColor: "#eff4ff", icon: "help" };
+      return { label: status, color: "#5c3f40", bgColor: "#eff4ff", icon: "help" as const };
   }
 }
+
+// ── Styles ─────────────────────────────────────────────────────────────
+
+const s = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: "#f8f9ff" },
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24, paddingVertical: 16 },
+  title: { fontSize: 24, fontWeight: "800", color: "#1a1c1e" },
+  subtitle: { fontSize: 14, color: "#42474d", marginTop: 2 },
+  addBtn: { width: 44, height: 44, borderRadius: 16, backgroundColor: "#b80035", alignItems: "center", justifyContent: "center" },
+  filterRow: { flexDirection: "row", marginHorizontal: 24, marginBottom: 16, backgroundColor: "#f4f4f9", borderRadius: 16, padding: 4 },
+  filterTab: { flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: "center" },
+  filterTabActive: { backgroundColor: "#ffffff", shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 4, shadowOffset: { width: 0, height: 1 }, elevation: 2 },
+  filterText: { fontSize: 14, fontWeight: "700", color: "#42474d" },
+  filterTextActive: { color: "#b80035" },
+  centered: { flex: 1, alignItems: "center", justifyContent: "center" },
+  loadingText: { marginTop: 12, fontSize: 14, color: "#42474d" },
+  emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  emptyIcon: { width: 80, height: 80, backgroundColor: "#f4f4f9", borderRadius: 24, alignItems: "center", justifyContent: "center", marginBottom: 16 },
+  emptyTitle: { fontSize: 18, fontWeight: "700", color: "#1a1c1e", textAlign: "center", marginBottom: 4 },
+  emptyDesc: { fontSize: 14, color: "#42474d", textAlign: "center", maxWidth: 260 },
+  bookBtn: { marginTop: 20, backgroundColor: "#b80035", paddingHorizontal: 24, paddingVertical: 12, borderRadius: 999 },
+  bookBtnText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
+  list: { flex: 1, paddingHorizontal: 24 },
+  card: { backgroundColor: "#ffffff", borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: "rgba(0,0,0,0.05)" },
+  cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
+  cardDateRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  cardIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(184,0,53,0.1)", alignItems: "center", justifyContent: "center" },
+  cardDate: { fontSize: 14, fontWeight: "700", color: "#1a1c1e" },
+  cardTime: { fontSize: 12, color: "#42474d" },
+  statusChip: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
+  statusText: { fontSize: 10, fontWeight: "700" },
+  centerBox: { backgroundColor: "#f4f4f9", borderRadius: 12, padding: 12, marginBottom: 12 },
+  centerRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
+  centerName: { fontSize: 14, fontWeight: "600", color: "#1a1c1e", flex: 1 },
+  addressRow: { flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 2 },
+  addressText: { fontSize: 12, color: "#42474d", flex: 1 },
+  notes: { fontSize: 12, color: "#42474d", marginBottom: 12, fontStyle: "italic" },
+  actions: { flexDirection: "row", gap: 8 },
+  actionBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 10, borderRadius: 12 },
+  cancelBtn: { backgroundColor: "#f4f4f9" },
+  callBtn: { backgroundColor: "rgba(184,0,53,0.1)" },
+  actionText: { fontSize: 12, fontWeight: "700", color: "#b80035" },
+});
 
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function AppointmentsScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"upcoming" | "past">("upcoming");
+  const [nextDonationDate, setNextDonationDate] = useState<string | null>(null);
 
   const loadAppointments = useCallback(async (showRefresh = false) => {
     if (!user?.id) return;
@@ -83,6 +130,13 @@ export default function AppointmentsScreen() {
     try {
       const data = await getDonorAppointments(user.id);
       setAppointments(data);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("next_donation_date")
+        .eq("id", user.id)
+        .single();
+      setNextDonationDate(profile?.next_donation_date ?? null);
     } catch (err) {
       console.error("Erreur chargement RDV:", err);
     } finally {
@@ -119,194 +173,164 @@ export default function AppointmentsScreen() {
     );
   };
 
-  // Split appointments
   const upcoming = appointments.filter(
     (a) => !isPast(a.scheduledDate) && a.status !== "cancelled" && a.status !== "completed",
   );
   const past = appointments.filter(
     (a) => isPast(a.scheduledDate) || a.status === "cancelled" || a.status === "completed",
   );
-
   const displayed = activeFilter === "upcoming" ? upcoming : past;
 
-  return (
-    <SafeAreaView className="flex-1 bg-surface">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-4">
-        <View>
-          <Text className="text-2xl font-extrabold text-on-surface">Mes RDV</Text>
-          <Text className="text-sm text-on-surface-variant mt-0.5">
-            {upcoming.length} rendez-vous à venir
-          </Text>
+  const handleBook = () => {
+    if (nextDonationDate && new Date(nextDonationDate) > new Date()) {
+      const daysLeft = Math.ceil((new Date(nextDonationDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      Alert.alert("Non éligible", `Vous ne pouvez pas encore donner. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`);
+      return;
+    }
+    router.push("/booking" as any);
+  };
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={s.centered}>
+          <ActivityIndicator size="large" color="#b80035" />
+          <Text style={s.loadingText}>Chargement de vos rendez-vous...</Text>
         </View>
-        <Pressable className="w-11 h-11 rounded-2xl bg-primary items-center justify-center active:scale-95" onPress={() => router.push("/booking" as any)}>
+      );
+    }
+
+    if (displayed.length === 0) {
+      return (
+        <View style={s.emptyWrap}>
+          <View style={s.emptyIcon}>
+            <MaterialIcons
+              name={activeFilter === "upcoming" ? "event-available" : "history"}
+              size={36}
+              color="#5c3f40"
+            />
+          </View>
+          <Text style={s.emptyTitle}>
+            {activeFilter === "upcoming" ? "Aucun rendez-vous à venir" : "Aucun rendez-vous passé"}
+          </Text>
+          <Text style={s.emptyDesc}>
+            {activeFilter === "upcoming"
+              ? "Prenez un rendez-vous dans un centre de don pour sauver des vies."
+              : "Vos rendez-vous passés apparaîtront ici."}
+          </Text>
+          {activeFilter === "upcoming" && (
+            <Pressable style={s.bookBtn} onPress={handleBook}>
+              <Text style={s.bookBtnText}>Prendre un RDV</Text>
+            </Pressable>
+          )}
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView
+        style={s.list}
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => loadAppointments(true)} colors={["#b80035"]} />}
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
+        {displayed.map((appointment) => {
+          const statusConfig = getStatusConfig(appointment.status);
+          const dateLabel = isToday(appointment.scheduledDate)
+            ? "Aujourd'hui"
+            : isTomorrow(appointment.scheduledDate)
+              ? "Demain"
+              : formatDate(appointment.scheduledDate);
+
+          return (
+            <View key={appointment.id} style={s.card}>
+              <View style={s.cardHeader}>
+                <View style={s.cardDateRow}>
+                  <View style={s.cardIconBox}>
+                    <MaterialIcons name="event" size={20} color="#b80035" />
+                  </View>
+                  <View>
+                    <Text style={s.cardDate}>{dateLabel}</Text>
+                    <Text style={s.cardTime}>{formatTime(appointment.scheduledDate)}</Text>
+                  </View>
+                </View>
+                <View style={[s.statusChip, { backgroundColor: statusConfig.bgColor }]}>
+                  <MaterialIcons name={statusConfig.icon} size={12} color={statusConfig.color} />
+                  <Text style={[s.statusText, { color: statusConfig.color }]}>{statusConfig.label}</Text>
+                </View>
+              </View>
+
+              <View style={s.centerBox}>
+                <View style={s.centerRow}>
+                  <MaterialIcons name="local-hospital" size={14} color="#006591" />
+                  <Text style={s.centerName} numberOfLines={1}>{appointment.centerName}</Text>
+                </View>
+                {appointment.centerAddress ? (
+                  <View style={s.addressRow}>
+                    <MaterialIcons name="location-on" size={12} color="#5c3f40" />
+                    <Text style={s.addressText} numberOfLines={1}>{appointment.centerAddress}</Text>
+                  </View>
+                ) : null}
+              </View>
+
+              {appointment.notes ? (
+                <Text style={s.notes} numberOfLines={2}>{appointment.notes}</Text>
+              ) : null}
+
+              {(appointment.status === "pending" || appointment.status === "confirmed") && !isPast(appointment.scheduledDate) && (
+                <View style={s.actions}>
+                  <Pressable style={[s.actionBtn, s.cancelBtn]} onPress={() => handleCancel(appointment)}>
+                    <MaterialIcons name="close" size={14} color="#b80035" />
+                    <Text style={s.actionText}>Annuler</Text>
+                  </Pressable>
+                  <Pressable style={[s.actionBtn, s.callBtn]}>
+                    <MaterialIcons name="phone" size={14} color="#b80035" />
+                    <Text style={s.actionText}>Appeler</Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
+          );
+        })}
+      </ScrollView>
+    );
+  };
+
+  return (
+    <View style={[s.safe, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+      {/* Header */}
+      <View style={s.header}>
+        <View>
+          <Text style={s.title}>Mes RDV</Text>
+          <Text style={s.subtitle}>{upcoming.length} rendez-vous à venir</Text>
+        </View>
+        <Pressable style={s.addBtn} onPress={handleBook}>
           <MaterialIcons name="add" size={24} color="#ffffff" />
         </Pressable>
       </View>
 
       {/* Filter Tabs */}
-      <View className="flex-row mx-6 mb-4 bg-surface-container-low rounded-2xl p-1">
+      <View style={s.filterRow}>
         <Pressable
-          className={`flex-1 py-2.5 rounded-xl items-center ${activeFilter === "upcoming" ? "bg-surface-container-lowest shadow-sm" : ""}`}
+          style={[s.filterTab, activeFilter === "upcoming" && s.filterTabActive]}
           onPress={() => setActiveFilter("upcoming")}
         >
-          <Text
-            className={`text-sm font-bold ${activeFilter === "upcoming" ? "text-primary" : "text-on-surface-variant"}`}
-          >
+          <Text style={[s.filterText, activeFilter === "upcoming" && s.filterTextActive]}>
             À venir ({upcoming.length})
           </Text>
         </Pressable>
         <Pressable
-          className={`flex-1 py-2.5 rounded-xl items-center ${activeFilter === "past" ? "bg-surface-container-lowest shadow-sm" : ""}`}
+          style={[s.filterTab, activeFilter === "past" && s.filterTabActive]}
           onPress={() => setActiveFilter("past")}
         >
-          <Text
-            className={`text-sm font-bold ${activeFilter === "past" ? "text-primary" : "text-on-surface-variant"}`}
-          >
+          <Text style={[s.filterText, activeFilter === "past" && s.filterTextActive]}>
             Passés ({past.length})
           </Text>
         </Pressable>
       </View>
 
       {/* Content */}
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#b80035" />
-          <Text className="mt-3 text-sm text-on-surface-variant">Chargement de vos rendez-vous...</Text>
-        </View>
-      ) : displayed.length === 0 ? (
-        <EmptyState filter={activeFilter} onBook={() => router.push("/booking" as any)} />
-      ) : (
-        <ScrollView
-          className="flex-1 px-6"
-          showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => loadAppointments(true)} colors={["#b80035"]} />}
-          contentContainerStyle={{ paddingBottom: 24 }}
-        >
-          {displayed.map((appointment) => (
-            <AppointmentCard
-              key={appointment.id}
-              appointment={appointment}
-              onCancel={handleCancel}
-            />
-          ))}
-        </ScrollView>
-      )}
-    </SafeAreaView>
-  );
-}
-
-// ── Appointment Card ────────────────────────────────────────────────────
-
-function AppointmentCard({
-  appointment,
-  onCancel,
-}: {
-  appointment: Appointment;
-  onCancel: (a: Appointment) => void;
-}) {
-  const statusConfig = getStatusConfig(appointment.status);
-  const dateLabel = isToday(appointment.scheduledDate)
-    ? "Aujourd'hui"
-    : isTomorrow(appointment.scheduledDate)
-      ? "Demain"
-      : formatDate(appointment.scheduledDate);
-
-  return (
-    <View className="bg-surface-container-lowest rounded-2xl p-4 mb-3 border border-black/5">
-      {/* Date header */}
-      <View className="flex-row items-center justify-between mb-3">
-        <View className="flex-row items-center gap-2">
-          <View className="w-10 h-10 rounded-xl bg-primary/10 items-center justify-center">
-            <MaterialIcons name="event" size={20} color="#b80035" />
-          </View>
-          <View>
-            <Text className="text-sm font-bold text-on-surface">{dateLabel}</Text>
-            <Text className="text-xs text-on-surface-variant">
-              {formatTime(appointment.scheduledDate)}
-            </Text>
-          </View>
-        </View>
-
-        {/* Status chip */}
-        <View className="flex-row items-center gap-1 px-2.5 py-1 rounded-full" style={{ backgroundColor: statusConfig.bgColor }}>
-          <MaterialIcons name={statusConfig.icon as React.ComponentProps<typeof MaterialIcons>["name"]} size={12} color={statusConfig.color} />
-          <Text className="text-[10px] font-bold" style={{ color: statusConfig.color }}>
-            {statusConfig.label}
-          </Text>
-        </View>
-      </View>
-
-      {/* Center info */}
-      <View className="bg-surface-container-low rounded-xl p-3 mb-3">
-        <View className="flex-row items-center gap-2 mb-1">
-          <MaterialIcons name="local-hospital" size={14} color="#006591" />
-          <Text className="text-sm font-semibold text-on-surface" numberOfLines={1}>
-            {appointment.centerName}
-          </Text>
-        </View>
-        {appointment.centerAddress ? (
-          <View className="flex-row items-center gap-2 ml-0.5">
-            <MaterialIcons name="location-on" size={12} color="#5c3f40" />
-            <Text className="text-xs text-on-surface-variant" numberOfLines={1}>
-              {appointment.centerAddress}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-
-      {/* Notes */}
-      {appointment.notes ? (
-        <Text className="text-xs text-on-surface-variant mb-3 italic" numberOfLines={2}>
-          {appointment.notes}
-        </Text>
-      ) : null}
-
-      {/* Actions */}
-      {(appointment.status === "pending" || appointment.status === "confirmed") && !isPast(appointment.scheduledDate) && (
-        <View className="flex-row gap-2">
-          <Pressable
-            className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl bg-surface-container-low active:bg-surface-container"
-            onPress={() => onCancel(appointment)}
-          >
-            <MaterialIcons name="close" size={14} color="#b80035" />
-            <Text className="text-xs font-bold text-primary">Annuler</Text>
-          </Pressable>
-          <Pressable className="flex-1 flex-row items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary/10 active:bg-primary/20">
-            <MaterialIcons name="phone" size={14} color="#b80035" />
-            <Text className="text-xs font-bold text-primary">Appeler</Text>
-          </Pressable>
-        </View>
-      )}
-    </View>
-  );
-}
-
-// ── Empty State ─────────────────────────────────────────────────────────
-
-function EmptyState({ filter, onBook }: { filter: "upcoming" | "past"; onBook: () => void }) {
-  return (
-    <View className="flex-1 items-center justify-center px-8">
-      <View className="w-20 h-20 bg-surface-container-low rounded-3xl items-center justify-center mb-4">
-        <MaterialIcons
-          name={filter === "upcoming" ? "event-available" : "history"}
-          size={36}
-          color="#5c3f40"
-        />
-      </View>
-      <Text className="text-lg font-bold text-on-surface text-center mb-1">
-        {filter === "upcoming" ? "Aucun rendez-vous à venir" : "Aucun rendez-vous passé"}
-      </Text>
-      <Text className="text-sm text-on-surface-variant text-center max-w-[260px]">
-        {filter === "upcoming"
-          ? "Prenez un rendez-vous dans un centre de don pour sauver des vies."
-          : "Vos rendez-vous passés apparaîtront ici."}
-      </Text>
-      {filter === "upcoming" && (
-        <Pressable className="mt-5 bg-primary px-6 py-3 rounded-full active:scale-95" onPress={onBook}>
-          <Text className="text-sm font-bold text-white">Prendre un RDV</Text>
-        </Pressable>
-      )}
+      {renderContent()}
     </View>
   );
 }

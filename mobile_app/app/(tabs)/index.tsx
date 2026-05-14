@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -93,6 +94,30 @@ export default function HomeScreen() {
   }, [loadData]);
 
   const topAlert = alerts[0];
+
+  const handleDonate = (alertId: string) => {
+    if (!user) {
+      Alert.alert("Connexion requise", "Veuillez vous connecter pour donner.");
+      return;
+    }
+    if (!stats?.bloodType) {
+      Alert.alert(
+        "Profil incomplet",
+        "Veuillez ajouter votre groupe sanguin dans votre profil avant de donner.",
+        [{ text: "Compléter", onPress: () => router.push("/profile" as any) }, { text: "Annuler", style: "cancel" }],
+      );
+      return;
+    }
+    if (stats?.nextDonationDate && new Date(stats.nextDonationDate) > new Date()) {
+      const daysLeft = Math.ceil((new Date(stats.nextDonationDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      Alert.alert(
+        "Non éligible",
+        `Vous ne pouvez pas encore donner. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`,
+      );
+      return;
+    }
+    router.push(`/appointment?alertId=${alertId}` as any);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-surface">
@@ -190,7 +215,7 @@ export default function HomeScreen() {
               <View className="flex-row gap-3 mt-4">
                 <Pressable
                   className="flex-1 bg-primary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-primary/20"
-                  onPress={() => router.push(`/appointment?alertId=${topAlert.id}` as any)}
+                  onPress={() => handleDonate(topAlert.id)}
                 >
                   <MaterialIcons name="volunteer-activism" size={16} color="#b80035" />
                   <Text className="text-[10px] font-bold text-primary uppercase">

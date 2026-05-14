@@ -121,6 +121,14 @@ export default function AppointmentScreen() {
           router.back();
           return;
         }
+
+        // Vérifier l'éligibilité du donneur
+        if (user?.next_donation_date && new Date(user.next_donation_date) > new Date()) {
+          const daysLeft = Math.ceil((new Date(user.next_donation_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+          showToast(`Non éligible. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`, "error");
+          router.back();
+          return;
+        }
         
         setAlert(alertData);
       } catch (error) {
@@ -171,8 +179,8 @@ export default function AppointmentScreen() {
     }
 
     if (!canDonateNow) {
-      const requiredMonths = user.gender === "female" ? 3 : 2;
-      showToast(`Vous devez attendre ${requiredMonths} mois après votre dernier don`, "error");
+      const daysLeft = Math.ceil((new Date(user.next_donation_date!).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      showToast(`Non éligible. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`, "error");
       return;
     }
 
