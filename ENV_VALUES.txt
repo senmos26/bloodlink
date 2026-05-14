@@ -1,0 +1,35 @@
+========================================
+  BloodLink — Variables d'environnement
+========================================
+
+📌 MOBILE APP  →  mobile_app/.env (Expo lit .env, pas .env.local)
+----------------------------------------
+EXPO_PUBLIC_SUPABASE_URL=https://xgdinqpxjywlfhjylktu.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjA3NTEsImV4cCI6MjA5MjYzNjc1MX0.jP0o6MxlXxsrAh43c2L7UTY8xMZRKQybA8SVpdwfqVA
+
+
+📌 CENTRE WEB  →  center_web/.env.local
+----------------------------------------
+NEXT_PUBLIC_SUPABASE_URL=https://xgdinqpxjywlfhjylktu.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjA3NTEsImV4cCI6MjA5MjYzNjc1MX0.jP0o6MxlXxsrAh43c2L7UTY8xMZRKQybA8SVpdwfqVA
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzA2MDc1MSwiZXhwIjoyMDkyNjM2NzUxfQ.bA7ZNVhYHJRX3i25RrzmTqWByxtMFev_4CC1ux7MRE8
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+OPENROUTER_API_KEY=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
+GROQ_API_KEY=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
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_MOBILE_APP_URL=http://localhost:8081
+NEXT_PUBLIC_DONOR_WEB_URL=http://localhost:3001
+
+⚠️  GOOGLE_GENERATIVE_AI_API_KEY est commentée (quota épuisé)
+    Décommenter quand le quota se réinitialise :
+# GOOGLE_GENERATIVE_AI_API_KEY=AIzaSyA1hyc-DLheQKBWEm6bD0Oeo4AEZ8XhhTs
+
+
+📌 ADMIN WEB  →  admin_web/.env.local
+----------------------------------------
+⚠️  Pas encore de fichier .env.local dans admin_web
+     Créer le fichier avec ces valeurs :
+
+NEXT_PUBLIC_SUPABASE_URL=https://xgdinqpxjywlfhjylktu.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjA3NTEsImV4cCI6MjA5MjYzNjc1MX0.jP0o6MxlXxsrAh43c2L7UTY8xMZRKQybA8SVpdwfqVA
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzA2MDc1MSwiZXhwIjoyMDkyNjM2NzUxfQ.bA7ZNVhYHJRX3i25RrzmTqWByxtMFev_4CC1ux7MRE8
