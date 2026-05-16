@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -93,6 +94,30 @@ export default function HomeScreen() {
   }, [loadData]);
 
   const topAlert = alerts[0];
+
+  const handleDonate = (alertId: string) => {
+    if (!user) {
+      Alert.alert("Connexion requise", "Veuillez vous connecter pour donner.");
+      return;
+    }
+    if (!stats?.bloodType) {
+      Alert.alert(
+        "Profil incomplet",
+        "Veuillez ajouter votre groupe sanguin dans votre profil avant de donner.",
+        [{ text: "Compléter", onPress: () => router.push("/profile" as any) }, { text: "Annuler", style: "cancel" }],
+      );
+      return;
+    }
+    if (stats?.nextDonationDate && new Date(stats.nextDonationDate) > new Date()) {
+      const daysLeft = Math.ceil((new Date(stats.nextDonationDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      Alert.alert(
+        "Non éligible",
+        `Vous ne pouvez pas encore donner. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`,
+      );
+      return;
+    }
+    router.push(`/appointment?alertId=${alertId}` as any);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-surface">
@@ -190,7 +215,7 @@ export default function HomeScreen() {
               <View className="flex-row gap-3 mt-4">
                 <Pressable
                   className="flex-1 bg-primary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-primary/20"
-                  onPress={() => router.push("/booking" as any)}
+                  onPress={() => handleDonate(topAlert.id)}
                 >
                   <MaterialIcons name="volunteer-activism" size={16} color="#b80035" />
                   <Text className="text-[10px] font-bold text-primary uppercase">
@@ -199,7 +224,7 @@ export default function HomeScreen() {
                 </Pressable>
                 <Pressable
                   className="flex-1 bg-secondary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-secondary/20"
-                  onPress={() => router.push("/share-alert")}
+                  onPress={() => router.push(`/share-alert?alertId=${topAlert.id}` as any)}
                 >
                   <MaterialIcons name="share" size={16} color="#006591" />
                   <Text className="text-[10px] font-bold text-secondary uppercase">
@@ -207,6 +232,19 @@ export default function HomeScreen() {
                   </Text>
                 </Pressable>
               </View>
+
+              {/* Voir plus button */}
+              {alerts.length > 1 && (
+                <Pressable
+                  className="mt-3 flex-row items-center justify-center gap-1 py-2"
+                  onPress={() => router.push("/alerts" as any)}
+                >
+                  <Text className="text-xs font-semibold text-primary">
+                    Voir plus d'alertes ({alerts.length - 1})
+                  </Text>
+                  <MaterialIcons name="arrow-forward" size={14} color="#b80035" />
+                </Pressable>
+              )}
             </View>
           ) : (
             <View className="bg-surface-container-low rounded-2xl p-5 mb-4 items-center">
@@ -216,28 +254,7 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {/* More alerts carousel */}
-          {alerts.length > 1 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4 -mx-4 px-4">
-              {alerts.slice(1).map((alert) => (
-                <View key={alert.id} className="min-w-[200px] bg-surface-container-lowest p-4 rounded-2xl mr-3 border border-black/5">
-                  <View className="flex-row items-center justify-between mb-3">
-                    <View className="w-9 h-9 rounded-full items-center justify-center" style={{ backgroundColor: getUrgencyColor(alert.urgencyLevel) + "15" }}>
-                      <Text className="text-xs font-extrabold" style={{ color: getUrgencyColor(alert.urgencyLevel) }}>{alert.bloodType}</Text>
-                    </View>
-                    <View className="px-2 py-0.5 rounded-full" style={{ backgroundColor: getUrgencyColor(alert.urgencyLevel) + "15" }}>
-                      <Text className="text-[8px] font-bold uppercase" style={{ color: getUrgencyColor(alert.urgencyLevel) }}>
-                        {urgencyLabel(alert.urgencyLevel)}
-                      </Text>
-                    </View>
-                  </View>
-                  <Text className="text-sm font-bold text-on-surface" numberOfLines={1}>{alert.centerName}</Text>
-                  <Text className="text-xs text-on-surface-variant mt-0.5" numberOfLines={1}>{alert.centerCity}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-
+          
           {/* Next Appointment */}
           {nextAppt && (
             <Pressable

@@ -40,6 +40,18 @@ export default function BookingScreen() {
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Vérifier l'éligibilité au chargement
+  useEffect(() => {
+    if (user?.next_donation_date && new Date(user.next_donation_date) > new Date()) {
+      const daysLeft = Math.ceil((new Date(user.next_donation_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      Alert.alert(
+        "Non éligible",
+        `Vous ne pouvez pas encore donner. Prochain don possible dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}.`,
+        [{ text: "OK", onPress: () => router.back() }],
+      );
+    }
+  }, [user]);
+
   // Charger les centres
   useEffect(() => {
     (async () => {
