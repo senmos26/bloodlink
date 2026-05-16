@@ -1,4 +1,4 @@
-import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
+import { View, TextInput, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
@@ -12,44 +12,47 @@ interface Props {
 
 export default function ChatInput({ value, onChangeText, onSubmit, isLoading, isStreaming, onStop }: Props) {
   const canSend = value.trim().length > 0 && !isLoading;
+  const showStop = isLoading || isStreaming;
 
   return (
-    <View className="flex-row items-end px-3 py-2 bg-white border-t border-gray-100">
-      <TextInput
-        className="flex-1 min-h-[38px] max-h-[90px] px-3.5 py-2 bg-gray-50 rounded-2xl text-[13px] text-gray-800"
-        placeholder="Votre question..."
-        placeholderTextColor="#aaa"
-        value={value}
-        onChangeText={onChangeText}
-        multiline
-        textAlignVertical="center"
-        returnKeyType="send"
-        blurOnSubmit={false}
-        onSubmitEditing={onSubmit}
-        editable={!isLoading}
-      />
-      {isLoading ? (
-        <Pressable
-          onPress={onStop}
-          className="ml-2 w-9 h-9 rounded-full bg-gray-200 items-center justify-center"
-        >
-          <MaterialIcons name="stop" size={18} color="#666" />
-        </Pressable>
-      ) : (
-        <Pressable
-          onPress={onSubmit}
-          disabled={!canSend}
-          className={`ml-2 w-9 h-9 rounded-full items-center justify-center ${
-            canSend ? "bg-[#b80035]" : "bg-gray-100"
-          }`}
-        >
-          <MaterialIcons
-            name="send"
-            size={18}
-            color={canSend ? "white" : "#ccc"}
-          />
-        </Pressable>
-      )}
+    <View className="px-4 py-3 bg-white border-t border-gray-100">
+      <View className="flex-row items-end bg-gray-50 rounded-2xl border border-gray-200 px-3 py-1">
+        <TextInput
+          className="flex-1 min-h-[40px] max-h-[100px] px-1 py-2 text-[14px] leading-[20px] text-gray-800"
+          placeholder="Envoyer un message..."
+          placeholderTextColor="#9ca3af"
+          value={value}
+          onChangeText={onChangeText}
+          multiline
+          textAlignVertical="center"
+          returnKeyType="send"
+          blurOnSubmit={false}
+          onSubmitEditing={onSubmit}
+          editable={!isLoading}
+        />
+        {showStop ? (
+          <Pressable
+            onPress={onStop}
+            className="w-8 h-8 rounded-full bg-gray-800 items-center justify-center mb-1"
+          >
+            <View className="w-3 h-3 rounded-[1px] bg-white" />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={onSubmit}
+            disabled={!canSend}
+            className={`w-8 h-8 rounded-full items-center justify-center mb-1 ${
+              canSend ? "bg-[#b80035]" : "bg-transparent"
+            }`}
+          >
+            <MaterialIcons
+              name="arrow-upward"
+              size={18}
+              color={canSend ? "white" : "#ccc"}
+            />
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }

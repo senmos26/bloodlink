@@ -24,11 +24,11 @@ const openrouter = createOpenAI({
 
 /**
  * Priority: Groq > Gemini > OpenRouter
- * Groq: llama-3.3-70b — rapide, bon en français, tool calling, 14400 req/jour gratuit
+ * Groq: llama-3.1-8b-instant — très rapide, bon pour le chat mobile, 14400 req/jour gratuit
  */
 function pickChatModel() {
   if (process.env.GROQ_API_KEY) {
-    return groq("llama-3.3-70b-versatile");
+    return groq("llama-3.1-8b-instant");
   }
   if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     return google("gemini-2.0-flash");

@@ -9,12 +9,29 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const [accessToken, setAccessToken] = useState<string | undefined>();
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     if (user) {
       supabase.auth.getSession().then(({ data }: { data: { session: { access_token: string } | null } }) => {
         setAccessToken(data.session?.access_token ?? undefined);
       });
+
+      // Try to use saved profile location (no extra permissions/deps needed)
+      (async () => {
+        try {
+          const { data } = await supabase
+            .from("profiles")
+            .select("latitude, longitude")
+            .eq("id", user.id)
+            .single();
+          const lat = typeof data?.latitude === "number" ? data.latitude : null;
+          const lng = typeof data?.longitude === "number" ? data.longitude : null;
+          if (lat !== null && lng !== null) {
+            setLocation({ lat, lng });
+          }
+        } catch {}
+      })();
     }
   }, [user]);
 
@@ -35,6 +52,7 @@ export default function ChatWidget() {
         onClose={() => setOpen(false)}
         userId={user?.id}
         accessToken={accessToken}
+        location={location}
       />
     </>
   );

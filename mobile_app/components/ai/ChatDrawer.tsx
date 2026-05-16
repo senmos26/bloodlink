@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,19 +8,20 @@ import {
   Platform,
   Pressable,
   ActivityIndicator,
-  ScrollView,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import ChatMessageBubble from "./ChatMessage";
 import ChatInput from "./ChatInput";
-import { useChat } from "./useChat";
+import { useChat, Conversation } from "./useChat";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
   userId?: string;
   accessToken?: string;
+  location?: { lat: number; lng: number } | null;
 }
 
 const SUGGESTIONS = [
@@ -37,11 +38,91 @@ const SUGGESTION_QUERIES: Record<string, string> = {
   "Centre proche": "Où trouver un centre de transfusion près de chez moi ?",
 };
 
-export default function ChatDrawer({ visible, onClose, userId, accessToken }: Props) {
-  const { messages, input, setInput, isLoading, isStreaming, error, handleSubmit, stop, clear } =
-    useChat({ userId, accessToken });
+const SIDEBAR_WIDTH = 280;
+
+// ─── Sidebar (conversation history) ─────────────────────────────────
+
+function Sidebar({
+  conversations,
+  activeId,
+  onSelect,
+  onNew,
+  onDelete,
+  onClose,
+}: {
+  conversations: Conversation[];
+  activeId: string | null;
+  onSelect: (id: string) => void;
+  onNew: () => void;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <View className="flex-1 bg-[#1e1e1e]">
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-white/10">
+        <Pressable
+          onPress={onNew}
+          className="flex-row items-center flex-1 px-3 py-2 rounded-lg border border-white/20 active:bg-white/5"
+        >
+          <MaterialIcons name="add" size={18} color="white" />
+          <Text className="ml-2 text-sm text-white">Nouvelle conversation</Text>
+        </Pressable>
+        <Pressable onPress={onClose} className="ml-3 p-1">
+          <MaterialIcons name="close" size={20} color="#999" />
+        </Pressable>
+      </View>
+
+      {/* Conversation list */}
+      <FlatList
+        data={conversations}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingVertical: 8 }}
+        ListEmptyComponent={
+          <View className="px-4 py-8 items-center">
+            <Text className="text-sm text-white/40">Aucune conversation</Text>
+          </View>
+        }
+        renderItem={({ item }) => (
+          <Pressable
+            onPress={() => { onSelect(item.id); onClose(); }}
+            className={`flex-row items-center px-4 py-3 mx-2 rounded-lg ${
+              activeId === item.id ? "bg-white/10" : "active:bg-white/5"
+            }`}
+          >
+            <MaterialIcons name="chat-bubble-outline" size={16} color="#999" />
+            <Text
+              className="flex-1 ml-3 text-sm text-white/80"
+              numberOfLines={1}
+            >
+              {item.title}
+            </Text>
+            <Pressable
+              onPress={() => onDelete(item.id)}
+              className="p-1 active:bg-white/10 rounded"
+            >
+              <MaterialIcons name="delete-outline" size={16} color="#666" />
+            </Pressable>
+          </Pressable>
+        )}
+      />
+    </View>
+  );
+}
+
+// ─── Main ChatDrawer ─────────────────────────────────────────────────
+
+export default function ChatDrawer({ visible, onClose, userId, accessToken, location }: Props) {
+  const {
+    messages, input, setInput, isLoading, isStreaming, error,
+    append, handleSubmit, stop,
+    conversations, activeConversationId,
+    newConversation, loadConversation, deleteConversation,
+  } = useChat({ userId, accessToken, location });
 
   const flatListRef = useRef<FlatList>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sidebarAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -49,11 +130,24 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken }: Pr
     }
   }, [messages]);
 
+  // Animate sidebar
+  useEffect(() => {
+    Animated.timing(sidebarAnim, {
+      toValue: sidebarOpen ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [sidebarOpen]);
+
+  const sidebarTranslateX = sidebarAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-SIDEBAR_WIDTH, 0],
+  });
+
   const handleSuggestion = useCallback((label: string) => {
     const query = SUGGESTION_QUERIES[label] ?? label;
-    setInput(query);
-    setTimeout(() => handleSubmit(), 0);
-  }, [setInput, handleSubmit]);
+    append(query);
+  }, [append]);
 
   const showEmpty = messages.length === 0 && !isLoading;
 
@@ -68,8 +162,16 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken }: Pr
       <SafeAreaView className="flex-1 bg-white">
         {/* Header */}
         <View className="flex-row items-center px-4 py-3 border-b border-gray-100">
-          <View className="w-8 h-8 rounded-full bg-[#b80035] items-center justify-center mr-3">
-            <MaterialIcons name="favorite" size={18} color="white" />
+          {/* Menu button */}
+          <Pressable
+            onPress={() => setSidebarOpen(true)}
+            className="p-1.5 mr-2 rounded-lg active:bg-gray-100"
+          >
+            <MaterialIcons name="menu" size={20} color="#666" />
+          </Pressable>
+
+          <View className="w-7 h-7 rounded-full bg-[#b80035] items-center justify-center mr-2.5">
+            <MaterialIcons name="favorite" size={14} color="white" />
           </View>
           <View className="flex-1">
             <Text className="text-base font-semibold text-gray-900">
@@ -79,23 +181,15 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken }: Pr
               <Text className="text-xs text-[#b80035]">En train d'écrire...</Text>
             )}
           </View>
-          {isLoading && (
-            <Pressable
-              onPress={stop}
-              className="mr-2 px-3 py-1.5 rounded-full bg-gray-100 active:bg-gray-200"
-            >
-              <Text className="text-xs font-medium text-gray-600">Arrêter</Text>
-            </Pressable>
-          )}
           <Pressable
-            onPress={() => { clear(); onClose(); }}
+            onPress={onClose}
             className="p-2 rounded-full active:bg-gray-100"
           >
             <MaterialIcons name="close" size={22} color="#666" />
           </Pressable>
         </View>
 
-        {/* Content */}
+        {/* Chat content */}
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1"
@@ -138,18 +232,18 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken }: Pr
                   isStreaming={isStreaming && item.role === "assistant" && item === messages[messages.length - 1]}
                 />
               )}
-              contentContainerStyle={{ padding: 12, paddingBottom: 8 }}
+              contentContainerStyle={{ paddingTop: 12, paddingBottom: 8 }}
               ListFooterComponent={() => {
                 if (error) {
                   return (
-                    <View className="mx-2 my-2 p-3 bg-red-50 rounded-xl">
+                    <View className="mx-4 my-2 p-3 bg-red-50 rounded-xl">
                       <Text className="text-sm text-red-600">{error}</Text>
                     </View>
                   );
                 }
                 if (isLoading && !isStreaming && messages.length > 0) {
                   return (
-                    <View className="flex-row items-center px-2 py-2">
+                    <View className="flex-row items-center px-4 py-2">
                       <ActivityIndicator size="small" color="#b80035" />
                       <Text className="ml-2 text-xs text-gray-400">Réflexion...</Text>
                     </View>
@@ -169,6 +263,36 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken }: Pr
             onStop={stop}
           />
         </KeyboardAvoidingView>
+
+        {/* Sidebar overlay */}
+        {sidebarOpen && (
+          <Pressable
+            className="absolute inset-0 bg-black/40"
+            onPress={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar panel */}
+        <Animated.View
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: SIDEBAR_WIDTH,
+            transform: [{ translateX: sidebarTranslateX }],
+            zIndex: 50,
+          }}
+        >
+          <Sidebar
+            conversations={conversations}
+            activeId={activeConversationId}
+            onSelect={loadConversation}
+            onNew={newConversation}
+            onDelete={deleteConversation}
+            onClose={() => setSidebarOpen(false)}
+          />
+        </Animated.View>
       </SafeAreaView>
     </Modal>
   );

@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
           supabase: supabaseAdmin,
         });
         const ragTimeout = new Promise<RagResult[]>((resolve) =>
-          setTimeout(() => resolve([]), 5000)
+          setTimeout(() => resolve([]), 1500)
         );
         const results = await Promise.race([ragPromise, ragTimeout]);
         ragContext = formatRagContext(results);
@@ -168,10 +168,10 @@ export async function POST(req: NextRequest) {
       system: systemPrompt,
       messages: chatMessages,
       tools: toolsToUse as any,
-      stopWhen: stepCountIs(5),
+      stopWhen: stepCountIs(3),
       maxRetries: 1,
-      maxOutputTokens: 800,
-      temperature: 0.7,
+      maxOutputTokens: 450,
+      temperature: 0.4,
       async onStepFinish(step) {
         if (step.toolCalls.length > 0) {
           toolCalls = step.toolCalls.map((t: any) => t.toolName);
