@@ -1,10 +1,14 @@
 """
 Met à jour les statuts ClickUp selon la réalité du codebase BloodLink.
 
-Analyse du code vs ClickUp:
-- Sprint 4 tâche mobile RDV+Push: DONE (fait dans le code)
-- Sprint 3 formulaire alerte: DONE sur mobile (pas web)
-- Sprint 5,6: Met à jour les progressions
+Analyse du code vs ClickUp (14 mai 2025):
+- Sprint 3 formulaire alerte: FAIT (center_web AlertsPage + actions + hooks)
+- Sprint 4 gérer RDV admin: FAIT (admin_web AppointmentsPage + actions)
+- Sprint 5 dashboard stats: FAIT (admin_web StatisticsPage + DashboardClient avec recharts)
+- Sprint 5 QR code validation: FAIT (ScanDonationQR + Edge Function verify-donation-qr)
+- Sprint 5 valider don + stats: FAIT (inclus dans la validation QR)
+- Sprint 6 tests E2E: PAS FAIT
+- Sprint 6 UI/UX polish: EN COURS
 """
 import requests
 import sys
@@ -15,42 +19,62 @@ headers = {'Authorization': TOKEN, 'Content-Type': 'application/json'}
 # Mapping des tâches avec leur statut réel dans le code
 # Format: task_id: (nouveau_statut, commentaire)
 TASK_UPDATES = {
-    # Sprint 4 - Tâche mobile RDV + Push (FAIT à 100%)
-    '86c9gt1hk': ('complete', '✅ FAIT: \n'
-                 '- Liste RDV avec filtres (appointments.tsx)\n'
-                 '- Réservation RDV (booking.tsx)\n'
-                 '- Push notifications natives (push.native.ts)\n'
-                 '- Edge Function send-test-push\n'
-                 '- Migration 00004_push_notification_support.sql\n'
-                 '- Dashboard avec prochain RDV (index.tsx)'),
+    # Sprint 3 - Formulaire création alerte (FAIT)
+    '86c9gt1hr': ('complete', '✅ FAIT: \n'
+                 '- center_web: AlertsPage.tsx complet (361 lignes)\n'
+                 '- Formulaire création avec CreateAlertSchema (zod)\n'
+                 '- useCreateAlert, useCloseAlert, useEscalateAlert hooks\n'
+                 '- Filtres par statut/groupe/urgence/recherche\n'
+                 '- Actions serveur: createAlert, closeAlert, escalateAlert\n'
+                 '- Stats dashboard: useAlertStats\n'
+                 '- Mobile: Formulaire alerte + partage aussi fait'),
     
-    # Sprint 4 - Gérer RDV côté centre (web) - PAS FAIT
-    '86c9gt1j4': ('to do', '⏳ À FAIRE: Interface admin web pour gérer les rendez-vous\n'
-                  'Le mobile est fait mais pas l\'admin web.'),
+    # Sprint 4 - Gérer RDV côté centre admin (FAIT)
+    '86c9gt1j4': ('complete', '✅ FAIT: \n'
+                  '- admin_web: AppointmentsPage.tsx (314 lignes)\n'
+                  '- DataTable avec colonnes date/donneur/statut/actions\n'
+                  '- Transitions de statut: pending→confirmed→completed/cancelled\n'
+                  '- FilterBar + Pagination + DetailsDrawer\n'
+                  '- Actions: updateAppointmentStatus, createDonationFromAppointment\n'
+                  '- API route /api/admin/appointments/status'),
     
-    # Sprint 3 - Formulaire création alerte
-    '86c9gt1hr': ('in progress', '🔄 PARTIEL: \n'
-                 '✅ Mobile: Formulaire alerte complet (alerts.tsx)\n'
-                 '✅ Partage d\'alertes (share-alert.tsx)\n'
-                 '✅ Service alert-sharing.ts\n'
-                 '❌ Web: Pas encore implémenté côté admin'),
+    # Sprint 5 - Dashboard stats admin (FAIT)
+    '86c9gt1hx': ('complete', '✅ FAIT: \n'
+                  '- admin_web: StatisticsPage.tsx (196 lignes)\n'
+                  '- DashboardClient.tsx (380 lignes) avec KPIs\n'
+                  '- PieChart répartition groupes sanguins\n'
+                  '- BarChart dons mensuels\n'
+                  '- LineChart tendance des dons\n'
+                  '- Alertes récentes + RDV récents\n'
+                  '- getDashboardStats() avec queries parallèles'),
     
-    # Sprint 5 - Dashboard stats (web)
-    '86c9gt1hx': ('to do', '⏳ DÉCALAGE: Dashboard stats existe sur MOBILE (index.tsx)\n'
-                  'Mais PAS sur le web admin. À implémenter côté admin.'),
     
-    # Sprint 5 - QR code validation
-    '86c9gt1hg': ('to do', '⏳ À FAIRE: Génération et scan QR code pour validation don'),
+    # Sprint 5 - QR code validation don (FAIT)
+    '86c9gt1hg': ('complete', '✅ FAIT: \n'
+                  '- center_web: ScanDonationQR.tsx (457 lignes)\n'
+                  '- Scanner caméra avec jsQR + overlay visuel\n'
+                  '- Mode saisie manuelle (fallback)\n'
+                  '- Edge Function verify-donation-qr (329 lignes)\n'
+                  '- Vérifications: timestamp <10min, donneur actif, éligibilité\n'
+                  '- admin_web: page /admin/scan-qr + API route'),
     
-    # Sprint 5 - Valider don et stats
-    '86c9gt1h8': ('to do', '⏳ À FAIRE: Validation don + mise à jour stats donneur'),
     
-    # Sprint 6 - Tests E2E
-    '86c9gt1j1': ('to do', '⏳ À FAIRE: Tests end-to-end'),
+    # Sprint 5 - Valider don + stats donneur (FAIT - inclus dans QR)
+    '86c9gt1h8': ('complete', '✅ FAIT (inclus dans la validation QR): \n'
+                  '- Validation don automatique après scan QR\n'
+                  '- Mise à jour next_donation_date (+56 jours)\n'
+                  '- Notification envoyée au donneur\n'
+                  '- center_web: page /donations/scan avec résultats\n'
+                  '- admin_web: createDonationFromAppointment'),
+    
+    # Sprint 6 - Tests E2E (PAS FAIT)
+    '86c9gt1j1': ('to do', '⏳ À FAIRE: Tests end-to-end et correction bugs'),
     
     # Sprint 6 - UI/UX Polish  
-    '86c9gt1hn': ('in progress', '🔄 PARTIEL: Polish UI déjà bien avancé sur mobile\n'
-                 '(nativewind, theming, animations)'),
+    '86c9gt1hn': ('in progress', '🔄 EN COURS: \n'
+                 '- Mobile: nativewind, theming, animations OK\n'
+                 '- Web: composants UI modernes (shadcn, recharts)\n'
+                 '- Polish global encore nécessaire'),
 }
 
 def update_task_status(task_id, status, comment):
