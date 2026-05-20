@@ -63,18 +63,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // donor → not allowed in admin
-  if (profile.role === "donor") {
+  // Only super_admin is allowed in admin_web
+  if (profile.role !== "super_admin") {
     await supabase.auth.signOut();
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("error", "Accès réservé aux administrateurs");
+    if (profile.role === "center_admin") {
+      loginUrl.searchParams.set("error", "Accès réservé. Les administrateurs de centre doivent utiliser le portail Centre.");
+    } else {
+      loginUrl.searchParams.set("error", "Accès réservé aux super administrateurs.");
+    }
     return NextResponse.redirect(loginUrl);
-  }
-
-  // center_admin → redirect to center_web (they should use center_web, not admin_web)
-  if (profile.role === "center_admin") {
-    const centerWebUrl = process.env.NEXT_PUBLIC_CENTER_WEB_URL || "http://localhost:3000";
-    return NextResponse.redirect(new URL(centerWebUrl));
   }
 
   // super_admin → access granted

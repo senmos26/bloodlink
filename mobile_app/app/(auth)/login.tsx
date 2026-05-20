@@ -10,11 +10,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import SocialAuthButton from "@/components/ui/SocialAuthButton";
 import Toast, { type ToastType } from "@/components/ui/Toast";
-import { supabase } from "@/services/supabase";
+import { getRedirectUrl, supabase } from "@/services/supabase";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const SUCCESS_REDIRECT_DELAY_MS = 1600;
 
@@ -22,6 +26,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<"google" | "apple" | null>(null);
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: ToastType }>({
     visible: false,
     message: "",
@@ -36,9 +41,105 @@ export default function LoginScreen() {
     setToast((prev) => ({ ...prev, visible: false }));
   };
 
-  const handleSocialLogin = (provider: "google" | "apple") => {
-    const providerName = provider === "google" ? "Google" : "Apple";
-    showToast(`${providerName} login sera branché juste après la config OAuth Supabase.`, "info");
+  const verifyDonorAccess = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, is_active")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.is_active) {
+      await supabase.auth.signOut();
+      showToast("Votre compte a été désactivé. Contactez le support.", "error");
+      return false;
+    }
+
+    if (profile?.role !== "donor") {
+      await supabase.auth.signOut();
+      const platform = profile?.role === "center_admin" ? "le portail Centre" : "le portail Administrateur";
+      showToast(`Ce compte est réservé aux centres de santé. Connectez-vous sur ${platform}.`, "error");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSocialLogin = async (provider: "google" | "apple") => {
+    if (provider === "apple") {
+      showToast("Apple login sera branché après la configuration Apple Developer.", "info");
+      return;
+    }
+
+    hideToast();
+    setSocialLoading(provider);
+
+    const redirectTo = getRedirectUrl();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo,
+        skipBrowserRedirect: true,
+        queryParams: {
+          access_type: "offline",
+          prompt: "select_account",
+        },
+      },
+    });
+
+    if (error) {
+      setSocialLoading(null);
+      showToast(error.message, "error");
+      return;
+    }
+
+    if (!data.url) {
+      setSocialLoading(null);
+      showToast("Impossible d'ouvrir la connexion Google.", "error");
+      return;
+    }
+
+    const authResult = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+
+    if (authResult.type !== "success") {
+      setSocialLoading(null);
+      if (authResult.type === "cancel") {
+        showToast("Connexion Google annulée.", "info");
+      }
+      return;
+    }
+
+    const parsedUrl = Linking.parse(authResult.url);
+    const codeParam = parsedUrl.queryParams?.code;
+    const code = Array.isArray(codeParam) ? codeParam[0] : codeParam;
+
+    if (!code) {
+      setSocialLoading(null);
+      showToast("Google n'a pas retourné de code de connexion.", "error");
+      return;
+    }
+
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (exchangeError) {
+      setSocialLoading(null);
+      showToast(exchangeError.message, "error");
+      return;
+    }
+
+    const isAllowed = await verifyDonorAccess();
+    if (!isAllowed) {
+      setSocialLoading(null);
+      return;
+    }
+
+    setSocialLoading(null);
+    showToast("Connexion Google réussie !", "success");
+    setTimeout(() => {
+      router.replace("/(tabs)");
+    }, SUCCESS_REDIRECT_DELAY_MS);
   };
 
   const handleLogin = async () => {
@@ -63,28 +164,8 @@ export default function LoginScreen() {
       return;
     }
 
-    // Role guard: fetch profile to verify this user is a donor
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, is_active")
-        .eq("id", user.id)
-        .single();
-
-      if (!profile?.is_active) {
-        await supabase.auth.signOut();
-        showToast("Votre compte a été désactivé. Contactez le support.", "error");
-        return;
-      }
-
-      if (profile?.role !== "donor") {
-        await supabase.auth.signOut();
-        const platform = profile?.role === "center_admin" ? "le portail Centre" : "le portail Administrateur";
-        showToast(`Ce compte est réservé aux centres de santé. Connectez-vous sur ${platform}.`, "error");
-        return;
-      }
-    }
+    const isAllowed = await verifyDonorAccess();
+    if (!isAllowed) return;
 
     showToast("Connexion réussie !", "success");
     setTimeout(() => {
@@ -159,8 +240,16 @@ export default function LoginScreen() {
               </Text>
               <View className="flex-1 h-px bg-surface-container-high" />
             </View>
-            <SocialAuthButton provider="google" onPress={() => handleSocialLogin("google")} />
-            <SocialAuthButton provider="apple" onPress={() => handleSocialLogin("apple")} />
+            <SocialAuthButton
+              provider="google"
+              onPress={() => handleSocialLogin("google")}
+              loading={socialLoading === "google"}
+            />
+            <SocialAuthButton
+              provider="apple"
+              onPress={() => handleSocialLogin("apple")}
+              loading={socialLoading === "apple"}
+            />
           </View>
 
           <Link href="/(auth)/register" asChild>

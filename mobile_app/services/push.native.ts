@@ -12,6 +12,11 @@ function isExpoGo(): boolean {
   return executionEnvironment === "storeClient";
 }
 
+function hasAndroidFirebaseConfig(): boolean {
+  const androidConfig = Constants.expoConfig?.android as { googleServicesFile?: string } | undefined;
+  return Platform.OS !== "android" || Boolean(androidConfig?.googleServicesFile);
+}
+
 async function getNotificationsModule() {
   if (isExpoGo()) {
     return null;
@@ -84,6 +89,11 @@ export async function requestNotificationPermission(): Promise<boolean> {
 
 /** Obtenir le token Expo Push (ou FCM/APNS en production) */
 export async function getPushToken(): Promise<PushToken | null> {
+  if (!hasAndroidFirebaseConfig()) {
+    console.warn("[push] Push Android désactivé: Firebase/FCM n'est pas configuré pour ce build.");
+    return null;
+  }
+
   const hasPermission = await requestNotificationPermission();
   if (!hasPermission) return null;
 
@@ -116,7 +126,12 @@ export async function getPushToken(): Promise<PushToken | null> {
       platform: Platform.OS as "ios" | "android" | "web",
     };
   } catch (err) {
-    console.error("[push] Erreur obtention token:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.includes("Default FirebaseApp is not initialized") || message.includes("FCM")) {
+      console.warn("[push] Push Android désactivé: Firebase/FCM n'est pas initialisé pour ce build.");
+      return null;
+    }
+    console.warn("[push] Erreur obtention token:", err);
     return null;
   }
 }

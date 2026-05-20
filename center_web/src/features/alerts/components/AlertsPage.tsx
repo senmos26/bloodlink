@@ -18,6 +18,7 @@ import { AlertStatsBoard } from "./AlertStatsBoard";
 import { AlertFiltersBar, type AlertFilterState, type AlertFilterHandlers } from "./AlertFiltersBar";
 import { AlertCard } from "./AlertCard";
 import { AlertTableView } from "./AlertTableView";
+import { ShareAlertModal } from "./ShareAlertModal";
 
 import {
   useFilteredAlerts,
@@ -36,7 +37,7 @@ const URGENCY_LEVELS = [
   { id: "low" as const, label: "Optimisation", color: "bg-secondary-light" },
   { id: "medium" as const, label: "Moyenne", color: "bg-warning" },
   { id: "high" as const, label: "Haute", color: "bg-primary" },
-  { id: "critical" as const, label: "Vitale", color: "bg-blood-red" },
+  { id: "critical" as const, label: "Vitale", color: "bg-red-700" },
 ];
 
 // ── Main Page ──────────────────────────────────────────────
@@ -51,6 +52,11 @@ export default function AlertsPage() {
     radius_km: 20,
     donors_needed: 0,
   });
+
+  // Share modal state
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [shareMessage, setShareMessage] = useState("");
 
   // Filters
   const [filters, setFilters] = useState<AlertFilterState>({
@@ -127,15 +133,16 @@ export default function AlertsPage() {
     });
   };
 
-  const handleShare = (id: string) => {
+  const handleShare = (id: string, message?: string) => {
     shareAlertMutation.mutate(id, {
       onSuccess: (res) => {
         if (res.url) {
-          navigator.clipboard.writeText(res.url);
-          toast.success("Lien de partage copié");
+          setShareUrl(res.url);
+          setShareMessage(message || "");
+          setShareModalOpen(true);
         }
       },
-      onError: () => toast.error("Erreur lors du partage"),
+      onError: (err) => toast.error(err.message || "Erreur lors du partage"),
     });
   };
 
@@ -355,6 +362,13 @@ export default function AlertsPage() {
           </div>
         )}
       </div>
+
+      <ShareAlertModal
+        open={shareModalOpen}
+        onOpenChange={setShareModalOpen}
+        url={shareUrl}
+        alertMessage={shareMessage}
+      />
     </div>
   );
 }

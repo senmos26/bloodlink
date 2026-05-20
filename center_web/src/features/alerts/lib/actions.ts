@@ -61,7 +61,7 @@ export async function getActiveAlerts(): Promise<Alert[]> {
 export async function getFilteredAlerts(filters: AlertFilters): Promise<Alert[]> {
   const { center } = await requireCenterAdmin();
   const centerId = center?.id;
-  if (!centerId) return [];
+  if (!centerId) throw new Error("Aucun centre associé à ce compte.");
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_filtered_center_alerts", {
@@ -109,7 +109,7 @@ export async function getAlertStats(): Promise<AlertStats> {
   const { center } = await requireCenterAdmin();
   const centerId = center?.id;
   if (!centerId) {
-    return { totalActive: 0, criticalCount: 0, responseRate: 0, avgResponseTime: 0, expiredToday: 0, donorsResponded: 0 };
+    throw new Error("Aucun centre associé à ce compte.");
   }
 
   const supabase = await createClient();
@@ -133,11 +133,16 @@ export async function getAlertStats(): Promise<AlertStats> {
 }
 
 export async function createAlert(formData: FormData) {
+  const { center } = await requireCenterAdmin();
+  if (!center) {
+    throw new Error("Seuls les administrateurs de centre peuvent créer des alertes.");
+  }
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = CreateAlertSchema.safeParse(raw);
 
   if (!parsed.success) {
-    return { error: "Données invalides" };
+    throw new Error("Données invalides");
   }
 
   const supabase = await createClient();
@@ -149,7 +154,7 @@ export async function createAlert(formData: FormData) {
     p_donors_needed: parsed.data.donors_needed ?? 0,
   });
 
-  if (error) return { error: error.message };
+  if (error) throw new Error(error.message);
 
   revalidatePath("/alerts");
   revalidatePath("/");
@@ -162,11 +167,10 @@ export async function closeAlert(id: string) {
     p_alert_id: id,
   });
 
-  if (error) return { error: error.message };
+  if (error) throw new Error(error.message);
 
   revalidatePath("/alerts");
   revalidatePath("/");
-  return { success: true };
 }
 
 export async function escalateAlert(id: string) {
@@ -175,11 +179,10 @@ export async function escalateAlert(id: string) {
     p_alert_id: id,
   });
 
-  if (error) return { error: error.message };
+  if (error) throw new Error(error.message);
 
   revalidatePath("/alerts");
   revalidatePath("/");
-  return { success: true };
 }
 
 export interface AlertResponse {
@@ -230,10 +233,10 @@ export async function relaunchAlert(id: string) {
     p_alert_id: id,
   });
 
-  if (error) return { error: error.message };
+  if (error) throw new Error(error.message);
 
   revalidatePath("/alerts");
-  return { success: true, newAlertId: data as string };
+  return { newAlertId: data as string };
 }
 
 function generateShortCode(length = 8): string {
@@ -247,22 +250,27 @@ function generateShortCode(length = 8): string {
 
 export async function shareAlert(id: string) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const shortCode = generateShortCode();
+  // Expiration par défaut: 30 jours
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString();
   const { data, error } = await supabase
     .from("alert_shares")
     .insert({
       short_code: shortCode,
       original_url: `/alert/${id}`,
       share_data: { alert_id: id },
+      user_id: user?.id,
+      expires_at: expiresAt,
     })
     .select("short_code")
     .single();
 
-  if (error) return { error: error.message };
+  if (error) throw new Error(error.message);
 
   const returnedCode = (data as { short_code?: string })?.short_code;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://bloodlink.app";
-  return { success: true, url: `${baseUrl}/s/${returnedCode}` };
+  return { url: `${baseUrl}/s/${returnedCode}` };
 }
 
 export async function getActiveAlertsCount(): Promise<number> {

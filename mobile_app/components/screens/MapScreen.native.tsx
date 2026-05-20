@@ -9,6 +9,7 @@ import BottomSheet, {
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE, type Region } from "react-native-maps";
+import { WebView, type WebViewMessageEvent } from "react-native-webview";
 
 import {
   getMapCenters,
@@ -23,6 +24,29 @@ const DEFAULT_REGION: Region = {
   latitudeDelta: 0.06,
   longitudeDelta: 0.06,
 };
+
+// Minimal Leaflet document loaded in the WebView (free, no billing)
+const LEAFLET_HTML = `<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      html, body, #map { height: 100%; margin: 0; padding: 0; }
+      #map { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  </body>
+</html>`;
 
 type UserLocation = {
   latitude: number;
@@ -106,6 +130,8 @@ export default function MapScreen() {
   const mapRef = useRef<MapView | null>(null);
   const bottomSheetRef = useRef<BottomSheet | null>(null);
   const hasAutoFocusedRef = useRef(false);
+  // Disable native Google Maps on Android to avoid API key requirements. Fallback to a free list UI.
+  const MAPS_ENABLED = Platform.OS !== "android";
   const [centers, setCenters] = useState<MapCenter[]>([]);
   const [mapFilter, setMapFilter] = useState<MapFilter>("all");
   const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
@@ -158,6 +184,69 @@ export default function MapScreen() {
         return centersWithDistance;
     }
   }, [centersWithDistance, mapFilter]);
+
+  // Lightweight dataset for the WebView map (computed after visibleCenters is available)
+  const simpleCenters = useMemo(
+    () =>
+      visibleCenters.map((c) => ({
+        id: c.id,
+        latitude: c.latitude,
+        longitude: c.longitude,
+        name: c.name,
+        city: c.city,
+      })),
+    [visibleCenters]
+  );
+
+  const leafletInjectedJs = useMemo(() => {
+    const payload = {
+      centers: simpleCenters,
+      userLocation,
+      defaultRegion: DEFAULT_REGION,
+    };
+    return `
+      (function(){
+        var data = ${JSON.stringify(payload)};
+        var map = L.map('map', { zoomControl: false });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        var bounds = [];
+        // Mark user location if available
+        if (data.userLocation && isFinite(data.userLocation.latitude) && isFinite(data.userLocation.longitude)) {
+          L.marker([data.userLocation.latitude, data.userLocation.longitude]).addTo(map).bindPopup('Vous êtes ici');
+        }
+        // Filter invalid center coords (exclude 0,0 and non-finite)
+        var validCenters = (data.centers || []).filter(function(c){
+          if (!isFinite(c.latitude) || !isFinite(c.longitude)) return false;
+          if (Math.abs(c.latitude) < 1e-6 && Math.abs(c.longitude) < 1e-6) return false;
+          return true;
+        });
+        validCenters.forEach(function(c){
+          var m = L.marker([c.latitude, c.longitude]).addTo(map).bindPopup('<b>' + c.name + '</b><br/>' + c.city);
+          m.on('click', function(){ window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'select', id: c.id })); });
+          bounds.push([c.latitude, c.longitude]);
+        });
+        // Choose initial view: prefer user location when available
+        if (data.userLocation && isFinite(data.userLocation.latitude) && isFinite(data.userLocation.longitude)) {
+          map.setView([data.userLocation.latitude, data.userLocation.longitude], 13);
+        } else if (bounds.length > 1) {
+          map.fitBounds(bounds, { padding: [24,24], maxZoom: 14 });
+        } else if (bounds.length === 1) {
+          map.setView(bounds[0], 13);
+        } else {
+          map.setView([data.defaultRegion.latitude, data.defaultRegion.longitude], 12);
+        }
+        // Ensure correct sizing after render
+        setTimeout(function(){ try { map.invalidateSize(); } catch(e){} }, 60);
+        true;
+      })();
+    `;
+  }, [simpleCenters, userLocation]);
+
+  const leafletKey = useMemo(() => {
+    const u = userLocation ? `${userLocation.latitude.toFixed(3)}-${userLocation.longitude.toFixed(3)}` : "nouser";
+    return `leaflet-${simpleCenters.length}-${u}`;
+  }, [simpleCenters.length, userLocation]);
 
   const visibleAlertingCentersCount = useMemo(() => {
     return visibleCenters.filter((center) => center.activeAlertCount > 0).length;
@@ -313,36 +402,56 @@ export default function MapScreen() {
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       <View className="flex-1 bg-surface">
-        <MapView
-          ref={mapRef}
-          style={{ flex: 1 }}
-          initialRegion={DEFAULT_REGION}
-          provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
-          showsCompass
-          showsMyLocationButton={false}
-          showsUserLocation={permissionStatus === Location.PermissionStatus.GRANTED}
-          toolbarEnabled={false}
-          onMapReady={() => setMapReady(true)}
-          onPress={() => setSelectedCenterId(null)}
-        >
-          {visibleCenters.map((center) => {
-            const isSelected = center.id === selectedCenterId;
-            const markerColor = getUrgencyColor(center.topUrgency);
-            const hasAlerts = center.activeAlertCount > 0;
+        {MAPS_ENABLED ? (
+          <MapView
+            ref={mapRef}
+            style={{ flex: 1 }}
+            initialRegion={DEFAULT_REGION}
+            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
+            showsCompass
+            showsMyLocationButton={false}
+            showsUserLocation={permissionStatus === Location.PermissionStatus.GRANTED}
+            toolbarEnabled={false}
+            onMapReady={() => setMapReady(true)}
+            onPress={() => setSelectedCenterId(null)}
+          >
+            {visibleCenters.map((center) => {
+              const isSelected = center.id === selectedCenterId;
+              const markerColor = getUrgencyColor(center.topUrgency);
 
-            return (
-              <Marker
-                key={center.id}
-                coordinate={{ latitude: center.latitude, longitude: center.longitude }}
-                title={center.name}
-                description={center.city}
-                onPress={() => setSelectedCenterId(center.id)}
-                pinColor={markerColor}
-                opacity={isSelected ? 1 : 0.9}
-              />
-            );
-          })}
-        </MapView>
+              return (
+                <Marker
+                  key={center.id}
+                  coordinate={{ latitude: center.latitude, longitude: center.longitude }}
+                  title={center.name}
+                  description={center.city}
+                  onPress={() => setSelectedCenterId(center.id)}
+                  pinColor={markerColor}
+                  opacity={isSelected ? 1 : 0.9}
+                />
+              );
+            })}
+          </MapView>
+        ) : (
+          <View style={{ flex: 1 }}>
+            <WebView
+              key={leafletKey}
+              originWhitelist={["*"]}
+              source={{ html: LEAFLET_HTML }}
+              injectedJavaScript={leafletInjectedJs}
+              javaScriptEnabled
+              domStorageEnabled
+              onMessage={(event: WebViewMessageEvent) => {
+                try {
+                  const msg = JSON.parse(event.nativeEvent.data);
+                  if (msg && msg.type === "select" && typeof msg.id === "string") {
+                    setSelectedCenterId(msg.id);
+                  }
+                } catch {}
+              }}
+            />
+          </View>
+        )}
 
         <View className="absolute left-4 right-4" style={{ top: insets.top + 8 }}>
           <View className="rounded-3xl bg-white px-4 py-4 border border-black/5">
@@ -450,16 +559,18 @@ export default function MapScreen() {
           </View>
         ) : null}
 
-        <View className="absolute right-4" style={{ bottom: insets.bottom + 24 }}>
-          <Pressable
-            onPress={handleCenterUserLocation}
-            disabled={!userLocation}
-            className="w-14 h-14 rounded-2xl items-center justify-center bg-white border border-black/5"
-            style={{ opacity: userLocation ? 1 : 0.55 }}
-          >
-            <MaterialIcons name="my-location" size={24} color="#006591" />
-          </Pressable>
-        </View>
+        {MAPS_ENABLED ? (
+          <View className="absolute right-4" style={{ bottom: insets.bottom + 24 }}>
+            <Pressable
+              onPress={handleCenterUserLocation}
+              disabled={!userLocation}
+              className="w-14 h-14 rounded-2xl items-center justify-center bg-white border border-black/5"
+              style={{ opacity: userLocation ? 1 : 0.55 }}
+            >
+              <MaterialIcons name="my-location" size={24} color="#006591" />
+            </Pressable>
+          </View>
+        ) : null}
 
         <BottomSheet
           ref={bottomSheetRef}

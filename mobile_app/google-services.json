@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616417326046",
+    "project_id": "bloodlink-939db",
+    "storage_bucket": "bloodlink-939db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616417326046:android:51574413de02b84a91e34f",
+        "android_client_info": {
+          "package_name": "com.anonymous.bloodlink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiskfsRC5KOpx7j4MvqNy4hlw3FTw0KHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

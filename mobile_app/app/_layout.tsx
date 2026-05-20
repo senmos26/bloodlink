@@ -3,17 +3,27 @@ import "react-native-gesture-handler";
 import { Stack, router, useSegments } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ActivityIndicator, View } from "react-native";
 import * as Linking from "expo-linking";
+import * as SplashScreen from "expo-splash-screen";
+import PremiumLaunchScreen from "@/components/ui/PremiumLaunchScreen";
 import { supabase } from "@/services/supabase";
 import { registerPushToken, onNotificationResponse } from "@/services/push";
 import "./global.css";
 
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
+  const [launchReady, setLaunchReady] = useState(false);
   const segments = useSegments();
 
   useEffect(() => {
+    SplashScreen.hideAsync().catch(() => {});
+
+    const launchTimer = setTimeout(() => {
+      setLaunchReady(true);
+    }, 1700);
+
     // Handle deep links for email confirmation
     const handleDeepLink = (event: { url: string }) => {
       const url = event.url;
@@ -32,7 +42,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       const isAuthGroup = segments[0] === "(auth)";
       if (!session && !isAuthGroup) {
-        router.replace("/(auth)/login");
+        router.replace("/(auth)/welcome");
       }
       setLoading(false);
     });
@@ -40,7 +50,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const isAuthGroup = segments[0] === "(auth)";
       if (!session && !isAuthGroup) {
-        router.replace("/(auth)/login");
+        router.replace("/(auth)/welcome");
       }
 
       // Register push token on sign-in
@@ -60,18 +70,15 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     });
 
     return () => {
+      clearTimeout(launchTimer);
       subscription.remove();
       authSubscription.unsubscribe();
       responseListener.remove();
     };
   }, [segments]);
 
-  if (loading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-surface">
-        <ActivityIndicator size="large" color="#b80035" />
-      </View>
-    );
+  if (loading || !launchReady) {
+    return <PremiumLaunchScreen />;
   }
 
   return children;

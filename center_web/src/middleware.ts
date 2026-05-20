@@ -84,6 +84,11 @@ export default async function middleware(request: NextRequest) {
     // If user is logged in but not an admin, sign them out and redirect
     await supabase.auth.signOut();
     const loginUrl = new URL(`/${locale}/login`, request.url);
+    if (profile?.role === "donor") {
+      loginUrl.searchParams.set("error", "Les donneurs doivent utiliser l'application mobile.");
+    } else {
+      loginUrl.searchParams.set("error", "Accès réservé aux administrateurs de centre.");
+    }
     return NextResponse.redirect(loginUrl);
   }
 

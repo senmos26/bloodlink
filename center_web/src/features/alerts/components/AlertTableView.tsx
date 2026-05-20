@@ -25,7 +25,7 @@ interface AlertTableViewProps {
   alerts: Alert[];
   onClose?: (id: string) => void;
   onEscalate?: (id: string) => void;
-  onShare?: (id: string) => void;
+  onShare?: (id: string, message?: string) => void;
 }
 
 export function AlertTableView({ alerts, onClose, onEscalate, onShare }: AlertTableViewProps) {

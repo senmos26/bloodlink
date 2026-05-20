@@ -16,7 +16,7 @@ const QR_SIZE = Math.min(width * 0.7, 280);
 export default function MyQRScreen() {
   const { user, loading } = useAuth();
   const [qrData, setQrData] = useState<QRData | null>(null);
-  const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
+  const [refreshInterval, setRefreshInterval] = useState<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (user?.id) {

@@ -15,6 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   AlertTriangle,
   Clock,
   MoreVertical,
@@ -30,12 +36,12 @@ import type { Alert, UrgencyLevel, AlertStatus } from "@/entities";
 
 const URGENCY_CONFIG: Record<
   UrgencyLevel,
-  { label: string; color: string; bg: string; border: string; pulse: string }
+  { label: string; color: string; bg: string; border: string; pulse: string; bannerText: string; badgeClass: string }
 > = {
-  low: { label: "Basse", color: "text-muted-foreground", bg: "bg-secondary-light", border: "border-border", pulse: "" },
-  medium: { label: "Moyenne", color: "text-warning", bg: "bg-warning/90", border: "border-warning/30", pulse: "" },
-  high: { label: "Haute", color: "text-primary", bg: "bg-primary", border: "border-primary/30", pulse: "" },
-  critical: { label: "VITALE", color: "text-white", bg: "bg-blood-red", border: "border-destructive/30", pulse: "animate-pulse" },
+  low: { label: "Basse", color: "text-muted-foreground", bg: "bg-secondary-light", border: "border-border", pulse: "", bannerText: "text-slate-800", badgeClass: "border-slate-800/30 text-slate-800 bg-slate-800/10" },
+  medium: { label: "Moyenne", color: "text-warning", bg: "bg-warning/90", border: "border-warning/30", pulse: "", bannerText: "text-white", badgeClass: "border-white/40 text-white bg-white/20" },
+  high: { label: "Haute", color: "text-primary", bg: "bg-primary", border: "border-primary/30", pulse: "", bannerText: "text-white", badgeClass: "border-white/40 text-white bg-white/20" },
+  critical: { label: "VITALE", color: "text-white", bg: "bg-red-700", border: "border-red-700/30", pulse: "animate-pulse", bannerText: "text-white", badgeClass: "border-white/40 text-white bg-white/20" },
 };
 
 const STATUS_LABELS: Record<AlertStatus, string> = {
@@ -122,12 +128,20 @@ interface AlertCardProps {
   onClose?: (id: string) => void;
   onEscalate?: (id: string) => void;
   onRelaunch?: (id: string) => void;
-  onShare?: (id: string) => void;
+  onShare?: (id: string, message?: string) => void;
 }
 
 export function AlertCard({ alert, onClose, onEscalate, onRelaunch, onShare }: AlertCardProps) {
   const urgency = URGENCY_CONFIG[alert.urgencyLevel];
   const isClosed = alert.status === "closed" || alert.status === "expired";
+  const isActive = alert.status === "active";
+  const canEscalate = isActive && alert.urgencyLevel !== "critical";
+  const ttRelancer = "Renvoie une notification aux donneurs proches";
+  const ttEscalader = canEscalate
+    ? "Augmente l'urgence d'un cran"
+    : "Disponible uniquement pour les alertes actives non 'Vitale'";
+  const ttPartager = "Génère un lien public et un QR code pour diffusion";
+  const ttCloturer = "Termine l'alerte et arrête la diffusion";
 
   return (
     <Card
@@ -137,12 +151,12 @@ export function AlertCard({ alert, onClose, onEscalate, onRelaunch, onShare }: A
       )}
     >
       {/* Urgency banner */}
-      <div className={cn("flex items-center gap-3 px-4 py-2.5 text-white", urgency.bg, urgency.pulse)}>
+      <div className={cn("flex items-center gap-3 px-4 py-2.5", urgency.bannerText, urgency.bg, urgency.pulse)}>
         <span className="text-2xl font-black tracking-tight">{alert.bloodTypeRequired}</span>
         <div className="flex-1 min-w-0">
           <span className="text-xs font-bold uppercase tracking-widest opacity-90">{urgency.label}</span>
         </div>
-        <Badge variant="outline" className="text-[10px] font-bold border-white/40 text-white bg-white/20">
+        <Badge variant="outline" className={cn("text-[10px] font-bold", urgency.badgeClass)}>
           {STATUS_LABELS[alert.status]}
         </Badge>
       </div>
@@ -159,24 +173,54 @@ export function AlertCard({ alert, onClose, onEscalate, onRelaunch, onShare }: A
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {!isClosed && (
-                <>
-                  <DropdownMenuItem onClick={() => onRelaunch?.(alert.id)}>
-                    <ArrowUpCircle className="mr-2 h-4 w-4" /> Relancer
-                  </DropdownMenuItem>
-                  {alert.urgencyLevel !== "critical" && (
-                    <DropdownMenuItem onClick={() => onEscalate?.(alert.id)}>
+              <TooltipProvider delayDuration={120}>
+                {/* Relancer: toujours disponible */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuItem onClick={() => onRelaunch?.(alert.id)}>
+                      <ArrowUpCircle className="mr-2 h-4 w-4" /> Relancer
+                    </DropdownMenuItem>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">{ttRelancer}</TooltipContent>
+                </Tooltip>
+
+                {/* Escalader: seulement si active et non critical */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuItem
+                      disabled={!canEscalate}
+                      onClick={() => {
+                        if (canEscalate) onEscalate?.(alert.id);
+                      }}
+                    >
                       <AlertTriangle className="mr-2 h-4 w-4" /> Escalader
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem onClick={() => onShare?.(alert.id)}>
-                    <Share2 className="mr-2 h-4 w-4" /> Partager
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onClose?.(alert.id)} className="text-destructive">
-                    <XCircle className="mr-2 h-4 w-4" /> Clôturer
-                  </DropdownMenuItem>
-                </>
-              )}
+                  </TooltipTrigger>
+                  <TooltipContent side="left">{ttEscalader}</TooltipContent>
+                </Tooltip>
+
+                {/* Partager: toujours disponible */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuItem onClick={() => onShare?.(alert.id, alert.message || undefined)}>
+                      <Share2 className="mr-2 h-4 w-4" /> Partager
+                    </DropdownMenuItem>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">{ttPartager}</TooltipContent>
+                </Tooltip>
+
+                {/* Clôturer: seulement si active */}
+                {isActive && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuItem onClick={() => onClose?.(alert.id)} className="text-destructive">
+                        <XCircle className="mr-2 h-4 w-4" /> Clôturer
+                      </DropdownMenuItem>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">{ttCloturer}</TooltipContent>
+                  </Tooltip>
+                )}
+              </TooltipProvider>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
