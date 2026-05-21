@@ -1,5 +1,5 @@
 {
-  "DeviceConnect": "192.168.1.12:36727",
+  "DeviceConnect": "192.168.11.101:45681",
   "MetroPort": 8081,
   "WebPort": 3000
 }

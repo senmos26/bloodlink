@@ -1,14 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getTodayAppointments,
+  getPendingAppointments,
+  getAllAppointments,
   updateAppointmentStatus,
 } from "@/features/appointments/lib/actions";
 import type { Appointment, AppointmentStatus } from "@/entities";
 
-export function useTodayAppointments() {
+export function useTodayAppointments(dateStr?: string) {
   return useQuery<Appointment[]>({
-    queryKey: ["appointments", "today"],
-    queryFn: () => getTodayAppointments(),
+    queryKey: ["appointments", "today", dateStr],
+    queryFn: () => getTodayAppointments(dateStr),
+    staleTime: 1000 * 30,
+  });
+}
+
+export function usePendingAppointments() {
+  return useQuery<Appointment[]>({
+    queryKey: ["appointments", "pending"],
+    queryFn: () => getPendingAppointments(),
+    staleTime: 1000 * 30,
+  });
+}
+
+export function useAllAppointments() {
+  return useQuery<Appointment[]>({
+    queryKey: ["appointments", "all"],
+    queryFn: () => getAllAppointments(),
     staleTime: 1000 * 30,
   });
 }

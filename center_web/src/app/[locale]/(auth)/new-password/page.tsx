@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export default function NewPasswordPage() {
+function NewPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const code = searchParams.get("code");
@@ -171,5 +171,20 @@ export default function NewPasswordPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function NewPasswordPage() {
+  return (
+    <React.Suspense fallback={
+      <main className="flex min-h-dvh w-full items-center justify-center bg-light px-4">
+        <div className="w-full max-w-sm p-8 text-center animate-pulse">
+          <Lock className="mx-auto h-8 w-8 text-slate-300" />
+          <p className="mt-4 text-sm text-slate-500">Chargement...</p>
+        </div>
+      </main>
+    }>
+      <NewPasswordForm />
+    </React.Suspense>
   );
 }

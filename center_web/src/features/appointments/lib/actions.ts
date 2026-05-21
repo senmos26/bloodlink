@@ -24,22 +24,55 @@ function mapAppointmentRow(row: Record<string, unknown>): Appointment {
   };
 }
 
-export async function getTodayAppointments(): Promise<Appointment[]> {
+export async function getTodayAppointments(dateStr?: string): Promise<Appointment[]> {
   const { center } = await requireCenterAdmin();
   const centerId = center?.id;
   if (!centerId) return [];
 
   const supabase = await createClient();
-  const today = new Date().toISOString().split("T")[0];
+  const targetDate = dateStr || new Date().toLocaleDateString("en-CA");
 
   const { data, error } = await supabase.rpc("get_center_appointments", {
     p_center_id: centerId,
-    p_from_date: today,
-    p_to_date: today,
+    p_from_date: targetDate,
+    p_to_date: targetDate,
   });
 
   if (error) throw new Error(error.message);
   return (data ?? []).map(mapAppointmentRow);
+}
+
+export async function getPendingAppointments(): Promise<Appointment[]> {
+  const { center } = await requireCenterAdmin();
+  const centerId = center?.id;
+  if (!centerId) return [];
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("get_center_appointments", {
+    p_center_id: centerId,
+  });
+
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  const appointments: Appointment[] = (rows as Record<string, unknown>[]).map(mapAppointmentRow);
+  return appointments.filter((appt: Appointment) => appt.status === "pending");
+}
+
+export async function getAllAppointments(): Promise<Appointment[]> {
+  const { center } = await requireCenterAdmin();
+  const centerId = center?.id;
+  if (!centerId) return [];
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("get_center_appointments", {
+    p_center_id: centerId,
+  });
+
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  return (rows as Record<string, unknown>[]).map(mapAppointmentRow);
 }
 
 export async function updateAppointmentStatus(formData: FormData) {
