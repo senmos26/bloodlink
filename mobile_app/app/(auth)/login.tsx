@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
@@ -111,21 +112,50 @@ export default function LoginScreen() {
       return;
     }
 
-    const parsedUrl = Linking.parse(authResult.url);
-    const codeParam = parsedUrl.queryParams?.code;
-    const code = Array.isArray(codeParam) ? codeParam[0] : codeParam;
+    const parseAuthUrl = (url: string) => {
+      const params: { [key: string]: string } = {};
+      const queryMatch = url.match(/\?([^#]+)/);
+      if (queryMatch) {
+        queryMatch[1].split("&").forEach((param) => {
+          const [key, val] = param.split("=");
+          if (key && val) params[key] = decodeURIComponent(val);
+        });
+      }
+      const hashMatch = url.match(/#(.+)/);
+      if (hashMatch) {
+        hashMatch[1].split("&").forEach((param) => {
+          const [key, val] = param.split("=");
+          if (key && val) params[key] = decodeURIComponent(val);
+        });
+      }
+      return params;
+    };
 
-    if (!code) {
+    const params = parseAuthUrl(authResult.url);
+    const code = params.code;
+    const accessToken = params.access_token;
+    const refreshToken = params.refresh_token;
+
+    if (code) {
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      if (exchangeError) {
+        setSocialLoading(null);
+        showToast(exchangeError.message, "error");
+        return;
+      }
+    } else if (accessToken && refreshToken) {
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+      if (sessionError) {
+        setSocialLoading(null);
+        showToast(sessionError.message, "error");
+        return;
+      }
+    } else {
       setSocialLoading(null);
-      showToast("Google n'a pas retourné de code de connexion.", "error");
-      return;
-    }
-
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (exchangeError) {
-      setSocialLoading(null);
-      showToast(exchangeError.message, "error");
+      showToast("Google n'a pas retourné de session ni de code.", "error");
       return;
     }
 
@@ -135,9 +165,9 @@ export default function LoginScreen() {
       return;
     }
 
-    setSocialLoading(null);
     showToast("Connexion Google réussie !", "success");
     setTimeout(() => {
+      setSocialLoading(null);
       router.replace("/(tabs)");
     }, SUCCESS_REDIRECT_DELAY_MS);
   };
@@ -155,9 +185,8 @@ export default function LoginScreen() {
       password,
     });
 
-    setLoading(false);
-
     if (authError) {
+      setLoading(false);
       showToast(authError.message === "Invalid login credentials"
         ? "Email ou mot de passe incorrect"
         : authError.message, "error");
@@ -165,10 +194,14 @@ export default function LoginScreen() {
     }
 
     const isAllowed = await verifyDonorAccess();
-    if (!isAllowed) return;
+    if (!isAllowed) {
+      setLoading(false);
+      return;
+    }
 
     showToast("Connexion réussie !", "success");
     setTimeout(() => {
+      setLoading(false);
       router.replace("/(tabs)");
     }, SUCCESS_REDIRECT_DELAY_MS);
   };
@@ -275,6 +308,23 @@ export default function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      {(socialLoading || loading) && (
+        <View className="absolute inset-0 bg-[#fff7f8]/95 items-center justify-center z-50">
+          <View className="bg-white p-8 rounded-[34px] shadow-2xl items-center border border-[#b80035]/10 max-w-[290px]">
+            <ActivityIndicator size="large" color="#b80035" className="mb-4" />
+            <Text className="text-on-surface font-extrabold text-base text-center">
+              {socialLoading === "google" 
+                ? "Connexion avec Google..." 
+                : socialLoading === "apple" 
+                  ? "Connexion avec Apple..." 
+                  : "Connexion en cours..."}
+            </Text>
+            <Text className="text-on-surface-variant text-xs text-center mt-2 leading-relaxed">
+              Veuillez patienter pendant la sécurisation de votre session.
+            </Text>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

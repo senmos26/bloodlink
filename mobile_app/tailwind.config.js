@@ -4,6 +4,13 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Outfit-Regular", "sans-serif"],
+        regular: ["Outfit-Regular", "sans-serif"],
+        medium: ["Outfit-Medium", "sans-serif"],
+        semibold: ["Outfit-SemiBold", "sans-serif"],
+        bold: ["Outfit-Bold", "sans-serif"],
+      },
       colors: {
         primary: {
           DEFAULT: "#b80035",
