@@ -257,6 +257,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     if (!session?.user?.id) return;
 
     const userId = session.user.id;
+    console.log("[realtime] Initialisation de l'abonnement Realtime pour l'utilisateur:", userId);
 
     const channel = supabase
       .channel(`user-notifications-${userId}`)
@@ -270,7 +271,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
         },
         (payload) => {
           const newNotif = payload.new;
-          console.log("[realtime] Nouvelle notification en BDD:", newNotif);
+          console.log("[realtime] Nouvelle notification reçue en temps réel:", newNotif);
 
           // Déclencher une notification locale système sur le téléphone
           showLocalNotification(
@@ -280,12 +281,33 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
           ).catch((e) => console.error("[realtime] Erreur envoi notif locale:", e));
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log(`[realtime] Canal user-notifications-${userId} - Statut de connexion:`, status);
+        if (err) {
+          console.error(`[realtime] Canal user-notifications-${userId} - Erreur de souscription:`, err);
+        }
+      });
 
     return () => {
+      console.log("[realtime] Nettoyage du canal user-notifications pour l'utilisateur:", userId);
       supabase.removeChannel(channel).catch(() => {});
     };
   }, [session?.user?.id]);
+
+  // Réactiver la connexion Realtime lorsque l'application revient au premier plan
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: RN.AppStateStatus) => {
+      if (nextAppState === "active") {
+        console.log("[AppState] L'application est revenue au premier plan. Reconnexion Realtime...");
+        supabase.realtime.connect();
+      }
+    };
+
+    const subscription = RN.AppState.addEventListener("change", handleAppStateChange);
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   // 2. Gardien d'Authentification (AuthGuard) dépendant des changements de session et de segments
   useEffect(() => {

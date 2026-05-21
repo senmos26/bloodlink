@@ -129,8 +129,13 @@ Deno.serve(async (req) => {
       console.log(`[send-push] ${inAppNotifications.length} notifications in-app créées avec succès.`);
     }
 
-    // 2. Envoi des notifications push via Expo (uniquement aux donneurs avec token)
-    const pushTargets = donors.filter((d: any) => d.fcm_token && d.fcm_token.trim().startsWith("ExponentPushToken"));
+    // 2. Envoi des notifications push via Expo (uniquement aux donneurs avec token Expo)
+    const pushTargets = donors.filter(
+      (d: any) =>
+        d.fcm_token &&
+        (d.fcm_token.trim().startsWith("ExponentPushToken") ||
+          d.fcm_token.trim().startsWith("ExpoPushToken"))
+    );
     const pushCount = pushTargets.length;
     console.log(`[send-push] ${pushCount} donneurs cibles pour notification push.`);
 

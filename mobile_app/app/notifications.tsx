@@ -83,11 +83,16 @@ export default function NotificationsScreen() {
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log("[realtime-screen] Changement notification détecté:", payload.eventType);
+          console.log("[realtime-screen] Changement notification détecté:", payload.eventType, payload.new);
           load();
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log(`[realtime-screen] Canal notifications-page-${userId} - Statut de connexion:`, status);
+        if (err) {
+          console.error(`[realtime-screen] Canal notifications-page-${userId} - Erreur de souscription:`, err);
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel).catch(() => {});
