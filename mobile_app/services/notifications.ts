@@ -139,53 +139,6 @@ export async function deleteNotification(notificationId: string): Promise<void> 
   if (error) throw toAppError(error, "Impossible de supprimer la notification.");
 }
 
-/** Créer une notification de test via RPC Supabase */
-export async function createTestNotification(params?: {
-  title?: string;
-  body?: string;
-  type?: NotificationType;
-  data?: Record<string, unknown>;
-}): Promise<string> {
-  const { data, error } = await supabase.rpc("create_test_notification", {
-    p_title: params?.title ?? null,
-    p_body: params?.body ?? null,
-    p_type: params?.type ?? null,
-    p_data: params?.data ?? null,
-  });
-
-  if (error) {
-    throw toAppError(error, "Impossible de créer la notification de test.");
-  }
-
-  return data as string;
-}
-
-/** Déclencher une vraie push de test via Edge Function */
-export async function sendTestPush(params?: {
-  title?: string;
-  body?: string;
-  type?: NotificationType;
-}): Promise<{ success: boolean; expo?: unknown; error?: string; hint?: string }> {
-  const { data, error } = await supabase.functions.invoke("send-test-push", {
-    body: {
-      title: params?.title,
-      body: params?.body,
-      type: params?.type,
-    },
-  });
-
-  if (error) {
-    throw toAppError(error, "Impossible d'envoyer la push de test.");
-  }
-
-  return (data ?? { success: false }) as {
-    success: boolean;
-    expo?: unknown;
-    error?: string;
-    hint?: string;
-  };
-}
-
 // ── Mapper ─────────────────────────────────────────────────────────────
 function rowToNotification(row: NotificationRow): AppNotification {
   return {

@@ -28,10 +28,9 @@ const GROUP_LABELS: Record<string, string> = {
   alert: "Alertes urgentes",
   appointment: "Rendez-vous",
   donation: "Dons",
-  system: "Système",
 };
 
-const GROUP_ORDER: NotificationType[] = ["alert", "appointment", "donation", "system"];
+const GROUP_ORDER: NotificationType[] = ["alert", "appointment", "donation"];
 
 // ── Component ──────────────────────────────────────────────────────────
 export default function NotificationsScreen() {
