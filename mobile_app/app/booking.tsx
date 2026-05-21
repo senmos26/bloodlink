@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useAuth } from "@/hooks/useAuth";
 import { getMapCenters, type MapCenter } from "@/services/map";
 import {
@@ -19,6 +20,7 @@ import {
   type TimeSlot,
 } from "@/services/appointments";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import Button from "@/components/ui/Button";
 
 // ── Step enum ──────────────────────────────────────────────────────────
 type Step = "center" | "date" | "confirm";
@@ -127,9 +129,9 @@ export default function BookingScreen() {
   return (
     <SafeAreaView className="flex-1 bg-surface">
       {/* Header */}
-      <View className="flex-row items-center gap-3 px-6 py-4 border-b border-black/5">
+      <View className="flex-row items-center gap-3 px-6 py-4 border-b border-rose-100/30">
         <Pressable onPress={() => (step === "center" ? router.back() : setStep(step === "confirm" ? "date" : "center"))} className="p-1">
-          <MaterialIcons name="arrow-back" size={24} color="#0d1c2e" />
+          <MaterialIcons name="arrow-back" size={24} color="#0f172a" />
         </Pressable>
         <View className="flex-1">
           <Text className="text-lg font-bold text-on-surface">
@@ -148,7 +150,7 @@ export default function BookingScreen() {
                 className="h-1.5 rounded-full"
                 style={{
                   width: i <= stepIndex ? 24 : 12,
-                  backgroundColor: i <= stepIndex ? "#b80035" : "#e0e2e8",
+                  backgroundColor: i <= stepIndex ? "#b80035" : "#ffe4e6",
                 }}
               />
             );
@@ -219,35 +221,42 @@ function CenterStep({
 
   return (
     <ScrollView className="flex-1 px-6 pt-4" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
-      <Text className="text-sm text-on-surface-variant mb-4">
+      <Animated.Text 
+        entering={FadeInDown.delay(50).duration(400)}
+        className="text-sm text-on-surface-variant mb-4"
+      >
         Sélectionnez le centre où vous souhaitez donner votre sang.
-      </Text>
-      {centers.map((center) => {
+      </Animated.Text>
+      {centers.map((center, index) => {
         const isSelected = center.id === selectedId;
         return (
-          <Pressable
+          <Animated.View
             key={center.id}
-            className={`flex-row items-center gap-3 p-4 rounded-2xl mb-3 border ${isSelected ? "bg-primary/5 border-primary/30" : "bg-surface-container-lowest border-black/5"}`}
-            onPress={() => onSelect(center)}
-            style={isSelected ? { borderLeftWidth: 3, borderLeftColor: "#b80035" } : undefined}
+            entering={FadeInDown.delay(100 + index * 50).duration(350)}
           >
-            <View className="w-10 h-10 rounded-xl bg-secondary/10 items-center justify-center">
-              <MaterialIcons name="local-hospital" size={20} color="#006591" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-sm font-bold text-on-surface" numberOfLines={1}>
-                {center.name}
-              </Text>
-              <Text className="text-xs text-on-surface-variant" numberOfLines={1}>
-                {center.address}, {center.city}
-              </Text>
-            </View>
-            {center.activeAlertCount > 0 && (
-              <View className="bg-primary/10 px-2 py-0.5 rounded-full">
-                <Text className="text-[9px] font-bold text-primary">{center.activeAlertCount} alerte{center.activeAlertCount > 1 ? "s" : ""}</Text>
+            <Pressable
+              className={`flex-row items-center gap-3 p-4 rounded-2xl mb-3 border ${isSelected ? "bg-primary/5 border-primary/30" : "bg-surface-container-lowest border-rose-100/30"}`}
+              onPress={() => onSelect(center)}
+              style={isSelected ? { borderLeftWidth: 3, borderLeftColor: "#b80035" } : undefined}
+            >
+              <View className="w-10 h-10 rounded-xl bg-secondary/10 items-center justify-center">
+                <MaterialIcons name="local-hospital" size={20} color="#006591" />
               </View>
-            )}
-          </Pressable>
+              <View className="flex-1">
+                <Text className="text-sm font-bold text-on-surface" numberOfLines={1}>
+                  {center.name}
+                </Text>
+                <Text className="text-xs text-on-surface-variant" numberOfLines={1}>
+                  {center.address}, {center.city}
+                </Text>
+              </View>
+              {center.activeAlertCount > 0 && (
+                <View className="bg-primary/10 px-2 py-0.5 rounded-full">
+                  <Text className="text-[9px] font-bold text-primary">{center.activeAlertCount} alerte{center.activeAlertCount > 1 ? "s" : ""}</Text>
+                </View>
+              )}
+            </Pressable>
+          </Animated.View>
         );
       })}
     </ScrollView>
@@ -282,13 +291,19 @@ function DateStep({
   return (
     <ScrollView className="flex-1 px-6 pt-4" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
       {/* Center recap */}
-      <View className="flex-row items-center gap-2 bg-surface-container-low rounded-xl p-3 mb-4">
+      <Animated.View
+        entering={FadeInDown.delay(50).duration(400)}
+        className="flex-row items-center gap-2 bg-surface-container-low rounded-xl p-3 mb-4"
+      >
         <MaterialIcons name="local-hospital" size={16} color="#006591" />
         <Text className="text-xs font-semibold text-on-surface" numberOfLines={1}>{center.name}</Text>
-      </View>
+      </Animated.View>
 
       {/* Date picker */}
-      <View className="bg-surface-container-lowest rounded-2xl p-4 mb-4 border border-black/5">
+      <Animated.View
+        entering={FadeInDown.delay(100).duration(400)}
+        className="bg-surface-container-lowest rounded-2xl p-4 mb-4 border border-rose-100/30"
+      >
         <View className="flex-row items-center justify-between mb-3">
           <Text className="text-base font-bold text-on-surface">Choisir une date</Text>
           <Pressable
@@ -311,17 +326,28 @@ function DateStep({
             locale="fr-FR"
           />
         )}
-      </View>
+      </Animated.View>
 
       {/* Time slots */}
-      <Text className="text-base font-bold text-on-surface mb-3">Choisir un horaire</Text>
+      <Animated.Text
+        entering={FadeInDown.delay(150).duration(400)}
+        className="text-base font-bold text-on-surface mb-3"
+      >
+        Choisir un horaire
+      </Animated.Text>
       {slots.length === 0 ? (
-        <View className="items-center py-8">
-          <MaterialIcons name="schedule" size={32} color="#5c3f40" />
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(400)}
+          className="items-center py-8"
+        >
+          <MaterialIcons name="schedule" size={32} color="#3b4e68" />
           <Text className="text-sm text-on-surface-variant mt-2">Aucun créneau disponible pour cette date.</Text>
-        </View>
+        </Animated.View>
       ) : (
-        <View className="flex-row flex-wrap gap-2 mb-6">
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(400)}
+          className="flex-row flex-wrap gap-2 mb-6"
+        >
           {slots.map((slot) => (
             <Pressable
               key={slot.label}
@@ -336,17 +362,19 @@ function DateStep({
               </Text>
             </Pressable>
           ))}
-        </View>
+        </Animated.View>
       )}
 
       {/* Continue */}
       {selectedSlot && (
-        <Pressable
-          className="bg-primary py-4 rounded-2xl items-center active:scale-[0.98]"
-          onPress={onContinue}
-        >
-          <Text className="text-sm font-bold text-white">Continuer</Text>
-        </Pressable>
+        <Animated.View entering={FadeInDown.delay(250).duration(400)}>
+          <Button
+            onPress={onContinue}
+            className="w-full mt-4"
+          >
+            Continuer
+          </Button>
+        </Animated.View>
       )}
     </ScrollView>
   );
@@ -373,7 +401,10 @@ function ConfirmStep({
   return (
     <View className="flex-1 px-6 pt-4">
       {/* Recap card */}
-      <View className="bg-surface-container-lowest rounded-2xl p-5 border border-black/5 mb-6">
+      <Animated.View
+        entering={FadeInDown.delay(50).duration(400)}
+        className="bg-surface-container-lowest rounded-2xl p-5 border border-rose-100/30 mb-6"
+      >
         <View className="items-center mb-4">
           <View className="w-16 h-16 bg-primary/10 rounded-2xl items-center justify-center mb-3">
             <MaterialIcons name="event-available" size={32} color="#b80035" />
@@ -381,7 +412,7 @@ function ConfirmStep({
           <Text className="text-lg font-bold text-on-surface">Résumé du rendez-vous</Text>
         </View>
 
-        <View className="space-y-3">
+        <View className="gap-3">
           <View className="flex-row items-center gap-3">
             <View className="w-8 h-8 bg-secondary/10 rounded-lg items-center justify-center">
               <MaterialIcons name="local-hospital" size={16} color="#006591" />
@@ -412,28 +443,30 @@ function ConfirmStep({
             </View>
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* Info */}
-      <View className="bg-surface-container-low rounded-xl p-3 mb-6 flex-row gap-2">
+      <Animated.View
+        entering={FadeInDown.delay(100).duration(400)}
+        className="bg-surface-container-low rounded-xl p-3 mb-6 flex-row gap-2"
+      >
         <MaterialIcons name="info" size={16} color="#006591" />
         <Text className="text-xs text-on-surface-variant flex-1">
           Votre rendez-vous sera en attente de confirmation par le centre. Vous recevrez une notification dès qu'il sera confirmé.
         </Text>
-      </View>
+      </Animated.View>
 
       {/* CTA */}
-      <Pressable
-        className={`py-4 rounded-2xl items-center ${submitting ? "bg-primary/50" : "bg-primary"} active:scale-[0.98]`}
-        onPress={onConfirm}
-        disabled={submitting}
-      >
-        {submitting ? (
-          <ActivityIndicator color="#ffffff" />
-        ) : (
-          <Text className="text-sm font-bold text-white">Confirmer le rendez-vous</Text>
-        )}
-      </Pressable>
+      <Animated.View entering={FadeInDown.delay(150).duration(400)}>
+        <Button
+          onPress={onConfirm}
+          loading={submitting}
+          disabled={submitting}
+          className="w-full"
+        >
+          Confirmer le rendez-vous
+        </Button>
+      </Animated.View>
     </View>
   );
 }

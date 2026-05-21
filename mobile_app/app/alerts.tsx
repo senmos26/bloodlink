@@ -159,7 +159,7 @@ export default function AlertsScreen() {
     return (
       <SafeAreaView className="flex-1 bg-surface">
         <View className="flex-1 items-center justify-center px-8">
-          <MaterialIcons name="notifications" size={48} color="#906f70" />
+          <MaterialIcons name="notifications" size={48} color="#3b4e68" />
           <Text className="text-lg font-bold text-on-surface mt-4 mb-2">
             Chargement des alertes...
           </Text>
@@ -178,9 +178,9 @@ export default function AlertsScreen() {
       />
       
       {/* Header */}
-      <View className="flex-row items-center gap-3 px-6 py-4 border-b border-black/5">
+      <View className="flex-row items-center gap-3 px-6 py-4 border-b border-rose-100/30">
         <Pressable onPress={() => router.back()} className="p-2">
-          <MaterialIcons name="arrow-back" size={24} color="#1a1c1e" />
+          <MaterialIcons name="arrow-back" size={24} color="#0f172a" />
         </Pressable>
         <View className="flex-1">
           <Text className="text-lg font-bold text-on-surface">Alertes actives</Text>
@@ -200,7 +200,7 @@ export default function AlertsScreen() {
       >
         {alerts.length === 0 ? (
           <View className="flex-1 items-center justify-center py-12">
-            <MaterialIcons name="notifications-off" size={48} color="#906f70" />
+            <MaterialIcons name="notifications-off" size={48} color="#3b4e68" />
             <Text className="text-lg font-bold text-on-surface mt-4 mb-2">
               Aucune alerte active
             </Text>
@@ -223,8 +223,8 @@ export default function AlertsScreen() {
                   onPress={() => handleAlertPress(alert)}
                   className={`p-4 rounded-2xl border ${
                     isEligible 
-                      ? "bg-surface-container-lowest border-primary/20" 
-                      : "bg-surface-container-highest border-black/5"
+                      ? "bg-surface-container-lowest border-rose-100/30" 
+                      : "bg-surface-container-low opacity-60 border-rose-100/10"
                   } active:scale-[0.98]`}
                 >
                   <View className="flex-row items-start justify-between mb-3">

@@ -10,6 +10,7 @@ import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE, type Region } from "react-native-maps";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
+import Button from "@/components/ui/Button";
 
 import {
   getMapCenters,
@@ -454,7 +455,7 @@ export default function MapScreen() {
         )}
 
         <View className="absolute left-4 right-4" style={{ top: insets.top + 8 }}>
-          <View className="rounded-3xl bg-white px-4 py-4 border border-black/5">
+          <View className="rounded-3xl bg-white px-4 py-4 border border-rose-100/30">
             <View className="flex-row items-start justify-between gap-3">
               <View className="flex-1">
                 <Text className="text-2xl font-extrabold text-on-surface">Carte des centres</Text>
@@ -495,11 +496,11 @@ export default function MapScreen() {
                     key={option.key}
                     onPress={() => setMapFilter(option.key)}
                     className="flex-1 rounded-2xl px-3 py-3 items-center justify-center"
-                    style={{ backgroundColor: isActive ? "#101828" : "#f4f4f5" }}
+                    style={{ backgroundColor: isActive ? "#0f172a" : "#fff1f2" }}
                   >
                     <Text
                       className="text-xs font-extrabold uppercase tracking-wider"
-                      style={{ color: isActive ? "#ffffff" : "#5c3f40" }}
+                      style={{ color: isActive ? "#ffffff" : "#3b4e68" }}
                     >
                       {option.label}
                     </Text>
@@ -510,7 +511,7 @@ export default function MapScreen() {
 
             {permissionStatus !== null && permissionStatus !== Location.PermissionStatus.GRANTED ? (
               <View className="mt-3 rounded-2xl bg-surface-container-low px-3 py-3 flex-row items-center gap-2">
-                <MaterialIcons name="my-location" size={18} color="#906f70" />
+                <MaterialIcons name="my-location" size={18} color="#3b4e68" />
                 <Text className="flex-1 text-xs text-on-surface-variant">
                   Active la localisation pour trier les centres autour de toi.
                 </Text>
@@ -536,7 +537,7 @@ export default function MapScreen() {
 
         {loading ? (
           <View className="absolute inset-0 items-center justify-center">
-            <View className="rounded-3xl bg-white px-6 py-5 border border-black/5 items-center">
+            <View className="rounded-3xl bg-white px-6 py-5 border border-rose-100/30 items-center">
               <ActivityIndicator size="large" color="#b80035" />
               <Text className="mt-3 text-sm font-semibold text-on-surface">
                 Chargement des centres…
@@ -547,7 +548,7 @@ export default function MapScreen() {
 
         {!loading && visibleCenters.length === 0 && !errorMessage ? (
           <View className="absolute inset-x-4 items-center" style={{ top: insets.top + 176 }}>
-            <View className="w-full rounded-3xl bg-white px-5 py-5 border border-black/5 items-center">
+            <View className="w-full rounded-3xl bg-white px-5 py-5 border border-rose-100/30 items-center">
               <View className="w-14 h-14 rounded-2xl bg-secondary/10 items-center justify-center mb-3">
                 <MaterialIcons name="location-off" size={26} color="#006591" />
               </View>
@@ -564,7 +565,7 @@ export default function MapScreen() {
             <Pressable
               onPress={handleCenterUserLocation}
               disabled={!userLocation}
-              className="w-14 h-14 rounded-2xl items-center justify-center bg-white border border-black/5"
+              className="w-14 h-14 rounded-2xl items-center justify-center bg-white border border-rose-100/30"
               style={{ opacity: userLocation ? 1 : 0.55 }}
             >
               <MaterialIcons name="my-location" size={24} color="#006591" />
@@ -580,7 +581,7 @@ export default function MapScreen() {
           backdropComponent={renderBackdrop}
           onClose={() => setSelectedCenterId(null)}
           backgroundStyle={{ backgroundColor: "#ffffff" }}
-          handleIndicatorStyle={{ backgroundColor: "#d6d6d6" }}
+          handleIndicatorStyle={{ backgroundColor: "#ffe4e6" }}
         >
           <BottomSheetView style={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 18 }}>
             {selectedCenter ? (
@@ -652,7 +653,7 @@ export default function MapScreen() {
                         return (
                           <View
                             key={alert.id}
-                            className="rounded-2xl border border-black/5 px-4 py-4 bg-surface-container-lowest"
+                            className="rounded-2xl border border-rose-100/30 px-4 py-4 bg-surface-container-lowest"
                           >
                             <View className="flex-row items-center justify-between gap-3">
                               <View
@@ -687,27 +688,31 @@ export default function MapScreen() {
                 </View>
 
                 <View className="mt-6 flex-row gap-3">
-                  <Pressable
+                  <Button
                     onPress={handleCallSelectedCenter}
                     disabled={!selectedCenter.phone}
-                    className="flex-1 rounded-2xl bg-primary px-4 py-4 items-center justify-center"
-                    style={{ opacity: selectedCenter.phone ? 1 : 0.55 }}
+                    className="flex-1"
+                    size="md"
                   >
-                    <Text className="text-sm font-bold text-white">Appeler</Text>
-                  </Pressable>
-                  <Pressable
+                    Appeler
+                  </Button>
+                  <Button
                     onPress={handleFocusSelectedCenter}
-                    className="flex-1 rounded-2xl bg-secondary/10 px-4 py-4 items-center justify-center"
+                    variant="outline"
+                    className="flex-1"
+                    size="md"
                   >
-                    <Text className="text-sm font-bold text-secondary">Recentrer</Text>
-                  </Pressable>
+                    Recentrer
+                  </Button>
                 </View>
-                <Pressable
+                <Button
                   onPress={handleOpenDirections}
-                  className="mt-3 rounded-2xl bg-[#101828] px-4 py-4 items-center justify-center"
+                  variant="outline"
+                  className="mt-3 w-full"
+                  size="md"
                 >
-                  <Text className="text-sm font-bold text-white">Ouvrir l'itinéraire</Text>
-                </Pressable>
+                  Ouvrir l'itinéraire
+                </Button>
               </View>
             ) : (
               <View className="items-center px-4 py-8">

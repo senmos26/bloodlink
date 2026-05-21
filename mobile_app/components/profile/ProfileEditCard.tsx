@@ -36,7 +36,7 @@ export default function ProfileEditCard({
 }: ProfileEditCardProps) {
   return (
     <View className="px-4 mb-4">
-      <View className="bg-surface-container-lowest rounded-3xl p-5 border border-black/5 gap-3">
+      <View className="bg-surface-container-lowest rounded-3xl p-5 border border-rose-100/30 gap-3">
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-base font-extrabold text-on-surface">Modifier mon profil</Text>

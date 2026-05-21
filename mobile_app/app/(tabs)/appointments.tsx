@@ -20,6 +20,7 @@ import {
   type AppointmentStatus,
 } from "@/services/appointments";
 import { supabase } from "@/services/supabase";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 

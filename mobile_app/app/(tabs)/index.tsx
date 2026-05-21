@@ -134,7 +134,7 @@ export default function HomeScreen() {
           className="p-2 rounded-full bg-surface-container-low relative"
           onPress={() => router.push("/notifications" as any)}
         >
-          <MaterialIcons name="notifications" size={22} color="#5c3f40" />
+          <MaterialIcons name="notifications" size={22} color="#3b4e68" />
           {unreadCount > 0 && (
             <View className="absolute -top-0.5 -right-0.5 bg-primary rounded-full items-center justify-center min-w-[18px] min-h-[18px] px-1">
               <Text className="text-white text-[9px] font-bold">
@@ -282,7 +282,7 @@ export default function HomeScreen() {
                   <Text className="text-sm font-bold text-on-surface">{formatDateShort(nextAppt.scheduledDate)}</Text>
                   <Text className="text-xs text-on-surface-variant" numberOfLines={1}>{nextAppt.centerName}</Text>
                 </View>
-                <MaterialIcons name="chevron-right" size={20} color="#5c3f40" />
+                <MaterialIcons name="chevron-right" size={20} color="#3b4e68" />
               </Pressable>
             </Animated.View>
           )}
