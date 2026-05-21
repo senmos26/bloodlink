@@ -9,7 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import PremiumLaunchScreen from "@/components/ui/PremiumLaunchScreen";
 import { supabase } from "@/services/supabase";
-import { registerPushToken, onNotificationResponse } from "@/services/push";
+import { registerPushToken, onNotificationResponse, initializeNotifications, getLastNotificationResponse } from "@/services/push";
 import "./global.css";
 
 // Global fonts loaded state
@@ -160,6 +160,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [launchReady, setLaunchReady] = useState(false);
+  const [pendingNotification, setPendingNotification] = useState<any>(null);
   const segments = useSegments();
 
   const [fontsLoaded, fontError] = useFonts({
@@ -183,6 +184,16 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [fontsLoaded]);
 
   useEffect(() => {
+    // Initialiser les canaux et les gestionnaires de notifications le plus tôt possible
+    initializeNotifications().catch(() => {});
+
+    // Récupérer la notification qui a ouvert l'application (si lancée depuis un état fermé)
+    getLastNotificationResponse().then((response) => {
+      if (response?.notification) {
+        setPendingNotification(response);
+      }
+    }).catch(() => {});
+
     SplashScreen.hideAsync().catch(() => {});
 
     const launchTimer = setTimeout(() => {
@@ -228,13 +239,10 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       }
     });
 
-    // Listen for notification taps
-    const responseListener = onNotificationResponse((response) => {
-      const data = response.notification.request.content.data;
-      if (data?.type === "appointment") {
-        router.push("/appointments" as any);
-      } else if (data?.type === "alert") {
-        router.push("/map");
+    // Écouter les clics sur les notifications (app ouverte ou en arrière-plan)
+    const responseListener = onNotificationResponse((response: any) => {
+      if (response?.notification) {
+        setPendingNotification(response);
       }
     });
 
@@ -245,6 +253,21 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       responseListener.remove();
     };
   }, [segments]);
+
+  // Gérer la redirection des notifications quand l'application est prête
+  useEffect(() => {
+    if (!loading && launchReady && fontsLoaded && pendingNotification) {
+      const data = pendingNotification.notification.request.content.data;
+      if (data?.type === "appointment") {
+        router.push("/(tabs)/appointments" as any);
+      } else if (data?.type === "alert") {
+        router.push("/(tabs)/map" as any);
+      } else {
+        router.push("/notifications" as any);
+      }
+      setPendingNotification(null);
+    }
+  }, [loading, launchReady, fontsLoaded, pendingNotification]);
 
   if (loading || !launchReady || !fontsLoaded) {
     return <PremiumLaunchScreen />;

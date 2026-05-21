@@ -369,6 +369,99 @@ CREATE TRIGGER on_donation_validated
   FOR EACH ROW EXECUTE FUNCTION public.update_donor_eligibility();
 ```
 
+### 5.4. `check_blood_compatibility()` — Validation de la compatibilité biologique
+Fonction helper utilisée par les algorithmes de matching pour valider la compatibilité entre le groupe du donneur et le besoin du receveur/centre selon la matrice définie à la section 2.3.
+
+```sql
+CREATE OR REPLACE FUNCTION public.check_blood_compatibility(p_donor blood_type, p_recipient blood_type)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN CASE
+    WHEN p_donor = 'O-' THEN TRUE
+    WHEN p_donor = 'O+' AND p_recipient IN ('A+', 'B+', 'AB+', 'O+') THEN TRUE
+    WHEN p_donor = 'A-' AND p_recipient IN ('A+', 'A-', 'AB+', 'AB-') THEN TRUE
+    WHEN p_donor = 'A+' AND p_recipient IN ('A+', 'AB+') THEN TRUE
+    WHEN p_donor = 'B-' AND p_recipient IN ('B+', 'B-', 'AB+', 'AB-') THEN TRUE
+    WHEN p_donor = 'B+' AND p_recipient IN ('B+', 'AB+') THEN TRUE
+    WHEN p_donor = 'AB-' AND p_recipient IN ('AB+', 'AB-') THEN TRUE
+    WHEN p_donor = 'AB+' AND p_recipient = 'AB+' THEN TRUE
+    ELSE FALSE
+  END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+```
+
+### 5.5. `get_compatible_donors_for_alert()` — Matching biologique, temporel et géographique
+Cette fonction RPC récupère tous les profils de donneurs actifs dont le groupe sanguin est compatible, dont la date d'éligibilité au don est passée, et qui se situent dans le rayon géographique de diffusion de l'alerte (calculé via la formule de Haversine).
+
+```sql
+CREATE OR REPLACE FUNCTION public.get_compatible_donors_for_alert(p_alert_id UUID)
+RETURNS TABLE (
+  donor_id UUID,
+  full_name VARCHAR,
+  fcm_token VARCHAR,
+  distance_km DOUBLE PRECISION
+) AS $$
+DECLARE
+  v_blood_type blood_type;
+  v_center_lat DECIMAL(10,8);
+  v_center_lng DECIMAL(11,8);
+  v_radius_km INTEGER;
+BEGIN
+  -- Récupérer les détails de l'alerte et de son centre émetteur
+  SELECT a.blood_type_required, a.radius_km, c.latitude, c.longitude
+  INTO v_blood_type, v_radius_km, v_center_lat, v_center_lng
+  FROM public.alerts a
+  JOIN public.centers c ON a.center_id = c.id
+  WHERE a.id = p_alert_id;
+
+  RETURN QUERY
+  SELECT 
+    p.id as donor_id,
+    p.full_name,
+    p.fcm_token,
+    -- Distance en kilomètres calculée par Haversine (en l'absence de PostGIS)
+    (6371 * acos(
+      cos(radians(v_center_lat)) * cos(radians(p.latitude)) * 
+      cos(radians(p.longitude) - radians(v_center_lng)) + 
+      sin(radians(v_center_lat)) * sin(radians(p.latitude))
+    )) AS distance_km
+  FROM public.profiles p
+  WHERE 
+    p.role = 'donor'
+    AND p.is_active = TRUE
+    AND p.fcm_token IS NOT NULL
+    -- Validation biologique
+    AND public.check_blood_compatibility(p.blood_type, v_blood_type) = TRUE
+    -- Éligibilité temporelle (RM01)
+    AND (p.next_donation_date IS NULL OR p.next_donation_date <= NOW())
+    -- Rayon de diffusion géographique
+    AND (6371 * acos(
+      cos(radians(v_center_lat)) * cos(radians(p.latitude)) * 
+      cos(radians(p.longitude) - radians(v_center_lng)) + 
+      sin(radians(v_center_lat)) * sin(radians(p.latitude))
+    )) <= v_radius_km;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+### 5.6. `send_push_on_new_alert` — Déclenchement automatique (Database Webhook)
+Un trigger SQL sur la table `public.alerts` réagit à l'insertion `AFTER INSERT` en appelant la Edge Function `send-push` via un Database Webhook configuré dans Supabase, transmettant les informations de l'alerte créée.
+
+```sql
+-- Le Database Webhook configure ce trigger implicitement pour appeler la Edge Function de manière asynchrone :
+CREATE TRIGGER send_push_on_new_alert
+  AFTER INSERT ON public.alerts
+  FOR EACH ROW
+  EXECUTE FUNCTION supabase_functions.http_request(
+    'https://xgdinqpxjywlfhjylktu.supabase.co/functions/v1/send-push',
+    'POST',
+    '{"Content-Type":"application/json", "Authorization":"Bearer SERVICE_ROLE_KEY"}',
+    '{}', -- Contient la ligne insérée de l'alerte
+    '1000'
+  );
+```
+
 ---
 
 ## 6. Edge Functions
@@ -377,7 +470,7 @@ CREATE TRIGGER on_donation_validated
 |----------|---------|-------------|-------------|
 | `match-alerts` | TypeScript (Deno) | Appelée par client ou Cron | Reçoit `donor_id` + `position`, retourne alertes actives compatibles (groupe sanguin + rayon géo). |
 | `check-eligibility` | TypeScript (Deno) | Avant création RDV | Vérifie `next_donation_date`, `is_active`, `weight_kg`, `age >= 18`. Retourne bool + message. |
-| `send-push` | TypeScript (Deno) | Trigger ou Cron | Envoie FCM aux donneurs matchés. Utilise `profiles.fcm_token`. |
+| `send-push` | TypeScript (Deno) | Webhook Supabase (Trigger DB alerts) | Envoie des pushs FCM/Expo aux donneurs compatibles lorsqu'une alerte est créée. |
 | `create-center` | TypeScript (Deno) | Appelée par admin web | Crée un compte `auth.users` + `profiles` (role=center_admin) + `centers`. Envoi email temp password. |
 | `admin-stats` | TypeScript (Deno) | Appelée par admin web | Agrégations : nombre de dons ce mois, alertes actives, donneurs par groupe sanguin. |
 | `get_nearby_centers` | SQL RPC | Appelée par chat tools | Centres proches d'une position (PostGIS). |
@@ -479,12 +572,12 @@ sequenceDiagram
     C->>M: Formulaire alerte
     M->>S: INSERT alerts (RLS: center_admin)
 
-    Note over S,EF: UC08/UC09 — Matching + Notification
-    S->>EF: Trigger match-alerts
-    EF->>S: SELECT donneurs compatibles (groupe + geo)
-    EF->>S: INSERT notifications
-    EF->>FCM: Envoi push
-    FCM-->>M: Notification reçue
+    Note over S,EF: UC08/UC09 — Matching + Notification automatique
+    S->>EF: Webhook AFTER INSERT ON alerts (payload: alerte)
+    EF->>S: SELECT donneurs géographiquement et biologiquement compatibles
+    EF->>S: INSERT public.notifications (historique in-app)
+    EF->>FCM: Envoi push Expo (batches de 100 max)
+    FCM-->>M: Notification reçue (Heads-up banner)
 
     Note over D,M: UC10 — Prendre RDV
     D->>M: Choisir centre + date
@@ -1026,6 +1119,38 @@ interface CreateCenterResponse {
 }
 ```
 
+#### `send-push` (Webhook)
+Déclenché par le Database Webhook de Supabase lors de la création d'une alerte.
+
+```typescript
+// Request Payload (Supabase Webhook standard)
+interface SendPushWebhookRequest {
+  type: 'INSERT';
+  table: 'alerts';
+  schema: 'public';
+  record: {
+    id: string;
+    center_id: string;
+    blood_type_required: string;
+    urgency_level: 'low' | 'medium' | 'high' | 'critical';
+    radius_km: number;
+    message: string | null;
+    deadline: string;
+    status: 'active';
+    created_at: string;
+  };
+  old_record: null;
+}
+
+// Response
+interface SendPushResponse {
+  success: boolean;
+  notified_donors_count: number;
+  push_tickets_count: number;
+  in_app_notifications_created: number;
+}
+```
+
 ### 16.3. Template Edge Function
 
 ```typescript
@@ -1550,5 +1675,5 @@ vercel --prod
 
 ---
 
-*Document version 2.1 — BloodLink Architecture Complète.*  
-*Dernière mise à jour: 2026-05-12*
+*Document version 2.2 — BloodLink Architecture Complète.*  
+*Dernière mise à jour: 2026-05-21 (Intégration push notifications automatisées)*

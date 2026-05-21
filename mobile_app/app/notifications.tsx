@@ -123,9 +123,9 @@ export default function NotificationsScreen() {
 
     // Navigation selon le type
     if (notif.type === "appointment") {
-      router.back();
+      router.push("/(tabs)/appointments" as any);
     } else if (notif.type === "alert") {
-      router.back();
+      router.push("/(tabs)/map" as any);
     }
   };
 

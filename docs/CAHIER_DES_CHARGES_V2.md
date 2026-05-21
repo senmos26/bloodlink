@@ -1,4 +1,4 @@
-# Cahier des Charges — Projet BloodLink (MVP) v2.0
+# Cahier des Charges — Projet BloodLink (MVP) v2.1
 
 > Application de mise en relation entre donneurs de sang et centres de dons.
 
@@ -14,7 +14,7 @@
 | **Rythme** | 3 jours par semaine |
 | **Mode** | Collaboratif — pair programming rotatif, aucun rôle figé |
 | **Livrable** | MVP fonctionnel, déployable et démontrable |
-| **Version** | 2.0 (refonte stack technique) |
+| **Version** | 2.1 (refonte stack technique & automatisation push) |
 
 ### 1.1. Équipe
 
@@ -191,7 +191,7 @@ graph LR
 - **Exceptions** : Identifiants incorrects, compte désactivé (RM09)
 
 #### UC07 — Créer alerte urgente
-- **Scénario** : Centre saisit groupe sanguin, urgence, rayon, deadline, message → `supabase.from('alerts').insert()` → Edge Function `match-alerts` → push aux donneurs compatibles
+- **Scénario** : Centre saisit groupe sanguin, urgence, rayon, deadline, message → `supabase.from('alerts').insert()` → Webhook Supabase déclenche `send-push` (Edge Function) → push aux donneurs compatibles (via Expo/FCM)
 - **Exceptions** : Date passée, rayon ≤ 0
 
 #### UC10 — Prendre RDV
@@ -494,18 +494,19 @@ erDiagram
 sequenceDiagram
     participant C as Centre
     participant SB as Supabase
-    participant EF as EdgeFn
-    participant FCM as Firebase
+    participant EF as EdgeFn (send-push)
+    participant FCM as Firebase / Expo
     participant D as Donneur
-    C->>SB: Creer alerte
-    SB->>EF: match-alerts
-    EF->>FCM: Push cible
-    FCM-->>D: Notification recue
+    C->>SB: Créer alerte (INSERT)
+    SB->>EF: Webhook (AFTER INSERT)
+    EF->>SB: get_compatible_donors_for_alert()
+    EF->>FCM: Push ciblé (Expo Push API)
+    FCM-->>D: Notification reçue
     D->>SB: Prendre RDV
     C->>SB: Confirmer RDV
     C->>SB: Valider don
-    SB->>SB: Trigger MAJ date
-    SB->>FCM: Notif donneur
+    SB->>SB: Trigger MAJ éligibilité (RM08)
+    SB->>FCM: Notif push donneur
 ```
 
 ---
@@ -530,7 +531,7 @@ sequenceDiagram
 | match-alerts | Alertes compatibles pour donneur | JWT donor |
 | check-eligibility | Vérifie éligibilité RDV | JWT donor |
 | create-center | Crée compte centre | JWT super_admin |
-| send-push | Envoie push FCM | service_role |
+| send-push | Envoie push Expo/FCM aux donneurs compatibles (via Webhook) | Webhook (service_role) |
 | admin-stats | Stats dashboard admin | JWT super_admin |
 | expire-alerts | Marque alertes dépassées (cron) | service_role |
 | get_nearby_centers | Centres proches d'une position | JWT |
@@ -688,5 +689,5 @@ Mobile (useChat) ──POST──► /api/chat ──► JWT verify
 
 ---
 
-*Fin du cahier des charges BloodLink v2.0 — MVP 6 semaines.*
-*Dernière mise à jour : 2026-05-12*
+*Fin du cahier des charges BloodLink v2.1 — MVP 6 semaines.*
+*Dernière mise à jour : 2026-05-21 (Intégration push notifications automatisées)*

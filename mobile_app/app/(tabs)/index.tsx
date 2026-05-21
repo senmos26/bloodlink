@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 import { useAuth } from "@/hooks/useAuth";
 import { getUnreadCount } from "@/services/notifications";
 import {
@@ -222,20 +223,26 @@ export default function HomeScreen() {
 
               <View className="flex-row gap-3 mt-4">
                 <Pressable
-                  className="flex-1 bg-primary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-primary/20"
-                  onPress={() => handleDonate(topAlert.id)}
+                  className="flex-1 bg-primary/10 p-3 rounded-2xl flex-row items-center justify-center gap-1.5 active:bg-primary/20"
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    handleDonate(topAlert.id);
+                  }}
                 >
                   <MaterialIcons name="volunteer-activism" size={16} color="#b80035" />
-                  <Text className="text-[10px] font-bold text-primary uppercase">
+                  <Text className="text-[11px] font-bold text-primary uppercase tracking-wider">
                     Je donne
                   </Text>
                 </Pressable>
                 <Pressable
-                  className="flex-1 bg-secondary/10 p-3 rounded-xl flex-row items-center justify-center gap-1 active:bg-secondary/20"
-                  onPress={() => router.push(`/share-alert?alertId=${topAlert.id}` as any)}
+                  className="flex-1 bg-secondary/10 p-3 rounded-2xl flex-row items-center justify-center gap-1.5 active:bg-secondary/20"
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.push(`/share-alert?alertId=${topAlert.id}` as any);
+                  }}
                 >
                   <MaterialIcons name="share" size={16} color="#006591" />
-                  <Text className="text-[10px] font-bold text-secondary uppercase">
+                  <Text className="text-[11px] font-bold text-secondary uppercase tracking-wider">
                     Partager
                   </Text>
                 </Pressable>
@@ -292,33 +299,42 @@ export default function HomeScreen() {
             <Text className="text-sm font-bold text-on-surface mb-3 px-1">
               Actions rapides
             </Text>
-            <View className="flex-row gap-3 mb-4">
+            <View className="flex-row gap-3 mb-5">
               <Pressable
-                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
-                onPress={() => router.push("/map")}
+                className="flex-1 bg-surface-container-lowest py-5 px-2 rounded-3xl items-center border border-rose-50/60 active:bg-surface-container-low"
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push("/map");
+                }}
               >
-                <View className="w-10 h-10 bg-primary/10 rounded-xl items-center justify-center mb-2">
-                  <MaterialIcons name="location-on" size={20} color="#b80035" />
+                <View className="w-12 h-12 bg-primary/10 rounded-2xl items-center justify-center mb-3">
+                  <MaterialIcons name="location-on" size={22} color="#b80035" />
                 </View>
-                <Text className="text-xs font-semibold text-on-surface">Centres</Text>
+                <Text className="text-[13px] font-bold text-on-surface">Centres</Text>
               </Pressable>
               <Pressable
-                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
-                onPress={() => router.push("/appointments" as any)}
+                className="flex-1 bg-surface-container-lowest py-5 px-2 rounded-3xl items-center border border-rose-50/60 active:bg-surface-container-low"
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push("/appointments" as any);
+                }}
               >
-                <View className="w-10 h-10 bg-secondary/10 rounded-xl items-center justify-center mb-2">
-                  <MaterialIcons name="event" size={20} color="#006591" />
+                <View className="w-12 h-12 bg-secondary/10 rounded-2xl items-center justify-center mb-3">
+                  <MaterialIcons name="event" size={22} color="#006591" />
                 </View>
-                <Text className="text-xs font-semibold text-on-surface">RDV</Text>
+                <Text className="text-[13px] font-bold text-on-surface">RDV</Text>
               </Pressable>
               <Pressable
-                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
-                onPress={() => router.push("/notifications" as any)}
+                className="flex-1 bg-surface-container-lowest py-5 px-2 rounded-3xl items-center border border-rose-50/60 active:bg-surface-container-low"
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push("/notifications" as any);
+                }}
               >
-                <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
-                  <MaterialIcons name="notifications" size={20} color="#006847" />
+                <View className="w-12 h-12 bg-tertiary/10 rounded-2xl items-center justify-center mb-3">
+                  <MaterialIcons name="notifications" size={22} color="#006847" />
                 </View>
-                <Text className="text-xs font-semibold text-on-surface">Alertes</Text>
+                <Text className="text-[13px] font-bold text-on-surface">Alertes</Text>
               </Pressable>
             </View>
           </Animated.View>
@@ -328,56 +344,60 @@ export default function HomeScreen() {
             <Text className="text-sm font-bold text-on-surface mb-3 px-1">
               Votre impact
             </Text>
-            <View className="flex-row gap-3 mb-4">
-              <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-rose-100/30">
-                <View className="flex-row items-center gap-2 mb-2">
+            <View className="flex-row gap-3 mb-6">
+              <View className="flex-1 bg-surface-container-lowest p-5 rounded-3xl border border-rose-50/60">
+                <View className="flex-row items-center gap-2 mb-3">
                   <View className="w-8 h-8 bg-primary/10 rounded-full items-center justify-center">
                     <MaterialIcons name="opacity" size={16} color="#b80035" />
                   </View>
-                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
+                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider">
                     Dons effectués
                   </Text>
                 </View>
-                <Text className="text-2xl font-extrabold text-on-surface">{stats?.donationCount ?? 0}</Text>
+                <Text className="text-3xl font-black text-on-surface">{stats?.donationCount ?? 0}</Text>
               </View>
-              <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-rose-100/30">
-                <View className="flex-row items-center gap-2 mb-2">
+              <View className="flex-1 bg-surface-container-lowest p-5 rounded-3xl border border-rose-50/60">
+                <View className="flex-row items-center gap-2 mb-3">
                   <View className="w-8 h-8 bg-tertiary/10 rounded-full items-center justify-center">
                     <MaterialIcons name="favorite" size={16} color="#006847" />
                   </View>
-                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
+                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider">
                     Vies sauvées
                   </Text>
                 </View>
-                <Text className="text-2xl font-extrabold text-on-surface">{stats?.livesSaved ?? 0}</Text>
+                <Text className="text-3xl font-black text-on-surface">{stats?.livesSaved ?? 0}</Text>
               </View>
             </View>
           </Animated.View>
 
           {/* Next Donation — dynamic */}
           <Animated.View entering={FadeInDown.delay(350).duration(400)}>
-            <View className="bg-primary p-5 rounded-2xl shadow-lg shadow-primary/20">
+            <View className="bg-primary p-6 rounded-3xl shadow-xl shadow-primary/20 overflow-hidden relative">
+              <View className="absolute -right-6 -top-6 bg-white/10 w-32 h-32 rounded-full blur-2xl" />
               <View className="flex-row items-center justify-between">
                 <View className="flex-1">
-                  <Text className="text-white/80 text-xs uppercase font-bold tracking-wider mb-1">
+                  <Text className="text-white/80 text-[10px] uppercase font-bold tracking-widest mb-1.5">
                     Prochain don possible
                   </Text>
-                  <Text className="text-white text-xl font-extrabold">
+                  <Text className="text-white text-2xl font-black tracking-tight">
                     {daysUntil(stats?.nextDonationDate ?? null)}
                   </Text>
                   {stats?.lastDonationDate ? (
-                    <Text className="text-white/70 text-xs mt-1">
+                    <Text className="text-white/70 text-[13px] mt-1.5">
                       Dernier don: {formatDateShort(stats.lastDonationDate)}
                     </Text>
                   ) : (
-                    <Text className="text-white/70 text-xs mt-1">
+                    <Text className="text-white/70 text-[13px] mt-1.5 font-medium">
                       Premier don ? Prenez rendez-vous !
                     </Text>
                   )}
                 </View>
                 <Pressable
-                  className="w-12 h-12 bg-white/20 rounded-full items-center justify-center active:scale-95"
-                  onPress={() => router.push("/booking" as any)}
+                  className="w-14 h-14 bg-white/20 rounded-2xl items-center justify-center active:scale-95"
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    router.push("/booking" as any);
+                  }}
                 >
                   <MaterialIcons name="calendar-today" size={24} color="#ffffff" />
                 </Pressable>

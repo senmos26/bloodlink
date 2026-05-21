@@ -199,3 +199,36 @@ export function onNotificationResponse(
     },
   };
 }
+
+/** Initialiser les canaux et les gestionnaires de notifications le plus tôt possible */
+export async function initializeNotifications(): Promise<void> {
+  if (isExpoGo()) return;
+  try {
+    const Notifications = await getNotificationsModule();
+    if (!Notifications) return;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#b80035",
+      });
+    }
+  } catch (err) {
+    console.warn("[push] Erreur initialisation notifications:", err);
+  }
+}
+
+/** Récupérer la dernière notification reçue (utile si l'application était fermée) */
+export async function getLastNotificationResponse(): Promise<any> {
+  if (isExpoGo()) return null;
+  try {
+    const Notifications = await getNotificationsModule();
+    if (!Notifications) return null;
+    return await Notifications.getLastNotificationResponseAsync();
+  } catch (err) {
+    console.warn("[push] Erreur récupération dernière notification:", err);
+    return null;
+  }
+}

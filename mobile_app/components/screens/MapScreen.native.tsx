@@ -1,5 +1,6 @@
-import { View, Text, Pressable, Linking, Platform, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, Linking, Platform, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 import { MaterialIcons } from "@expo/vector-icons";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -56,10 +57,10 @@ type UserLocation = {
 
 type MapFilter = "all" | "alert" | "critical";
 
-const FILTER_OPTIONS: Array<{ key: MapFilter; label: string }> = [
-  { key: "all", label: "Tous" },
-  { key: "alert", label: "En alerte" },
-  { key: "critical", label: "Critiques" },
+const FILTER_OPTIONS: Array<{ key: MapFilter; label: string; icon: keyof typeof MaterialIcons.glyphMap }> = [
+  { key: "all", label: "Tous", icon: "local-hospital" },
+  { key: "alert", label: "En alerte", icon: "notifications-active" },
+  { key: "critical", label: "Critiques", icon: "emergency" },
 ];
 
 function formatDistanceKm(distanceKm: number | null) {
@@ -455,64 +456,70 @@ export default function MapScreen() {
         )}
 
         <View className="absolute left-4 right-4" style={{ top: insets.top + 8 }}>
-          <View className="rounded-3xl bg-white px-4 py-4 border border-rose-100/30">
-            <View className="flex-row items-start justify-between gap-3">
-              <View className="flex-1">
-                <Text className="text-2xl font-extrabold text-on-surface">Carte des centres</Text>
-                <Text className="mt-1 text-sm text-on-surface-variant">
-                  Touchez un marqueur pour afficher les détails d'un centre de don.
-                </Text>
+          <View className="rounded-3xl bg-white px-4 py-3 border border-rose-100/30">
+            <View className="flex-row items-center justify-between gap-3 mb-3">
+              <View className="flex-1 flex-row items-center gap-2">
+                <View className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center">
+                  <MaterialIcons name="map" size={20} color="#006591" />
+                </View>
+                <View>
+                  <Text className="text-lg font-extrabold text-on-surface leading-tight">Carte des centres</Text>
+                  <Text className="text-xs text-on-surface-variant">
+                    {visibleCenters.length} centre(s) • {visibleAlertingCentersCount} alerte(s)
+                  </Text>
+                </View>
               </View>
               <Pressable
-                onPress={() => loadCenters(true)}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  loadCenters(true);
+                }}
                 disabled={refreshing}
-                className="w-11 h-11 rounded-2xl items-center justify-center bg-surface-container-low"
+                className="w-10 h-10 rounded-full items-center justify-center bg-surface-container-low"
               >
                 {refreshing ? (
                   <ActivityIndicator size="small" color="#006591" />
                 ) : (
-                  <MaterialIcons name="refresh" size={22} color="#006591" />
+                  <MaterialIcons name="refresh" size={20} color="#006591" />
                 )}
               </Pressable>
             </View>
 
-            <View className="mt-4 flex-row gap-3">
-              <View className="flex-1 rounded-2xl bg-primary/10 px-3 py-3">
-                <Text className="text-[11px] font-bold uppercase tracking-wider text-primary">Centres visibles</Text>
-                <Text className="mt-1 text-xl font-extrabold text-on-surface">{visibleCenters.length}</Text>
-              </View>
-              <View className="flex-1 rounded-2xl bg-secondary/10 px-3 py-3">
-                <Text className="text-[11px] font-bold uppercase tracking-wider text-secondary">Alertes visibles</Text>
-                <Text className="mt-1 text-xl font-extrabold text-on-surface">{visibleAlertingCentersCount}</Text>
-              </View>
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="overflow-visible">
+              <View className="flex-row gap-2">
+                {FILTER_OPTIONS.map((option) => {
+                  const isActive = option.key === mapFilter;
+                  let iconColor = isActive ? "#ffffff" : "#3b4e68";
+                  if (!isActive && option.key === "alert") iconColor = "#f59e0b";
+                  if (!isActive && option.key === "critical") iconColor = "#b80035";
 
-            <View className="mt-4 flex-row gap-2">
-              {FILTER_OPTIONS.map((option) => {
-                const isActive = option.key === mapFilter;
-
-                return (
-                  <Pressable
-                    key={option.key}
-                    onPress={() => setMapFilter(option.key)}
-                    className="flex-1 rounded-2xl px-3 py-3 items-center justify-center"
-                    style={{ backgroundColor: isActive ? "#0f172a" : "#fff1f2" }}
-                  >
-                    <Text
-                      className="text-xs font-extrabold uppercase tracking-wider"
-                      style={{ color: isActive ? "#ffffff" : "#3b4e68" }}
+                  return (
+                    <Pressable
+                      key={option.key}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setMapFilter(option.key);
+                      }}
+                      className="flex-row items-center rounded-2xl px-4 py-2"
+                      style={{ backgroundColor: isActive ? "#0f172a" : "#fff1f2", borderWidth: 1, borderColor: isActive ? "transparent" : "#ffe4e6" }}
                     >
-                      {option.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+                      <MaterialIcons name={option.icon} size={16} color={iconColor} style={{ marginRight: 6 }} />
+                      <Text
+                        className="text-[13px] font-bold"
+                        style={{ color: isActive ? "#ffffff" : "#0f172a" }}
+                      >
+                        {option.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </ScrollView>
 
             {permissionStatus !== null && permissionStatus !== Location.PermissionStatus.GRANTED ? (
-              <View className="mt-3 rounded-2xl bg-surface-container-low px-3 py-3 flex-row items-center gap-2">
-                <MaterialIcons name="my-location" size={18} color="#3b4e68" />
-                <Text className="flex-1 text-xs text-on-surface-variant">
+              <View className="mt-3 rounded-2xl bg-surface-container-low px-3 py-2 flex-row items-center gap-2">
+                <MaterialIcons name="my-location" size={16} color="#3b4e68" />
+                <Text className="flex-1 text-[11px] text-on-surface-variant leading-tight">
                   Active la localisation pour trier les centres autour de toi.
                 </Text>
               </View>
@@ -589,40 +596,46 @@ export default function MapScreen() {
                 <View className="flex-row items-start justify-between gap-3">
                   <View className="flex-1">
                     <View
-                      className="self-start rounded-full px-3 py-1 mb-3"
+                      className="self-start rounded-full px-3 py-1 mb-2"
                       style={{ backgroundColor: `${topUrgencyColor}18` }}
                     >
-                      <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: topUrgencyColor }}>
+                      <Text className="text-[10px] font-bold uppercase tracking-wider" style={{ color: topUrgencyColor }}>
                         {formatUrgencyLabel(selectedCenter.topUrgency)}
                       </Text>
                     </View>
-                    <Text className="text-2xl font-extrabold text-on-surface">{selectedCenter.name}</Text>
-                    <Text className="mt-1 text-sm text-on-surface-variant">
+                    <Text className="text-xl font-extrabold text-on-surface leading-snug">{selectedCenter.name}</Text>
+                    <Text className="mt-1 text-[13px] text-on-surface-variant leading-relaxed">
                       {selectedCenter.address}, {selectedCenter.city}
                     </Text>
                   </View>
                   <View
-                    className="w-14 h-14 rounded-2xl items-center justify-center"
+                    className="w-12 h-12 rounded-2xl items-center justify-center"
                     style={{ backgroundColor: `${topUrgencyColor}16` }}
                   >
-                    <MaterialIcons name="local-hospital" size={26} color={topUrgencyColor} />
+                    <MaterialIcons name="local-hospital" size={22} color={topUrgencyColor} />
                   </View>
                 </View>
 
-                <View className="mt-5 flex-row gap-3">
-                  <View className="flex-1 rounded-2xl bg-surface-container-low px-4 py-4">
-                    <Text className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
-                      Distance
-                    </Text>
-                    <Text className="mt-1 text-xl font-extrabold text-on-surface">
+                <View className="mt-4 flex-row gap-3">
+                  <View className="flex-1 rounded-2xl bg-surface-container-low px-4 py-3 border border-rose-50/50">
+                    <View className="flex-row items-center gap-1.5">
+                      <MaterialIcons name="route" size={14} color="#475569" />
+                      <Text className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+                        Distance
+                      </Text>
+                    </View>
+                    <Text className="mt-1 text-lg font-extrabold text-on-surface">
                       {formatDistanceKm(selectedCenter.distanceKm)}
                     </Text>
                   </View>
-                  <View className="flex-1 rounded-2xl bg-surface-container-low px-4 py-4">
-                    <Text className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
-                      Alertes
-                    </Text>
-                    <Text className="mt-1 text-xl font-extrabold text-on-surface">
+                  <View className="flex-1 rounded-2xl bg-surface-container-low px-4 py-3 border border-rose-50/50">
+                    <View className="flex-row items-center gap-1.5">
+                      <MaterialIcons name="notifications-active" size={14} color="#475569" />
+                      <Text className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+                        Alertes
+                      </Text>
+                    </View>
+                    <Text className="mt-1 text-lg font-extrabold text-on-surface">
                       {selectedCenter.activeAlertCount}
                     </Text>
                   </View>

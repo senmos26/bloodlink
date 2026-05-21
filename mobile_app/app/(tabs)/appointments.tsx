@@ -21,6 +21,7 @@ import {
 } from "@/services/appointments";
 import { supabase } from "@/services/supabase";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -79,7 +80,7 @@ const s = StyleSheet.create({
   filterRow: { flexDirection: "row", marginHorizontal: 24, marginBottom: 16, backgroundColor: "#fff1f2", borderRadius: 16, padding: 4 },
   filterTab: { flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: "center" },
   filterTabActive: { backgroundColor: "#ffffff", shadowColor: "#b80035", shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
-  filterText: { fontSize: 14, fontWeight: "700", color: "#3b4e68" },
+  filterText: { fontSize: 13, fontWeight: "700", color: "#3b4e68" },
   filterTextActive: { color: "#b80035" },
   centered: { flex: 1, alignItems: "center", justifyContent: "center" },
   loadingText: { marginTop: 12, fontSize: 14, color: "#3b4e68" },
@@ -94,8 +95,8 @@ const s = StyleSheet.create({
   cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
   cardDateRow: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
   cardIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(184,0,53,0.08)", alignItems: "center", justifyContent: "center" },
-  cardDate: { fontSize: 14, fontWeight: "700", color: "#0f172a" },
-  cardTime: { fontSize: 12, color: "#3b4e68" },
+  cardDate: { fontSize: 13, fontWeight: "700", color: "#0f172a" },
+  cardTime: { fontSize: 12, color: "#3b4e68", marginTop: 1 },
   statusChip: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
   statusText: { fontSize: 10, fontWeight: "700" },
   centerBox: { backgroundColor: "#fff8f9", borderRadius: 12, padding: 12, marginBottom: 12 },
@@ -220,7 +221,10 @@ export default function AppointmentsScreen() {
               : "Vos rendez-vous passés apparaîtront ici."}
           </Text>
           {activeFilter === "upcoming" && (
-            <Pressable style={s.bookBtn} onPress={handleBook}>
+            <Pressable style={s.bookBtn} onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              handleBook();
+            }}>
               <Text style={s.bookBtnText}>Prendre un RDV</Text>
             </Pressable>
           )}
@@ -309,7 +313,10 @@ export default function AppointmentsScreen() {
           <Text style={s.title}>Mes RDV</Text>
           <Text style={s.subtitle}>{upcoming.length} rendez-vous à venir</Text>
         </View>
-        <Pressable style={s.addBtn} onPress={handleBook}>
+        <Pressable style={s.addBtn} onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          handleBook();
+        }}>
           <MaterialIcons name="add" size={24} color="#ffffff" />
         </Pressable>
       </View>
@@ -318,7 +325,10 @@ export default function AppointmentsScreen() {
       <View style={s.filterRow}>
         <Pressable
           style={[s.filterTab, activeFilter === "upcoming" && s.filterTabActive]}
-          onPress={() => setActiveFilter("upcoming")}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setActiveFilter("upcoming");
+          }}
         >
           <Text style={[s.filterText, activeFilter === "upcoming" && s.filterTextActive]}>
             À venir ({upcoming.length})
@@ -326,7 +336,10 @@ export default function AppointmentsScreen() {
         </Pressable>
         <Pressable
           style={[s.filterTab, activeFilter === "past" && s.filterTabActive]}
-          onPress={() => setActiveFilter("past")}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setActiveFilter("past");
+          }}
         >
           <Text style={[s.filterText, activeFilter === "past" && s.filterTextActive]}>
             Passés ({past.length})

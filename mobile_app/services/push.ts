@@ -24,3 +24,9 @@ export function onNotificationResponse(
 ) {
   return { remove() {} };
 }
+
+export async function initializeNotifications(): Promise<void> {}
+
+export async function getLastNotificationResponse(): Promise<any> {
+  return null;
+}

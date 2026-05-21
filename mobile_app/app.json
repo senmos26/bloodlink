@@ -27,8 +27,7 @@
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.POST_NOTIFICATIONS"
       ],
       "package": "com.anonymous.bloodlink"
     },
@@ -58,6 +57,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1f36b0d1-6017-497e-a57d-72c27ea7f64a"
+      }
+    },
+    "owner": "senmosdev"
   }
 }
