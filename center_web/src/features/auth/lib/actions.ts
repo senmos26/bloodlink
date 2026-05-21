@@ -93,7 +93,7 @@ export async function login(
     .eq("id", authData.user.id)
     .single();
 
-  if (profile?.role !== "center_admin" && profile?.role !== "super_admin") {
+  if (profile?.role !== "center_admin") {
     await supabase.auth.signOut();
     return { errorKey: "auth.serverErrors.unauthorized" };
   }

@@ -33,3 +33,22 @@ NEXT_PUBLIC_DONOR_WEB_URL=http://localhost:3001
 NEXT_PUBLIC_SUPABASE_URL=https://xgdinqpxjywlfhjylktu.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjA3NTEsImV4cCI6MjA5MjYzNjc1MX0.jP0o6MxlXxsrAh43c2L7UTY8xMZRKQybA8SVpdwfqVA
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZGlucXB4anl3bGZoanlsa3R1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzA2MDc1MSwiZXhwIjoyMDkyNjM2NzUxfQ.bA7ZNVhYHJRX3i25RrzmTqWByxtMFev_4CC1ux7MRE8
+
+
+📌 CONFIGURATIONS SPÉCIALES & SÉCURITÉ
+----------------------------------------
+1. Secret de Webhook (Automatisation des alertes) :
+   Pour autoriser la communication sécurisée entre le trigger de la table `alerts` et l'Edge Function Deno `send-push`, vous devez insérer le secret de webhook dans la table sécurisée `public.app_settings` (protégée par RLS) :
+   SQL:
+   INSERT INTO public.app_settings (key, value) VALUES ('webhook_secret', 'VOTRE_SECRET');
+
+2. Redirection Google Sign-In (Deep Linking Mobile) :
+   L'URL de callback configurée pour le retour d'authentification Google Sign-In est :
+   `bloodlink://auth/callback`
+   Elle est capturée par `mobile_app/app/auth/callback.tsx` qui prend en charge à la fois PKCE (`?code=...`) et Implicit Flow (`#access_token=...`).
+
+3. Reconnexion WebSocket & Notifications Locales :
+   En l'absence de clés Firebase Cloud Messaging (FCM) configurées sur le Dashboard Expo, l'application mobile utilise un fallback de synchronisation en temps réel (Supabase Realtime sur la table `notifications` en mode `REPLICA IDENTITY FULL`).
+   - L'application écoute les modifications en arrière-plan et au premier plan.
+   - À chaque retour au premier plan (AppState active), l'application rétablit automatiquement la connexion WebSocket via `supabase.realtime.connect()`.
+   - Les nouvelles notifications reçues en temps réel déclenchent une notification locale système via `expo-notifications`.

@@ -183,19 +183,20 @@ SUPABASE_SERVICE_ROLE_KEY=votre-cle-service-role
 
 ### 5.5. Appliquer les migrations SQL
 
-Les migrations sont dans `mobile_app/supabase/migrations/` :
+Les migrations sont situées dans le dossier racine `supabase/migrations/` :
 
 | # | Fichier | Description |
 |---|---------|-------------|
-| 001 | `create_profile_on_signup.sql` | Trigger auto-création profil |
-| 002 | `seed_blood_types.sql` | Types sanguins |
-| 003 | `fix_signup_trigger.sql` | Correction trigger |
-| 004 | `make_profile_phone_nullable.sql` | Phone nullable |
-| 005 | `profile_dashboard_rpc.sql` | RPCs dashboard profil |
-| 006 | `fix_profiles_rls_recursion.sql` | Fix RLS récursion |
-| 007 | `profile_avatar_storage.sql` | Storage avatars |
+| 00001 | `00001_initial.sql` | Schéma de base complet (tables profiles, centers, appointments, donations, alerts, notifications) et politiques RLS de départ |
+| 00002 | `00002_rabat_centers.sql` | Insertion de centres de transfusion factices pour le secteur de Rabat |
+| 00003 | `00003_rabat_real_centers.sql` | Insertion de vrais centres de transfusion opérationnels à Rabat |
+| 00004 | `00004_push_notification_support.sql` | Ajout du champ token de notification (FCM) sur les profils et de la table des tokens |
+| 00005 | `00005_fix_trigger_blood_type.sql` | Correction du trigger sur le type sanguin à l'inscription |
+| 00006 | `00006_chat_conversations.sql` | Table des conversations et messages pour l'historique du chatbot IA SangBot |
+| 00006_fix | `00006_fix_trigger_role_overwrite.sql` | Correction critique du trigger d'inscription pour éviter l'écrasement involontaire des rôles admin/donneur |
+| 00007 | `00007_alerts_push_automation.sql` | Automatisation complète des notifications push et in-app lors de la création d'alertes via déclencheur PostgreSQL |
 
-**Via Dashboard** : SQL Editor → copier-coller chaque migration → Run
+**Via Dashboard** : SQL Editor → copier-coller chaque migration dans l'ordre chronologique → Run
 
 **Via CLI** :
 ```bash
@@ -333,7 +334,7 @@ cd admin_web && npm run dev
 - **`services/`** : Clients API
   - `supabase.ts`, `alerts.ts`, `appointments.ts`, `dashboard.ts`, `map.ts`, `notifications.ts`, `profile.ts`, `push.native.ts`, `alert-sharing.ts`
 - **`hooks/`** : Custom hooks
-- **`supabase/migrations/`** : 7 migrations SQL
+- **`supabase/migrations/`** (à la racine) : 8 migrations SQL
 
 ### Centre Web — `center_web/src/`
 

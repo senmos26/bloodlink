@@ -284,7 +284,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       .subscribe((status, err) => {
         console.log(`[realtime] Canal user-notifications-${userId} - Statut de connexion:`, status);
         if (err) {
-          console.error(`[realtime] Canal user-notifications-${userId} - Erreur de souscription:`, err);
+          console.warn(`[realtime] Canal user-notifications-${userId} - Erreur de souscription (reconnexion automatique) :`, err);
         }
       });
 

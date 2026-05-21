@@ -90,7 +90,7 @@ export default function NotificationsScreen() {
       .subscribe((status, err) => {
         console.log(`[realtime-screen] Canal notifications-page-${userId} - Statut de connexion:`, status);
         if (err) {
-          console.error(`[realtime-screen] Canal notifications-page-${userId} - Erreur de souscription:`, err);
+          console.warn(`[realtime-screen] Canal notifications-page-${userId} - Erreur de souscription (reconnexion automatique) :`, err);
         }
       });
 

@@ -633,7 +633,7 @@ sequenceDiagram
 
 **i18n** : Toutes les routes sont préfixées par `[locale]` (fr, en, de, es) via `next-intl`.
 
-**Middleware Next.js** : vérifie le `role` dans `profiles` avant d'autoriser l'accès à `/(dashboard)/*`.
+**Middleware Next.js** : vérifie le `role` dans `profiles` avant d'autoriser l'accès à `/(dashboard)/*`. L'accès est strictement restreint au rôle `center_admin`. Si un autre rôle (comme `super_admin` ou `donor`) tente d'y accéder, le middleware le déconnecte automatiquement (`supabase.auth.signOut()`) et le redirige vers `/login` avec un paramètre d'erreur explicite.
 
 ---
 

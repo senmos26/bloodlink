@@ -21,7 +21,7 @@ export default async function middleware(request: NextRequest) {
   const locale = localeMatch ? localeMatch[1] : defaultLocale;
 
   // If no valid locale prefix, let intl middleware handle it
-  if (!locales.includes(locale as any)) {
+  if (!locales.includes(locale as "fr" | "en" | "de" | "es")) {
     return intlMiddleware(request);
   }
 
@@ -31,7 +31,7 @@ export default async function middleware(request: NextRequest) {
   );
 
   // Create a response object that both intl middleware and Supabase can use
-  let response = intlMiddleware(request);
+  const response = intlMiddleware(request);
 
   if (isPublic) {
     return response;
@@ -79,13 +79,15 @@ export default async function middleware(request: NextRequest) {
 
   console.log(`[MW] Profile: ${JSON.stringify(profile)} | Error: ${profileError?.message || 'none'}`);
 
-  if (!profile || (profile.role !== "center_admin" && profile.role !== "super_admin")) {
+  if (!profile || profile.role !== "center_admin") {
     console.log(`[MW] 🛑 Invalid role: ${profile?.role || 'none'}, signing out`);
-    // If user is logged in but not an admin, sign them out and redirect
+    // If user is logged in but not a center admin, sign them out and redirect
     await supabase.auth.signOut();
     const loginUrl = new URL(`/${locale}/login`, request.url);
     if (profile?.role === "donor") {
       loginUrl.searchParams.set("error", "Les donneurs doivent utiliser l'application mobile.");
+    } else if (profile?.role === "super_admin") {
+      loginUrl.searchParams.set("error", "Les super admins doivent utiliser le portail d'administration générale.");
     } else {
       loginUrl.searchParams.set("error", "Accès réservé aux administrateurs de centre.");
     }

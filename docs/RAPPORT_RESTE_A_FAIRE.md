@@ -112,18 +112,17 @@ ORDER BY distance_km;
 
 ### 5. Déclencheurs push automatiques (Sprint 4)
 
-Les notifications push fonctionnent (bouton "Test push" OK) mais **ne se déclenchent jamais automatiquement**.
+**État actuel : Partiellement fait (Déclencheur d'alertes OK, Rappel J-1 à faire).**
 
 | Existant | Manquant |
 |----------|----------|
-| Edge Function `send-test-push` | Pas de cron/rappel J-1 avant un RDV |
-| Bouton test dans l'app | Pas de trigger sur nouvelle alerte géolocalisée |
+| ✅ Webhook trigger SQL + Edge Function `send-push` pour les nouvelles alertes | ❌ Rappel J-1 automatique avant un RDV |
+| ✅ Notifications locales système + WebSocket Realtime en premier plan | ❌ Planification Cron quotidienne (pg_cron) |
 
-**Actions à mettre en place :**
-1. **Rappel J-1** : Edge Function schedulée (cron quotidien) qui scanne les RDV du lendemain et envoie un push
-2. **Nouvelle alerte** : Trigger après `INSERT` sur `alerts` → récupère les donneurs dans le rayon → envoie push par lot
-
-**Stack :** Supabase Cron (ou pg_cron) + Edge Function `send-batch-push`
+**Détail de l'automatisation réalisée :**
+- **Nouvelle alerte** : Un trigger SQL `AFTER INSERT` sur `alerts` exécute la fonction `handle_alert_insert_webhook` qui appelle l'Edge Function Deno `send-push` de manière asynchrone via l'extension `pg_net`.
+- **Matching & Filtrage** : L'Edge Function utilise le RPC `get_compatible_donors_for_alert` pour trouver les donneurs actifs, compatibles (selon la matrice ABO/Rh), éligibles (délai de carence respecté) et situés dans le rayon de l'alerte (formule géodésique de Haversine).
+- **Notification multicanale** : Elle crée en bloc (Bulk Insert) des notifications in-app dans `public.notifications` et transmet les notifications push par lots de 100 à l'API Expo Push.
 
 ---
 
@@ -221,10 +220,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 | Projet | % Fait | % Reste | Tâches clés restantes |
 |--------|--------|---------|----------------------|
-| **Mobile App** | ~88% | 12% | QR Code, distance centres, badge 5+, build Android |
-| **Admin Web** | ~82% | 18% | Scan QR, export CSV, déploiement Vercel |
-| **Supabase Backend** | ~90% | 10% | Trigger +56j, edge function `get-nearby-centers`, cron push |
-| **Global** | **~85%** | **15%** | **QR Code = seul vrai bloquant** |
+| **Mobile App** | ~93% | 7% | QR Code, distance centres, badge 5+, build Android |
+| **Admin & Center Web** | ~87% | 13% | Scan QR, export CSV, déploiement Vercel |
+| **Supabase Backend** | ~95% | 5% | Trigger +56j, edge function `get-nearby-centers`, cron push (rappel J-1) |
+| **Global** | **~91%** | **9%** | **QR Code = seul vrai bloquant restant** |
 
 ---
 
@@ -239,7 +238,7 @@ Pour une **démo complète et fonctionnelle** :
 | 3 | **Edge Function `get-nearby-centers`** | 1h | 🟡 Important |
 | 4 | **Firebase config Android** | 30 min | 🔴 Bloquant build |
 | 5 | **Export CSV (admin)** | 1h | 🟡 Fonctionnel |
-| 6 | **Rappels push auto (cron)** | 2h | 🟡 UX |
+| 6 | **Rappels push auto (cron J-1)** | 1h30 | 🟡 UX |
 | 7 | **Badge "Héros du sang"** | 30 min | 🟢 Polish |
 | 8 | **Tests E2E** | 4h+ | 🟢 Qualité |
 | 9 | **Build & Déploiement** | 2h | 🟢 Livraison |
@@ -250,17 +249,23 @@ Pour une **démo complète et fonctionnelle** :
 
 ### Mobile App (React Native + Expo)
 - ✅ Auth (login, register, OTP)
+- ✅ Double flux d'authentification : OTP + Google Sign-In avec gestion de callback personnalisée (PKCE & Implicit Flow)
+- ✅ Typographie Outfit intégrée de manière experte via injection dynamique sur les composants de texte natifs
 - ✅ Profil complet avec photo (image-picker + Storage)
-- ✅ Carte Google Maps avec centres
+- ✅ Carte Google Maps optimisée avec liste de chips de filtres horizontaux et feedback haptique
 - ✅ Prise de RDV (calendrier + créneaux)
 - ✅ Liste et détail des RDV
-- ✅ Notifications push (permissions, token, envoi test)
+- ✅ Notifications push et notifications locales système via `expo-notifications` (fonctionnelles sans dépendance obligatoire aux clés FCM lors des tests Expo Go)
+- ✅ Synchronisation en temps réel (Supabase Realtime) avec gestion automatique de la reconnexion du WebSocket lors du retour de l'application au premier plan (AppState)
+- ✅ Résolution définitive des boucles de redirection infinie sur les notifications
 - ✅ Écran alertes (création, liste)
 - ✅ Dashboard avec stats donneur
-- ✅ Deep links
+- ✅ Deep links et gestion de redirection au clic sur push notification (app lancée ou fermée)
 
-### Admin Web (Next.js 15)
+### Admin & Center Web (Next.js 15/16)
 - ✅ Login avec rôles (super_admin, center_admin)
+- ✅ Sécurisation du portail Centre (`center_web`) : Accès restreint strictement aux comptes `center_admin`. Middleware robuste de déconnexion automatique (`supabase.auth.signOut()`) et de redirection propre via middleware pour tout autre rôle (super_admin, donneur).
+- ✅ Résolution des erreurs de compilation ESLint et de linting sur `middleware.ts`.
 - ✅ Dashboard avec KPIs + graphiques (barres, camembert)
 - ✅ Gestion des alertes (CRUD + filtres)
 - ✅ Gestion des RDV (changement de statut)
@@ -274,10 +279,15 @@ Pour une **démo complète et fonctionnelle** :
 ### Supabase Backend
 - ✅ Schema initial (profiles, centers, appointments, donations, alerts, notifications)
 - ✅ Seed : 6 centres Rabat + centres réels
+- ✅ Table sécurisée `public.app_settings` (RLS activé) pour conserver le secret de webhook
+- ✅ Automatisation asynchrone : Déclencheur SQL `trg_alert_insert_webhook` après insertion d'une alerte, appelant l'Edge Function Deno `send-push` via `pg_net`
+- ✅ Fonctions de calcul géodésique `calculate_distance` (Haversine) et de compatibilité des groupes sanguins `check_blood_compatibility` en SQL
+- ✅ RPC `get_compatible_donors_for_alert` optimisé pour la sélection géographique et biologique des donneurs
+- ✅ Edge Function `send-push` : Traitement, bulk insert des notifications in-app et envoi groupé par lots de 100 à l'API Expo Push
+- ✅ Configuration de la réplication de base de données `REPLICA IDENTITY FULL` sur la table `notifications` pour Supabase Realtime
 - ✅ Edge Function `send-test-push`
 - ✅ Edge Function `create-center-account`
 - ✅ Vue `alerts_with_center`
-- ✅ Support notifications push (table + token FCM)
 
 ---
 

@@ -5,7 +5,7 @@ type Profile = { id: string; role: UserRole; full_name: string | null; is_active
 type Center = { id: string; name: string; admin_id: string; is_active: boolean; [key: string]: unknown };
 type AdminContext = { profile: Profile; role: UserRole; center: Center | null };
 
-const ALLOWED_ROLES: UserRole[] = ["center_admin", "super_admin"];
+const ALLOWED_ROLES: UserRole[] = ["center_admin"];
 
 export async function getAdminContext(): Promise<{
   context: AdminContext | null;
