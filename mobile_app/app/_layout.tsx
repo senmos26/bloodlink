@@ -9,7 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import PremiumLaunchScreen from "@/components/ui/PremiumLaunchScreen";
 import { supabase } from "@/services/supabase";
-import { registerPushToken, onNotificationResponse, initializeNotifications, getLastNotificationResponse } from "@/services/push";
+import { registerPushToken, onNotificationResponse, initializeNotifications, getLastNotificationResponse, showLocalNotification } from "@/services/push";
 import "./global.css";
 
 // Global fonts loaded state
@@ -251,6 +251,41 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       responseListener.remove();
     };
   }, []);
+
+  // 1.5. S'abonner aux notifications en temps réel pour déclencher des notifications locales
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const userId = session.user.id;
+
+    const channel = supabase
+      .channel(`user-notifications-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const newNotif = payload.new;
+          console.log("[realtime] Nouvelle notification en BDD:", newNotif);
+
+          // Déclencher une notification locale système sur le téléphone
+          showLocalNotification(
+            newNotif.title || "BloodLink",
+            newNotif.body || "",
+            newNotif.data || undefined
+          ).catch((e) => console.error("[realtime] Erreur envoi notif locale:", e));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel).catch(() => {});
+    };
+  }, [session?.user?.id]);
 
   // 2. Gardien d'Authentification (AuthGuard) dépendant des changements de session et de segments
   useEffect(() => {

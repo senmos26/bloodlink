@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/services/supabase";
 import {
   getUserNotifications,
   markAsRead,
@@ -64,6 +65,34 @@ export default function NotificationsScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const userId = user.id;
+
+    // S'abonner aux changements en temps réel sur la table notifications
+    const channel = supabase
+      .channel(`notifications-page-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log("[realtime-screen] Changement notification détecté:", payload.eventType);
+          load();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel).catch(() => {});
+    };
+  }, [user?.id, load]);
 
   const handleMarkAllRead = async () => {
     if (!user?.id) return;

@@ -30,3 +30,11 @@ export async function initializeNotifications(): Promise<void> {}
 export async function getLastNotificationResponse(): Promise<any> {
   return null;
 }
+
+export async function showLocalNotification(
+  _title: string,
+  _body: string,
+  _data?: any
+): Promise<void> {}
+
+

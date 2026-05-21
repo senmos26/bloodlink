@@ -18,10 +18,6 @@ function hasAndroidFirebaseConfig(): boolean {
 }
 
 async function getNotificationsModule() {
-  if (isExpoGo()) {
-    return null;
-  }
-
   if (!notificationsModulePromise) {
     notificationsModulePromise = import("expo-notifications");
   }
@@ -44,6 +40,7 @@ async function getNotificationsModule() {
   return Notifications;
 }
 
+
 // ── Types ──────────────────────────────────────────────────────────────
 export interface PushToken {
   token: string;
@@ -53,18 +50,7 @@ export interface PushToken {
 
 // ── API ────────────────────────────────────────────────────────────────
 
-/** Demander la permission de recevoir des notifications */
 export async function requestNotificationPermission(): Promise<boolean> {
-  if (isExpoGo()) {
-    console.info("[push] Push désactivé dans Expo Go. Utilisez un development build.");
-    return false;
-  }
-
-  if (!Device.isDevice) {
-    console.warn("[push] Les notifications push nécessitent un appareil physique.");
-    return false;
-  }
-
   const Notifications = await getNotificationsModule();
   if (!Notifications) {
     console.warn("[push] Module de notifications indisponible.");
@@ -202,7 +188,6 @@ export function onNotificationResponse(
 
 /** Initialiser les canaux et les gestionnaires de notifications le plus tôt possible */
 export async function initializeNotifications(): Promise<void> {
-  if (isExpoGo()) return;
   try {
     const Notifications = await getNotificationsModule();
     if (!Notifications) return;
@@ -222,7 +207,6 @@ export async function initializeNotifications(): Promise<void> {
 
 /** Récupérer la dernière notification reçue (utile si l'application était fermée) */
 export async function getLastNotificationResponse(): Promise<any> {
-  if (isExpoGo()) return null;
   try {
     const Notifications = await getNotificationsModule();
     if (!Notifications) return null;
@@ -230,5 +214,27 @@ export async function getLastNotificationResponse(): Promise<any> {
   } catch (err) {
     console.warn("[push] Erreur récupération dernière notification:", err);
     return null;
+  }
+}
+
+/** Déclencher une notification locale */
+export async function showLocalNotification(
+  title: string,
+  body: string,
+  data?: Record<string, unknown>
+): Promise<void> {
+  try {
+    const Notifications = await getNotificationsModule();
+    if (!Notifications) return;
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        data,
+      },
+      trigger: null,
+    });
+  } catch (err) {
+    console.warn("[push] Erreur envoi notification locale:", err);
   }
 }
