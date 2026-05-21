@@ -161,6 +161,8 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [launchReady, setLaunchReady] = useState(false);
   const [pendingNotification, setPendingNotification] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [authInitialized, setAuthInitialized] = useState(false);
   const segments = useSegments();
 
   const [fontsLoaded, fontError] = useFonts({
@@ -183,6 +185,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [fontsLoaded]);
 
+  // 1. Initialisations uniques au montage de l'application
   useEffect(() => {
     // Initialiser les canaux et les gestionnaires de notifications le plus tôt possible
     initializeNotifications().catch(() => {});
@@ -200,13 +203,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       setLaunchReady(true);
     }, 1700);
 
-    // Handle deep links for email confirmation
+    // Gérer les liens profonds pour la confirmation d'email
     const handleDeepLink = (event: { url: string }) => {
       const url = event.url;
       if (url.includes("access_token") || url.includes("refresh_token")) {
-        // Supabase auth redirect with tokens
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session) {
+        supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+          if (currentSession) {
+            setSession(currentSession);
             router.replace("/(tabs)");
           }
         });
@@ -215,27 +218,22 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
     const subscription = Linking.addEventListener("url", handleDeepLink);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const isAuthRoute = segments[0] === "(auth)" || (segments[0] === "auth" && segments[1] === "callback");
-      if (session && isAuthRoute) {
-        router.replace("/(tabs)");
-      } else if (!session && !isAuthRoute) {
-        router.replace("/(auth)/welcome");
-      }
-      setLoading(false);
+    // Récupérer la session initiale
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      setSession(initialSession);
+      setAuthInitialized(true);
+    }).catch(() => {
+      setAuthInitialized(true);
     });
 
-    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const isAuthRoute = segments[0] === "(auth)" || (segments[0] === "auth" && segments[1] === "callback");
-      if (session && isAuthRoute) {
-        router.replace("/(tabs)");
-      } else if (!session && !isAuthRoute) {
-        router.replace("/(auth)/welcome");
-      }
+    // S'abonner aux changements d'état d'authentification
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
+      setAuthInitialized(true);
 
-      // Register push token on sign-in
-      if (session?.user) {
-        registerPushToken(session.user.id).catch(() => {});
+      // Enregistrer le jeton push à la connexion
+      if (currentSession?.user) {
+        registerPushToken(currentSession.user.id).catch(() => {});
       }
     });
 
@@ -252,9 +250,24 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       authSubscription.unsubscribe();
       responseListener.remove();
     };
-  }, [segments]);
+  }, []);
 
-  // Gérer la redirection des notifications quand l'application est prête
+  // 2. Gardien d'Authentification (AuthGuard) dépendant des changements de session et de segments
+  useEffect(() => {
+    if (!authInitialized) return;
+
+    const isAuthRoute = segments[0] === "(auth)" || (segments[0] === "auth" && segments[1] === "callback");
+    
+    if (session && isAuthRoute) {
+      router.replace("/(tabs)");
+    } else if (!session && !isAuthRoute) {
+      router.replace("/(auth)/welcome");
+    } else {
+      setLoading(false);
+    }
+  }, [session, authInitialized, segments]);
+
+  // 3. Gérer la redirection des notifications quand l'application est prête
   useEffect(() => {
     if (!loading && launchReady && fontsLoaded && pendingNotification) {
       const data = pendingNotification.notification.request.content.data;
