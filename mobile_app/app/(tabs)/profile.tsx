@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import Button from "@/components/ui/Button";
 import ProfileEditCard from "@/components/profile/ProfileEditCard";
 import ProfileAvatarModal from "@/components/ui/ProfileAvatarModal";
@@ -27,6 +28,7 @@ import {
   uploadMyProfileAvatar,
 } from "@/services/profile";
 import { supabase } from "@/services/supabase";
+
 
 type ProfileFormState = {
   fullName: string;
@@ -430,7 +432,10 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void loadDashboard(true)} />}
       >
-        <View className="items-center pt-8 pb-6 px-6">
+        <Animated.View 
+          entering={FadeInDown.delay(100).duration(450)}
+          className="items-center pt-8 pb-6 px-6"
+        >
           <ProfileAvatarPicker
             imageUrl={avatarUrl}
             initials={getInitials(profile.full_name)}
@@ -455,50 +460,55 @@ export default function ProfileScreen() {
               </Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
         {!profile.blood_type && (
-          <Pressable
-            onPress={() => setEditMode(true)}
-            className="mx-4 mb-4 p-4 bg-primary/10 rounded-2xl border border-primary/20 active:bg-primary/15"
-          >
-            <View className="flex-row items-center gap-3">
-              <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
-                <MaterialIcons name="bloodtype" size={20} color="white" />
+          <Animated.View entering={FadeInDown.delay(150).duration(450)}>
+            <Pressable
+              onPress={() => setEditMode(true)}
+              className="mx-4 mb-4 p-4 bg-primary/10 rounded-2xl border border-primary/20 active:bg-primary/15"
+            >
+              <View className="flex-row items-center gap-3">
+                <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
+                  <MaterialIcons name="bloodtype" size={20} color="white" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-sm font-bold text-primary">
+                    Complétez votre profil
+                  </Text>
+                  <Text className="text-xs text-on-surface-variant mt-0.5">
+                    Ajoutez votre groupe sanguin pour recevoir des alertes adaptées.
+                  </Text>
+                </View>
+                <MaterialIcons name="chevron-right" size={20} color="#b80035" />
               </View>
-              <View className="flex-1">
-                <Text className="text-sm font-bold text-primary">
-                  Complétez votre profil
-                </Text>
-                <Text className="text-xs text-on-surface-variant mt-0.5">
-                  Ajoutez votre groupe sanguin pour recevoir des alertes adaptées.
-                </Text>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color="#b80035" />
-            </View>
-          </Pressable>
+            </Pressable>
+          </Animated.View>
         )}
 
-        <View className="flex-row gap-3 px-4 mb-4">
-          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5">
+        <Animated.View 
+          entering={FadeInDown.delay(200).duration(450)}
+          className="flex-row gap-3 px-4 mb-4"
+        >
+          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30">
             <Text className="text-on-surface-variant text-[10px] font-semibold uppercase tracking-widest mb-1">
               Groupe
             </Text>
             <Text className="text-2xl font-extrabold text-primary">{profile.blood_type || "—"}</Text>
           </View>
-          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5">
+          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30">
             <Text className="text-on-surface-variant text-[10px] font-semibold uppercase tracking-widest mb-1">
               Poids
             </Text>
             <Text className="text-2xl font-extrabold text-on-surface">{weightLabel}</Text>
           </View>
-          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5">
+          <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30">
             <Text className="text-on-surface-variant text-[10px] font-semibold uppercase tracking-widest mb-1">
               Prochain
             </Text>
             <Text className="text-base font-bold text-tertiary">{formatDaysUntil(profile.next_donation_date)}</Text>
           </View>
-        </View>
+        </Animated.View>
 
         {editMode && (
           <ProfileEditCard
@@ -519,7 +529,10 @@ export default function ProfileScreen() {
           />
         )}
 
-        <View className="px-4 mb-4">
+        <Animated.View 
+          entering={FadeInDown.delay(250).duration(450)}
+          className="px-4 mb-4"
+        >
           <View className="flex-row items-center justify-between mb-3 px-1">
             <Text className="text-sm font-bold text-on-surface">
               Dons récents
@@ -529,10 +542,10 @@ export default function ProfileScreen() {
             </Text>
           </View>
 
-          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-black/5">
+          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-rose-100/30">
             {recentDonations.length === 0 ? (
               <View className="items-center justify-center px-6 py-8 gap-2">
-                <MaterialIcons name="volunteer-activism" size={28} color="#906f70" />
+                <MaterialIcons name="volunteer-activism" size={28} color="#3b4e68" />
                 <Text className="text-sm font-semibold text-on-surface">
                   Aucun don récent
                 </Text>
@@ -571,10 +584,13 @@ export default function ProfileScreen() {
               ))
             )}
           </View>
-        </View>
+        </Animated.View>
 
-        <View className="px-4 mb-4">
-          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-black/5 p-4 gap-3">
+        <Animated.View 
+          entering={FadeInDown.delay(300).duration(450)}
+          className="px-4 mb-4"
+        >
+          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-rose-100/30 p-4 gap-3">
             <Text className="text-sm font-bold text-on-surface">Informations santé</Text>
             <View className="flex-row items-center justify-between">
               <Text className="text-sm text-on-surface-variant">Date de naissance</Text>
@@ -585,10 +601,13 @@ export default function ProfileScreen() {
               <Text className="text-sm font-semibold text-on-surface">{formatDateLabel(profile.next_donation_date)}</Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
 
-        <View className="px-4">
-          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-black/5">
+        <Animated.View 
+          entering={FadeInDown.delay(350).duration(450)}
+          className="px-4"
+        >
+          <View className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-rose-100/30">
             <Pressable 
               onPress={() => router.push("/my-qr")}
               className="flex-row items-center justify-between p-4 border-b border-surface-container-high/20 active:bg-surface-container-low"
@@ -599,28 +618,28 @@ export default function ProfileScreen() {
                   Mon QR Code
                 </Text>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color="#906f70" />
+              <MaterialIcons name="chevron-right" size={20} color="#3b4e68" />
             </Pressable>
             <Pressable className="flex-row items-center justify-between p-4 border-b border-surface-container-high/20 active:bg-surface-container-low">
               <View className="flex-row items-center gap-3">
-                <MaterialIcons name="notifications-active" size={20} color="#5c3f40" />
+                <MaterialIcons name="notifications-active" size={20} color="#b80035" />
                 <Text className="text-sm font-semibold text-on-surface">
                   Notifications
                 </Text>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color="#906f70" />
+              <MaterialIcons name="chevron-right" size={20} color="#3b4e68" />
             </Pressable>
             <Pressable
               onPress={() => setEditMode((prev) => !prev)}
               className="flex-row items-center justify-between p-4 border-b border-surface-container-high/20 active:bg-surface-container-low"
             >
               <View className="flex-row items-center gap-3">
-                <MaterialIcons name="edit" size={20} color="#5c3f40" />
+                <MaterialIcons name="edit" size={20} color="#b80035" />
                 <Text className="text-sm font-semibold text-on-surface">
                   {editMode ? "Fermer l'édition" : "Modifier profil"}
                 </Text>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color="#906f70" />
+              <MaterialIcons name="chevron-right" size={20} color="#3b4e68" />
             </Pressable>
             <Pressable onPress={handleLogout} className="flex-row items-center justify-between p-4 active:bg-surface-container-low">
               <View className="flex-row items-center gap-3">
@@ -629,10 +648,10 @@ export default function ProfileScreen() {
                   Déconnexion
                 </Text>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color="#906f70" />
+              <MaterialIcons name="chevron-right" size={20} color="#3b4e68" />
             </Pressable>
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );

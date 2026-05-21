@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useAuth } from "@/hooks/useAuth";
 import { getUnreadCount } from "@/services/notifications";
 import {
@@ -157,30 +158,37 @@ export default function HomeScreen() {
         >
           {/* Profile completion banner */}
           {!stats?.bloodType && (
-            <Pressable
-              onPress={() => router.push("/profile" as any)}
-              className="mb-4 p-4 bg-primary/10 rounded-2xl border border-primary/20 active:bg-primary/15"
+            <Animated.View 
+              entering={FadeInDown.delay(100).duration(400)}
             >
-              <View className="flex-row items-center gap-3">
-                <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
-                  <MaterialIcons name="bloodtype" size={20} color="white" />
+              <Pressable
+                onPress={() => router.push("/profile" as any)}
+                className="mb-4 p-4 bg-primary/10 rounded-2xl border border-primary/20 active:bg-primary/15"
+              >
+                <View className="flex-row items-center gap-3">
+                  <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
+                    <MaterialIcons name="bloodtype" size={20} color="white" />
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-sm font-bold text-primary">
+                      Complétez votre profil
+                    </Text>
+                    <Text className="text-xs text-on-surface-variant mt-0.5">
+                      Ajoutez votre groupe sanguin pour recevoir des alertes adaptées.
+                    </Text>
+                  </View>
+                  <MaterialIcons name="chevron-right" size={20} color="#b80035" />
                 </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-bold text-primary">
-                    Complétez votre profil
-                  </Text>
-                  <Text className="text-xs text-on-surface-variant mt-0.5">
-                    Ajoutez votre groupe sanguin pour recevoir des alertes adaptées.
-                  </Text>
-                </View>
-                <MaterialIcons name="chevron-right" size={20} color="#b80035" />
-              </View>
-            </Pressable>
+              </Pressable>
+            </Animated.View>
           )}
 
           {/* Urgent Alert Card — dynamic */}
           {topAlert ? (
-            <View className="bg-surface-container-lowest rounded-2xl p-5 mb-4 shadow-sm border border-black/5">
+            <Animated.View 
+              entering={FadeInDown.delay(150).duration(400)}
+              className="bg-surface-container-lowest rounded-2xl p-5 mb-4 shadow-sm border border-rose-100/40"
+            >
               <View className="flex-row items-center gap-1.5 mb-3">
                 <View className="flex-row items-center gap-1 px-3 py-1 rounded-full" style={{ backgroundColor: getUrgencyColor(topAlert.urgencyLevel) + "15" }}>
                   <MaterialIcons name="emergency" size={12} color={getUrgencyColor(topAlert.urgencyLevel)} />
@@ -245,127 +253,140 @@ export default function HomeScreen() {
                   <MaterialIcons name="arrow-forward" size={14} color="#b80035" />
                 </Pressable>
               )}
-            </View>
+            </Animated.View>
           ) : (
-            <View className="bg-surface-container-low rounded-2xl p-5 mb-4 items-center">
+            <Animated.View 
+              entering={FadeInDown.delay(150).duration(400)}
+              className="bg-surface-container-low rounded-2xl p-5 mb-4 items-center"
+            >
               <MaterialIcons name="check-circle" size={32} color="#006847" />
               <Text className="text-sm font-semibold text-on-surface mt-2">Aucune alerte active</Text>
               <Text className="text-xs text-on-surface-variant mt-1">Les demandes urgentes apparaîtront ici.</Text>
-            </View>
+            </Animated.View>
           )}
 
-          
           {/* Next Appointment */}
           {nextAppt && (
-            <Pressable
-              className="bg-secondary/10 rounded-2xl p-4 mb-4 flex-row items-center gap-3 active:bg-secondary/20"
-              onPress={() => router.push("/appointments" as any)}
+            <Animated.View 
+              entering={FadeInDown.delay(200).duration(400)}
             >
-              <View className="w-10 h-10 bg-secondary/20 rounded-xl items-center justify-center">
-                <MaterialIcons name="event" size={20} color="#006591" />
-              </View>
-              <View className="flex-1">
-                <Text className="text-xs text-on-surface-variant uppercase font-bold">Prochain rendez-vous</Text>
-                <Text className="text-sm font-bold text-on-surface">{formatDateShort(nextAppt.scheduledDate)}</Text>
-                <Text className="text-xs text-on-surface-variant" numberOfLines={1}>{nextAppt.centerName}</Text>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color="#5c3f40" />
-            </Pressable>
+              <Pressable
+                className="bg-secondary/10 rounded-2xl p-4 mb-4 flex-row items-center gap-3 active:bg-secondary/20"
+                onPress={() => router.push("/appointments" as any)}
+              >
+                <View className="w-10 h-10 bg-secondary/20 rounded-xl items-center justify-center">
+                  <MaterialIcons name="event" size={20} color="#006591" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-xs text-on-surface-variant uppercase font-bold">Prochain rendez-vous</Text>
+                  <Text className="text-sm font-bold text-on-surface">{formatDateShort(nextAppt.scheduledDate)}</Text>
+                  <Text className="text-xs text-on-surface-variant" numberOfLines={1}>{nextAppt.centerName}</Text>
+                </View>
+                <MaterialIcons name="chevron-right" size={20} color="#5c3f40" />
+              </Pressable>
+            </Animated.View>
           )}
 
           {/* Quick Actions */}
-          <Text className="text-sm font-bold text-on-surface mb-3 px-1">
-            Actions rapides
-          </Text>
-          <View className="flex-row gap-3 mb-4">
-            <Pressable
-              className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
-              onPress={() => router.push("/map")}
-            >
-              <View className="w-10 h-10 bg-primary/10 rounded-xl items-center justify-center mb-2">
-                <MaterialIcons name="location-on" size={20} color="#b80035" />
-              </View>
-              <Text className="text-xs font-semibold text-on-surface">Centres</Text>
-            </Pressable>
-            <Pressable
-              className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
-              onPress={() => router.push("/appointments" as any)}
-            >
-              <View className="w-10 h-10 bg-secondary/10 rounded-xl items-center justify-center mb-2">
-                <MaterialIcons name="event" size={20} color="#006591" />
-              </View>
-              <Text className="text-xs font-semibold text-on-surface">RDV</Text>
-            </Pressable>
-            <Pressable
-              className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-black/5 active:bg-surface-container-low"
-              onPress={() => router.push("/notifications" as any)}
-            >
-              <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
-                <MaterialIcons name="notifications" size={20} color="#006847" />
-              </View>
-              <Text className="text-xs font-semibold text-on-surface">Alertes</Text>
-            </Pressable>
-          </View>
-
-          {/* Stats — dynamic */}
-          <Text className="text-sm font-bold text-on-surface mb-3 px-1">
-            Votre impact
-          </Text>
-          <View className="flex-row gap-3 mb-4">
-            <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-black/5">
-              <View className="flex-row items-center gap-2 mb-2">
-                <View className="w-8 h-8 bg-primary/10 rounded-full items-center justify-center">
-                  <MaterialIcons name="opacity" size={16} color="#b80035" />
-                </View>
-                <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
-                  Dons effectués
-                </Text>
-              </View>
-              <Text className="text-2xl font-extrabold text-on-surface">{stats?.donationCount ?? 0}</Text>
-            </View>
-            <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-black/5">
-              <View className="flex-row items-center gap-2 mb-2">
-                <View className="w-8 h-8 bg-tertiary/10 rounded-full items-center justify-center">
-                  <MaterialIcons name="favorite" size={16} color="#006847" />
-                </View>
-                <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
-                  Vies sauvées
-                </Text>
-              </View>
-              <Text className="text-2xl font-extrabold text-on-surface">{stats?.livesSaved ?? 0}</Text>
-            </View>
-          </View>
-
-          {/* Next Donation — dynamic */}
-          <View className="bg-primary p-5 rounded-2xl shadow-lg shadow-primary/20">
-            <View className="flex-row items-center justify-between">
-              <View className="flex-1">
-                <Text className="text-white/80 text-xs uppercase font-bold tracking-wider mb-1">
-                  Prochain don possible
-                </Text>
-                <Text className="text-white text-xl font-extrabold">
-                  {daysUntil(stats?.nextDonationDate ?? null)}
-                </Text>
-                {stats?.lastDonationDate ? (
-                  <Text className="text-white/70 text-xs mt-1">
-                    Dernier don: {formatDateShort(stats.lastDonationDate)}
-                  </Text>
-                ) : (
-                  <Text className="text-white/70 text-xs mt-1">
-                    Premier don ? Prenez rendez-vous !
-                  </Text>
-                )}
-              </View>
+          <Animated.View entering={FadeInDown.delay(250).duration(400)}>
+            <Text className="text-sm font-bold text-on-surface mb-3 px-1">
+              Actions rapides
+            </Text>
+            <View className="flex-row gap-3 mb-4">
               <Pressable
-                className="w-12 h-12 bg-white/20 rounded-full items-center justify-center"
-                onPress={() => router.push("/booking" as any)}
+                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
+                onPress={() => router.push("/map")}
               >
-                <MaterialIcons name="calendar-today" size={24} color="#ffffff" />
+                <View className="w-10 h-10 bg-primary/10 rounded-xl items-center justify-center mb-2">
+                  <MaterialIcons name="location-on" size={20} color="#b80035" />
+                </View>
+                <Text className="text-xs font-semibold text-on-surface">Centres</Text>
+              </Pressable>
+              <Pressable
+                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
+                onPress={() => router.push("/appointments" as any)}
+              >
+                <View className="w-10 h-10 bg-secondary/10 rounded-xl items-center justify-center mb-2">
+                  <MaterialIcons name="event" size={20} color="#006591" />
+                </View>
+                <Text className="text-xs font-semibold text-on-surface">RDV</Text>
+              </Pressable>
+              <Pressable
+                className="flex-1 bg-surface-container-lowest p-4 rounded-2xl items-center border border-rose-100/30 active:bg-surface-container-low"
+                onPress={() => router.push("/notifications" as any)}
+              >
+                <View className="w-10 h-10 bg-tertiary/10 rounded-xl items-center justify-center mb-2">
+                  <MaterialIcons name="notifications" size={20} color="#006847" />
+                </View>
+                <Text className="text-xs font-semibold text-on-surface">Alertes</Text>
               </Pressable>
             </View>
-          </View>
+          </Animated.View>
+
+          {/* Stats — dynamic */}
+          <Animated.View entering={FadeInDown.delay(300).duration(400)}>
+            <Text className="text-sm font-bold text-on-surface mb-3 px-1">
+              Votre impact
+            </Text>
+            <View className="flex-row gap-3 mb-4">
+              <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-rose-100/30">
+                <View className="flex-row items-center gap-2 mb-2">
+                  <View className="w-8 h-8 bg-primary/10 rounded-full items-center justify-center">
+                    <MaterialIcons name="opacity" size={16} color="#b80035" />
+                  </View>
+                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
+                    Dons effectués
+                  </Text>
+                </View>
+                <Text className="text-2xl font-extrabold text-on-surface">{stats?.donationCount ?? 0}</Text>
+              </View>
+              <View className="flex-1 bg-surface-container-lowest p-4 rounded-2xl border border-rose-100/30">
+                <View className="flex-row items-center gap-2 mb-2">
+                  <View className="w-8 h-8 bg-tertiary/10 rounded-full items-center justify-center">
+                    <MaterialIcons name="favorite" size={16} color="#006847" />
+                  </View>
+                  <Text className="text-[10px] text-on-surface-variant uppercase font-bold">
+                    Vies sauvées
+                  </Text>
+                </View>
+                <Text className="text-2xl font-extrabold text-on-surface">{stats?.livesSaved ?? 0}</Text>
+              </View>
+            </View>
+          </Animated.View>
+
+          {/* Next Donation — dynamic */}
+          <Animated.View entering={FadeInDown.delay(350).duration(400)}>
+            <View className="bg-primary p-5 rounded-2xl shadow-lg shadow-primary/20">
+              <View className="flex-row items-center justify-between">
+                <View className="flex-1">
+                  <Text className="text-white/80 text-xs uppercase font-bold tracking-wider mb-1">
+                    Prochain don possible
+                  </Text>
+                  <Text className="text-white text-xl font-extrabold">
+                    {daysUntil(stats?.nextDonationDate ?? null)}
+                  </Text>
+                  {stats?.lastDonationDate ? (
+                    <Text className="text-white/70 text-xs mt-1">
+                      Dernier don: {formatDateShort(stats.lastDonationDate)}
+                    </Text>
+                  ) : (
+                    <Text className="text-white/70 text-xs mt-1">
+                      Premier don ? Prenez rendez-vous !
+                    </Text>
+                  )}
+                </View>
+                <Pressable
+                  className="w-12 h-12 bg-white/20 rounded-full items-center justify-center active:scale-95"
+                  onPress={() => router.push("/booking" as any)}
+                >
+                  <MaterialIcons name="calendar-today" size={24} color="#ffffff" />
+                </Pressable>
+              </View>
+            </View>
+          </Animated.View>
         </ScrollView>
       )}
     </SafeAreaView>
   );
 }
+

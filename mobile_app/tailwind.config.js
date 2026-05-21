@@ -28,19 +28,19 @@ module.exports = {
           foreground: "#ffffff",
         },
         surface: {
-          DEFAULT: "#f8f9ff",
-          variant: "#dee3eb",
+          DEFAULT: "#ffffff", // Pure white background
+          variant: "#fee2e2", // Faint rose/red border tint
           container: {
             lowest: "#ffffff",
-            low: "#f4f4f9",
-            DEFAULT: "#eceef4",
-            high: "#e6e8ee",
-            highest: "#e0e2e8",
+            low: "#fff8f9", // Soft rose-tinted white
+            DEFAULT: "#fff1f2", // Very light rose container
+            high: "#ffe4e6", // Light rose
+            highest: "#fecaca", // Rose border/accent
           },
         },
         "on-surface": {
-          DEFAULT: "#1a1c1e",
-          variant: "#42474d",
+          DEFAULT: "#0f172a", // Premium slate/indigo navy (instead of black/gray)
+          variant: "#3b4e68", // Deep slate blue for subtexts (instead of neutral gray)
         },
         error: { DEFAULT: "#ba1a1a", container: "#ffdad6" },
       },

@@ -1,5 +1,8 @@
 import { Pressable, Text, ActivityIndicator, View } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { cn } from "@/lib/utils";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -23,7 +26,7 @@ export default function Button({
   icon,
 }: ButtonProps) {
   const base =
-    "flex-row items-center justify-center rounded-2xl font-semibold active:opacity-80";
+    "flex-row items-center justify-center rounded-2xl font-semibold";
 
   const variants = {
     primary: "bg-primary",
@@ -51,10 +54,33 @@ export default function Button({
     lg: "text-lg",
   };
 
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    if (!disabled && !loading) {
+      scale.value = withSpring(0.96, { damping: 12, stiffness: 250 });
+    }
+  };
+
+  const handlePressOut = () => {
+    if (!disabled && !loading) {
+      scale.value = withSpring(1, { damping: 12, stiffness: 250 });
+    }
+  };
+
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       disabled={disabled || loading}
+      style={animatedStyle}
       className={cn(base, variants[variant], sizes[size], className)}
     >
       {loading ? (
@@ -70,6 +96,7 @@ export default function Button({
           </Text>
         </>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
+

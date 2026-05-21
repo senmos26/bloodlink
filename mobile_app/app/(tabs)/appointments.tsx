@@ -70,43 +70,43 @@ function getStatusConfig(status: AppointmentStatus) {
 // ── Styles ─────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#f8f9ff" },
+  safe: { flex: 1, backgroundColor: "#ffffff" },
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 24, paddingVertical: 16 },
-  title: { fontSize: 24, fontWeight: "800", color: "#1a1c1e" },
-  subtitle: { fontSize: 14, color: "#42474d", marginTop: 2 },
+  title: { fontSize: 24, fontWeight: "800", color: "#0f172a" },
+  subtitle: { fontSize: 14, color: "#3b4e68", marginTop: 2 },
   addBtn: { width: 44, height: 44, borderRadius: 16, backgroundColor: "#b80035", alignItems: "center", justifyContent: "center" },
-  filterRow: { flexDirection: "row", marginHorizontal: 24, marginBottom: 16, backgroundColor: "#f4f4f9", borderRadius: 16, padding: 4 },
+  filterRow: { flexDirection: "row", marginHorizontal: 24, marginBottom: 16, backgroundColor: "#fff1f2", borderRadius: 16, padding: 4 },
   filterTab: { flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: "center" },
-  filterTabActive: { backgroundColor: "#ffffff", shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 4, shadowOffset: { width: 0, height: 1 }, elevation: 2 },
-  filterText: { fontSize: 14, fontWeight: "700", color: "#42474d" },
+  filterTabActive: { backgroundColor: "#ffffff", shadowColor: "#b80035", shadowOpacity: 0.06, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  filterText: { fontSize: 14, fontWeight: "700", color: "#3b4e68" },
   filterTextActive: { color: "#b80035" },
   centered: { flex: 1, alignItems: "center", justifyContent: "center" },
-  loadingText: { marginTop: 12, fontSize: 14, color: "#42474d" },
+  loadingText: { marginTop: 12, fontSize: 14, color: "#3b4e68" },
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
-  emptyIcon: { width: 80, height: 80, backgroundColor: "#f4f4f9", borderRadius: 24, alignItems: "center", justifyContent: "center", marginBottom: 16 },
-  emptyTitle: { fontSize: 18, fontWeight: "700", color: "#1a1c1e", textAlign: "center", marginBottom: 4 },
-  emptyDesc: { fontSize: 14, color: "#42474d", textAlign: "center", maxWidth: 260 },
+  emptyIcon: { width: 80, height: 80, backgroundColor: "#fff1f2", borderRadius: 24, alignItems: "center", justifyContent: "center", marginBottom: 16 },
+  emptyTitle: { fontSize: 18, fontWeight: "700", color: "#0f172a", textAlign: "center", marginBottom: 4 },
+  emptyDesc: { fontSize: 14, color: "#3b4e68", textAlign: "center", maxWidth: 260 },
   bookBtn: { marginTop: 20, backgroundColor: "#b80035", paddingHorizontal: 24, paddingVertical: 12, borderRadius: 999 },
   bookBtnText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
   list: { flex: 1, paddingHorizontal: 24 },
-  card: { backgroundColor: "#ffffff", borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: "rgba(0,0,0,0.05)" },
+  card: { backgroundColor: "#ffffff", borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: "rgba(184,0,53,0.08)" },
   cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
-  cardDateRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  cardIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(184,0,53,0.1)", alignItems: "center", justifyContent: "center" },
-  cardDate: { fontSize: 14, fontWeight: "700", color: "#1a1c1e" },
-  cardTime: { fontSize: 12, color: "#42474d" },
+  cardDateRow: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
+  cardIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(184,0,53,0.08)", alignItems: "center", justifyContent: "center" },
+  cardDate: { fontSize: 14, fontWeight: "700", color: "#0f172a" },
+  cardTime: { fontSize: 12, color: "#3b4e68" },
   statusChip: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
   statusText: { fontSize: 10, fontWeight: "700" },
-  centerBox: { backgroundColor: "#f4f4f9", borderRadius: 12, padding: 12, marginBottom: 12 },
+  centerBox: { backgroundColor: "#fff8f9", borderRadius: 12, padding: 12, marginBottom: 12 },
   centerRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
-  centerName: { fontSize: 14, fontWeight: "600", color: "#1a1c1e", flex: 1 },
+  centerName: { fontSize: 14, fontWeight: "600", color: "#0f172a", flex: 1 },
   addressRow: { flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 2 },
-  addressText: { fontSize: 12, color: "#42474d", flex: 1 },
-  notes: { fontSize: 12, color: "#42474d", marginBottom: 12, fontStyle: "italic" },
+  addressText: { fontSize: 12, color: "#3b4e68", flex: 1 },
+  notes: { fontSize: 12, color: "#3b4e68", marginBottom: 12, fontStyle: "italic" },
   actions: { flexDirection: "row", gap: 8 },
   actionBtn: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 10, borderRadius: 12 },
-  cancelBtn: { backgroundColor: "#f4f4f9" },
-  callBtn: { backgroundColor: "rgba(184,0,53,0.1)" },
+  cancelBtn: { backgroundColor: "#fff1f2" },
+  callBtn: { backgroundColor: "rgba(184,0,53,0.08)" },
   actionText: { fontSize: 12, fontWeight: "700", color: "#b80035" },
 });
 
@@ -207,7 +207,7 @@ export default function AppointmentsScreen() {
             <MaterialIcons
               name={activeFilter === "upcoming" ? "event-available" : "history"}
               size={36}
-              color="#5c3f40"
+              color="#b80035"
             />
           </View>
           <Text style={s.emptyTitle}>
@@ -234,7 +234,7 @@ export default function AppointmentsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => loadAppointments(true)} colors={["#b80035"]} />}
         contentContainerStyle={{ paddingBottom: 24 }}
       >
-        {displayed.map((appointment) => {
+        {displayed.map((appointment, index) => {
           const statusConfig = getStatusConfig(appointment.status);
           const dateLabel = isToday(appointment.scheduledDate)
             ? "Aujourd'hui"
@@ -243,7 +243,11 @@ export default function AppointmentsScreen() {
               : formatDate(appointment.scheduledDate);
 
           return (
-            <View key={appointment.id} style={s.card}>
+            <Animated.View
+              key={appointment.id}
+              entering={FadeInDown.delay(index * 100).duration(450)}
+              style={s.card}
+            >
               <View style={s.cardHeader}>
                 <View style={s.cardDateRow}>
                   <View style={s.cardIconBox}>
@@ -289,7 +293,7 @@ export default function AppointmentsScreen() {
                   </Pressable>
                 </View>
               )}
-            </View>
+            </Animated.View>
           );
         })}
       </ScrollView>
