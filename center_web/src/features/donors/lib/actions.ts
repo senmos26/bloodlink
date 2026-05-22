@@ -22,14 +22,14 @@ export async function searchDonors(
 ): Promise<Donor[]> {
   const { center } = await requireCenterAdmin();
   const centerId = center?.id;
-  if (!centerId || !query.trim()) return [];
+  if (!centerId) return [];
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("search_center_donors", {
     p_center_id: centerId,
-    p_query: query,
+    p_query: query || "",
     p_blood_type: bloodType ?? null,
-    p_limit: 20,
+    p_limit: 50,
   });
 
   if (error) throw new Error(error.message);
