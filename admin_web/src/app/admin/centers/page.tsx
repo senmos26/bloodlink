@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getCenters } from "@/features/centers/lib/actions";
 import { CentersPage } from "@/features/centers/components/CentersPage";
 

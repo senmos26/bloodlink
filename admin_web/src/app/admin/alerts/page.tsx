@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getAlerts } from "@/features/alerts/lib/actions";
 import { AlertsPage } from "@/features/alerts/components/AlertsPage";
 

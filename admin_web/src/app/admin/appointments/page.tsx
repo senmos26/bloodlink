@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getAppointments } from "@/features/appointments/lib/actions";
 import { AppointmentsPage } from "@/features/appointments/components/AppointmentsPage";
 

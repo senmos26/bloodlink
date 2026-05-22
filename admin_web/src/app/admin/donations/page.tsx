@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getDonations } from "@/features/donations/lib/actions";
 import { DonationsPage } from "@/features/donations/components/DonationsPage";
 

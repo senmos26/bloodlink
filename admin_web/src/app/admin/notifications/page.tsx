@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getNotifications } from "@/features/notifications/lib/actions";
 import { NotificationsPage } from "@/features/notifications/components/NotificationsPage";
 

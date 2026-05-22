@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getProfiles } from "@/features/profiles/lib/actions";
 import { ProfilesPage } from "@/features/profiles/components/ProfilesPage";
 

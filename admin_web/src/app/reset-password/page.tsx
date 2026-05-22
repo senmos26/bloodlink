@@ -8,7 +8,25 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+// Wrap in Suspense because useSearchParams() requires it for static rendering
 export default function ResetPasswordPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+          <div className="w-full max-w-sm p-8 text-center">
+            <Lock className="mx-auto h-8 w-8 text-slate-300 animate-pulse" />
+            <p className="mt-4 text-sm text-slate-500">Chargement...</p>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordContent />
+    </React.Suspense>
+  );
+}
+
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const code = searchParams.get("code");
