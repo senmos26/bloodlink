@@ -1682,5 +1682,108 @@ vercel --prod
 
 ---
 
-*Document version 2.3 — BloodLink Architecture Complète.*  
+## 24. Spécification Technique Détaillée Fichier par Fichier
+
+Cette section documente le rôle technique, la logique d'implémentation et les dépendances de chaque fichier clé de la base de code du projet BloodLink.
+
+### 24.1. Base de Données & Triggers SQL (`supabase/`)
+
+*   **[`supabase/migrations/00001_initial.sql`](file:///c:/Users/achar/Documents/Boold_link/supabase/migrations/00001_initial.sql)** :
+    *   *Rôle* : Structure relationnelle de base du projet (MVP).
+    *   *Logique interne* : Déclare les enums métier et les contraintes RLS. Contient la fonction trigger `handle_new_user()` qui peuple `public.profiles` suite à l'inscription, et `update_donor_eligibility()` qui applique la règle **RM01** en calculant la date du prochain don (+56 jours) suite à la validation d'une ligne de don.
+*   **[`supabase/migrations/00004_push_notification_support.sql`](file:///c:/Users/achar/Documents/Boold_link/supabase/migrations/00004_push_notification_support.sql)** :
+    *   *Rôle* : Ajout de la colonne `fcm_token` sur `public.profiles` pour stocker les tokens de notification in-app/push.
+*   **[`supabase/migrations/00005_fix_trigger_blood_type.sql`](file:///c:/Users/achar/Documents/Boold_link/supabase/migrations/00005_fix_trigger_blood_type.sql)** :
+    *   *Rôle* : Synchro du groupe sanguin à l'inscription.
+    *   *Logique interne* : Corrige le trigger `handle_new_user()` pour qu'il aille chercher la clé `blood_type` dans `raw_user_meta_data` au lieu de laisser la colonne à NULL.
+*   **[`supabase/migrations/00006_chat_conversations.sql`](file:///c:/Users/achar/Documents/Boold_link/supabase/migrations/00006_chat_conversations.sql)** :
+    *   *Rôle* : Intégration du module RAG pour SangBot.
+    *   *Logique interne* : Active l'extension `vector`. Crée la table `knowledge_base` contenant la colonne vectorielle `embedding` (VECTOR(768)). Définit la fonction de recherche par similarité cosinus RPC `match_knowledge` qui classe et retourne les fragments documentaires les plus pertinents pour enrichir le prompt du chatbot.
+*   **[`supabase/migrations/00007_alerts_push_automation.sql`](file:///c:/Users/achar/Documents/Boold_link/supabase/migrations/00007_alerts_push_automation.sql)** :
+    *   *Rôle* : Automatisation du push mobile au niveau SQL.
+    *   *Logique interne* : Configure un Database Webhook sur `public.alerts` `AFTER INSERT`. À l'aide de l'extension `pg_net`, Postgres envoie une requête HTTP POST non bloquante (`net.http_post`) à la Deno Edge Function `send-push` avec le record de l'alerte créée. Contient la fonction géodésique Haversine `calculate_distance` et le RPC `get_compatible_donors_for_alert` de matching géographique, temporel et biologique.
+
+### 24.2. Deno Edge Functions (`supabase/functions/`)
+
+*   **[`supabase/functions/send-push/index.ts`](file:///c:/Users/achar/Documents/Boold_link/supabase/functions/send-push/index.ts)** :
+    *   *Rôle* : Dispatcher de notifications.
+    *   *Logique interne* : Sécurisé par token Bearer récupéré de `public.app_settings`. Il appelle la procédure stockée `get_compatible_donors_for_alert` pour trouver les profils donneurs cibles, insère les notifications in-app via un `bulk insert` sur `public.notifications`, puis transmet les requêtes de push par paquets de 100 à l'API Expo Push.
+*   **[`supabase/functions/verify-donation-qr/index.ts`](file:///c:/Users/achar/Documents/Boold_link/supabase/functions/verify-donation-qr/index.ts)** :
+    *   *Rôle* : API de validation physique des dons.
+    *   *Logique interne* : Appelé lors du scan du QR code donneur par un centre. Reçoit l'UUID du donneur, valide son rendez-vous, crée l'enregistrement de don validé, et applique le délai de carence en base.
+
+### 24.3. Code Partagé (`shared/`)
+
+*   **[`shared/types/index.ts`](file:///c:/Users/achar/Documents/Boold_link/shared/types/index.ts)** :
+    *   *Rôle* : Définition des types contractuels communs (Center, Donor, Appointment, BloodType, UserRole, etc.) assurant la cohérence de compilation TypeScript entre le mobile et les deux portails Next.js.
+*   **[`shared/lib/index.ts`](file:///c:/Users/achar/Documents/Boold_link/shared/lib/index.ts)** :
+    *   *Rôle* : Helpers utilitaires partagés (formatage de date, formatage de numéro de téléphone en espaces, etc.).
+
+### 24.4. Portail Web des Centres (`center_web/`)
+
+*   **[`center_web/src/middleware.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/middleware.ts)** :
+    *   *Rôle* : Filtre d'accès.
+    *   *Logique interne* : Configure `next-intl` pour rediriger les chemins multilingues (`fr`, `en`, etc.). Si un utilisateur est connecté mais n'a pas le rôle `center_admin`, il est déconnecté via `supabase.auth.signOut()` et redirigé vers `/login?error=unauthorized`.
+*   **[`center_web/src/shared/lib/supabase/auth-helpers.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/shared/lib/supabase/auth-helpers.ts)** :
+    *   *Rôle* : Résolution d'identité de centre.
+    *   *Logique interne* : Exporte `getCurrentUserCenter()` qui résout et retourne le `center_id` de l'administrateur connecté à partir de son profil Supabase DB, garantissant la sécurité des politiques RLS lors de la publication d'alertes.
+*   **[`center_web/src/features/ai/lib/tools.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/features/ai/lib/tools.ts)** :
+    *   *Rôle* : Déclaration des 11 outils utilisables par SangBot.
+    *   *Logique interne* : Requête la base PostgreSQL à l'aide d'un client administrateur bypassant RLS (`service_role` key) pour extraire l'éligibilité, les créneaux horaires ou les alertes en cours pour l'utilisateur.
+*   **[`center_web/src/features/ai/lib/rag.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/features/ai/lib/rag.ts)** :
+    *   *Rôle* : Recherche vectorielle.
+    *   *Logique interne* : Reçoit la requête textuelle du chat, génère son embedding avec Google Embeddings et appelle `match_knowledge` dans Supabase avec un timeout de 5 secondes pour intégrer le contexte au LLM.
+*   **[`center_web/src/app/api/chat/route.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/app/api/chat/route.ts)** :
+    *   *Rôle* : Point de terminaison SSE (Server-Sent Events) pour le chat mobile.
+    *   *Logique interne* : Décode le jeton JWT de session de l'en-tête Authorization. Valide que le `userId` du body de la requête correspond bien à l'identifiant du JWT pour bloquer les tentatives d'usurpation de données, puis initie le streaming SSE via `streamText()`.
+*   **[`center_web/src/features/donors/lib/actions.ts`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/features/donors/lib/actions.ts)** :
+    *   *Rôle* : Chargement et recherche des donneurs.
+    *   *Logique interne* : Fournit l'action serveur Next.js pour lister les donneurs. Autorise les requêtes textuelles vides pour charger la liste par défaut sur la page et fixe la limite à 50.
+*   **[`center_web/src/features/donors/components/DonorsPage.tsx`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/features/donors/components/DonorsPage.tsx)** :
+    *   *Rôle* : Interface UX de gestion de la base donneurs.
+    *   *Logique interne* : Composant interactif Tailwind 4 supportant le mode Grille (cartes descriptives) et le mode Liste (tableau compact), avec des "Chips" de sélection de groupe sanguin et un moteur de recherche.
+*   **[`center_web/src/features/appointments/components/AppointmentsPage.tsx`](file:///c:/Users/achar/Documents/Boold_link/center_web/src/features/appointments/components/AppointmentsPage.tsx)** :
+    *   *Rôle* : Tableau de bord unifié des rendez-vous.
+    *   *Logique interne* : Affiche les rendez-vous en Liste ou Grille. Gère les filtres de statuts avec compteurs de lignes, les sélections de dates (Aujourd'hui, sélecteur de calendrier) et les boutons d'action (Confirmer, Annuler, Terminer).
+
+### 24.5. Portail Web d'Administration (`admin_web/`)
+
+*   **[`admin_web/src/middleware.ts`](file:///c:/Users/achar/Documents/Boold_link/admin_web/src/middleware.ts)** :
+    *   *Rôle* : Restriction d'accès super-admin.
+    *   *Logique interne* : Vérifie la session active et bloque/redirige vers `/login` tout profil dont le rôle en base de données n'est pas `super_admin`.
+*   **[`admin_web/src/features/centers/lib/actions.ts`](file:///c:/Users/achar/Documents/Boold_link/admin_web/src/features/centers/lib/actions.ts)** :
+    *   *Rôle* : Logique de création de centre.
+    *   *Logique interne* : Appelle de manière sécurisée (Server Action) la Edge Function `create-center-account` et expose les fonctions de mise à jour d'activation des comptes.
+*   **[`admin_web/src/app/admin/centers/page.tsx`](file:///c:/Users/achar/Documents/Boold_link/admin_web/src/app/admin/centers/page.tsx)** (et pages soeurs `alerts`, `profiles`, etc.) :
+    *   *Rôle* : Pages du dashboard.
+    *   *Logique interne* : Configurées avec `export const dynamic = 'force-dynamic'` pour forcer l'évaluation dynamique côté serveur au build Vercel, résolvant les conflits liés à l'utilisation de Client Components utilisant `useSearchParams`.
+
+### 24.6. Application Mobile (`mobile_app/`)
+
+*   **[`mobile_app/app/_layout.tsx`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/app/_layout.tsx)** :
+    *   *Rôle* : Initialisation globale de l'application mobile.
+    *   *Logique interne* : Enregistre la typographie Outfit, configure le proxying automatique de la police Outfit sur `Text` natif, écoute l'authentification Supabase, s'abonne aux changements d'état (`AppState`) de l'appareil pour reconnecter les WebSockets Supabase Realtime, et gère les bannières système ainsi que la redirection automatique au clic sur les notifications.
+*   **[`mobile_app/app/auth/callback.tsx`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/app/auth/callback.tsx)** :
+    *   *Rôle* : Écran d'atterrissage Google Sign-In.
+    *   *Logique interne* : Résout les jetons d'authentification implicite (`#access_token=...`) ou PKCE issus de la redirection OAuth Google pour hydrater la session Supabase active.
+*   **[`mobile_app/services/push.native.ts`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/services/push.native.ts)** :
+    *   *Rôle* : Service de notifications.
+    *   *Logique interne* : Demande les permissions et génère le token Expo Push. Configure le canal Android natif avec une importance de type `AndroidImportance.MAX` pour forcer l'affichage en bannière des alertes d'urgences sanguines reçues.
+*   **[`mobile_app/services/alert-sharing.ts`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/services/alert-sharing.ts)** :
+    *   *Rôle* : Gestion des partages d'alertes parrainées.
+    *   *Logique interne* : Appelle les procédures stockées Supabase `create_alert_share` pour générer un code court de lien de partage public (`/s/[code]`), et `track_share_click` / `track_share_conversion` pour alimenter le tableau de bord d'impact de vies sauvées.
+*   **[`mobile_app/app/share-alert.tsx`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/app/share-alert.tsx)** :
+    *   *Rôle* : Écran de partage d'une alerte urgente.
+    *   *Logique interne* : Extrait l'identifiant local de l'alerte depuis l'URL via `useLocalSearchParams` pour charger la fiche de l'alerte correspondante en base et initialiser le parrainage (résolvant le bug de mock statique).
+*   **[`mobile_app/app/(tabs)/profile.tsx`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/app/(tabs)/profile.tsx)** :
+    *   *Rôle* : Profil donneur.
+    *   *Logique interne* : Affiche les informations cliniques de l'utilisateur et gère l'affichage de son QR code donneur. Le code utilise un intervalle répétitif de **5 minutes** pour regénérer dynamiquement le jeton d'authentification inclus dans le QR code afin de bloquer les attaques par rejeu.
+*   **[`mobile_app/components/ai/useChat.ts`](file:///c:/Users/achar/Documents/Boold_link/mobile_app/components/ai/useChat.ts)** :
+    *   *Rôle* : Hook d'analyse SSE pour le chat.
+    *   *Logique interne* : Écoute les paquets asynchrones renvoyés par la route d'API `/api/chat` de `center_web`, parse le flux de streaming ligne par ligne pour extraire le texte et les appels d'outils, et met à jour l'état local Zustand des messages.
+
+---
+
+*Document version 2.4 — BloodLink Architecture Complète.*  
 *Dernière mise à jour: 2026-05-24 (Analyse complète des 3 apps, intégration RAG IA et push via pg_net)*
+

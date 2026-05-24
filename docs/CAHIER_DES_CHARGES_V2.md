@@ -305,29 +305,65 @@ graph TB
 
 ```
 Boold_link/
-├── mobile_app/          # React Native + Expo SDK 54 + NativeWind
-│   ├── app/             # Expo Router (auth, tabs, modals)
-│   ├── components/      # UI, AI chat, profile, screens
-│   ├── services/        # Supabase, alerts, appointments, push, map, dashboard
-│   ├── hooks/           # Custom hooks
-│   ├── supabase/        # Migrations SQL (7 migrations)
-│   └── constants/       # Thème, config
-├── center_web/          # Next.js 15.4 — Dashboard Centre + IA Chat
-│   └── src/
-│       ├── app/         # App Router [locale]/(auth), (dashboard), api/chat
-│       ├── components/  # 53 composants shadcn/ui
-│       ├── features/    # ai, alerts, appointments, auth, center-dashboard, donations, donors, notifications
-│       ├── entities/    # alert, appointment, center, donation, donor
-│       ├── shared/      # i18n (fr/en/de/es), supabase, auth, utils, types
-│       └── middleware.ts
-├── admin_web/           # Next.js 16.2 — Dashboard Super Admin
-│   └── src/
-│       ├── app/         # admin/*, login, register, reset-password
-│       ├── components/  # UI shadcn
-│       ├── features/    # alerts, appointments, auth, centers, dashboard, donations, notifications, profiles
-│       └── middleware.ts
-├── supabase/            # Backend (si migrations centralisées)
-└── docs/                # Documentation
+├── package.json         # Dépendances globales et scripts pour lancer la CLI Supabase
+├── TSConfig.json        # Configuration TypeScript globale
+├── docs/                # Documentation projet (Cahier des charges, architecture, guides)
+│   ├── CAHIER_DES_CHARGES_V2.md # Spécifications fonctionnelles du MVP v2
+│   └── ARCHITECTURE_TECHNIQUE.md # Spécifications de l'architecture technique
+├── shared/              # Utilitaires et types partagés entre les 3 apps
+│   ├── types/index.ts   # Contrats d'interfaces types (Center, Donor, BloodType, UserRole...)
+│   └── lib/index.ts     # Helpers de formatage de dates, numéros de téléphone et étiquettes
+├── supabase/            # Backend unifié PostgreSQL (Supabase)
+│   ├── config.toml      # Config de la base locale, extensions (postgis, vector) et crons
+│   ├── seed.sql         # Jeu de données d'initialisation pour le développement local
+│   ├── DEPLOYMENT_GUIDE.md # Guide de déploiement en production
+│   ├── migrations/      # 8 migrations décrivant les tables, index et triggers
+│   │   ├── 00001_initial.sql                  # Schéma de base, enums, RLS, triggers d'éligibilité (56j)
+│   │   ├── 00002_rabat_centers.sql            # Centres de Rabat fictifs
+│   │   ├── 00003_rabat_real_centers.sql       # Vrais hôpitaux et centres de transfusion marocains
+│   │   ├── 00004_push_notification_support.sql# Champ fcm_token sur la table profiles
+│   │   ├── 00005_fix_trigger_blood_type.sql   # Synchro du groupe sanguin à l'inscription
+│   │   ├── 00006_chat_conversations.sql       # RAG, similarité pgvector et tables SangBot
+│   │   ├── 00006_fix_trigger_role_overwrite.sql # Correction du trigger d'inscription
+│   │   └── 00007_alerts_push_automation.sql   # Webhook pg_net de push et fonctions Haversine/check compat
+│   └── functions/       # Deno Edge Functions
+│       ├── create-center-account/index.ts     # Inscription de compte centre par super-admin
+│       ├── send-push/index.ts                 # Webhook d'envoi de push ciblé compatible et in-app
+│       └── verify-donation-qr/index.ts        # Validation de don par QR code et date +56 jours
+├── center_web/          # Portail des Centres de Transfusion (Next.js 15.4 + Tailwind 4)
+│   ├── src/
+│   │   ├── middleware.ts # i18n routing, restriction stricte au rôle center_admin et déconnexion forcée
+│   │   ├── app/         # Routes locales et API de streaming
+│   │   │   ├── [locale]/(dashboard)/alerts/page.tsx # Page de gestion des alertes
+│   │   │   ├── [locale]/(dashboard)/appointments/page.tsx # Page de gestion des rendez-vous
+│   │   │   ├── [locale]/(dashboard)/donors/page.tsx # Page d'indexation flexible de la base donneurs
+│   │   │   └── api/chat/route.ts # SSE API de SangBot avec validation userId/JWT
+│   │   ├── features/    # Composants métiers isolés par fonctionnalité (FSD pattern)
+│   │   │   ├── ai/      # Modèles Groq/Gemini, prompt système, similarité RAG et tools (service_role bypass RLS)
+│   │   │   ├── alerts/  # Actions serveurs de création/fermeture et modal de partage
+│   │   │   ├── appointments/ # Actions de confirmation/annulation de RDV
+│   │   │   └── donors/  # Hook useSearchDonors et page d'affichage Liste/Grille
+│   │   └── shared/      # Client Supabase et Helpers auth (getCurrentUserCenter)
+├── admin_web/           # Portail Super Administrateur (Next.js 16.2 + Tailwind 4)
+│   ├── src/
+│   │   ├── middleware.ts # Restriction stricte au rôle super_admin
+│   │   ├── app/         # Dashboard national, settings, et pages forcées en mode dynamique
+│   │   └── features/    # Actions serveurs sans gardes applicatives (reprises par RLS DB)
+│   │       ├── centers/ # Création et modification des centres transfusionnels
+│   │       └── profiles/# Visualisation et suspension de comptes utilisateurs
+└── mobile_app/          # Application Mobile des Donneurs (React Native Expo 54 + NativeWind)
+    ├── app.json         # Permissions système, build EAS et configuration Google Maps
+    ├── app/             # Expo Router (auth, tabs, modals)
+    │   ├── _layout.tsx  # Outfil fonts injection, AuthGuard, AppState WS connect et listeners push
+    │   ├── auth/callback.tsx # Traitement du callback Google Sign-In (Implicit / PKCE)
+    │   ├── (auth)/      # Welcome, login, register, verify-otp
+    │   ├── (tabs)/      # Home dashboard, Mes RDV, carte interactives (WebView OSM/Leaflet vs native)
+    │   ├── my-qr.tsx    # QR code donneur se regénérant toutes les 5 minutes (anti-rejeu)
+    │   ├── share-alert.tsx # Formulaire de parrainage d'alerte avec lecture d'UUID d'alerte
+    │   └── share-analytics.tsx # Tableau de bord parrainage du donneur
+    └── services/        # Consommation asynchrone des services Supabase
+        ├── push.native.ts # Enregistrement push token et Android channels setup
+        └── alert-sharing.ts # RPC create_alert_share, track_share_click, track_share_conversion
 ```
 
 ---
