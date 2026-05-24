@@ -1,4 +1,4 @@
-# Cahier des Charges — Projet BloodLink (MVP) v2.1
+# Cahier des Charges — Projet BloodLink (MVP) v2.2
 
 > Application de mise en relation entre donneurs de sang et centres de dons.
 
@@ -14,7 +14,7 @@
 | **Rythme** | 3 jours par semaine |
 | **Mode** | Collaboratif — pair programming rotatif, aucun rôle figé |
 | **Livrable** | MVP fonctionnel, déployable et démontrable |
-| **Version** | 2.1 (refonte stack technique & automatisation push) |
+| **Version** | 2.2 (refonte stack technique, RAG IA & push automatique) |
 
 ### 1.1. Équipe
 
@@ -102,14 +102,14 @@ BloodLink propose une plateforme qui met en relation les **donneurs** (mobile), 
 
 | Code | Règle |
 |---|---|
-| **RM01** | Délai de 56 jours entre deux dons |
+| **RM01** | Délai de 56 jours entre deux dons (Norme US / Croix-Rouge; Note : la réglementation marocaine du CNTS exige un délai de carence de 60 jours pour les hommes et 90 jours pour les femmes, ce qui constitue une cible d'évolution post-MVP après l'ajout de l'attribut genre) |
 | **RM02** | Donneur ≥ 18 ans et ≥ 50 kg |
 | **RM03** | Centre créé par super admin uniquement |
 | **RM04** | Alerte expire automatiquement après deadline |
 | **RM05** | Matching = groupe compatible + rayon + éligibilité |
 | **RM06** | RDV sur créneau futur uniquement |
 | **RM07** | Seul le centre valide un don |
-| **RM08** | Après validation don → `next_donation_date` +56 jours (trigger) |
+| **RM08** | Après validation don → `next_donation_date` +56 jours (trigger; Note : cible d'évolution de 60/90 jours selon le genre post-MVP) |
 | **RM09** | Utilisateur désactivé ne peut plus se connecter |
 | **RM10** | Mots de passe gérés par Supabase Auth (hash auto) |
 | **RM11** | RLS activée sur toutes les tables |
@@ -161,6 +161,8 @@ graph LR
     D((Donneur 📱))
     C((Centre 💻))
     A((Admin 💻))
+    SB((SangBot 🤖))
+    
     D --> UC01[S'inscrire]
     D --> UC02[Se connecter]
     D --> UC04[Profil donneur]
@@ -169,14 +171,25 @@ graph LR
     D --> UC09[Notif push]
     D --> UC10[Prendre RDV]
     D --> UC11[Mes RDV]
+    D --> UC16[Chat avec SangBot]
+    D --> UC17[Partager alerte]
+    D --> UC18[Analytics partage]
+    
     C --> UC02
     C --> UC05[Profil centre]
     C --> UC07[Créer alerte]
+    C --> UC11[Voir les RDV]
     C --> UC12[Confirmer RDV]
     C --> UC13[Valider don]
+    C --> UC19[Scanner QR donneur]
+    C --> UC20[Exporter PDF/Excel]
+    
     A --> UC02
     A --> UC14[Gérer centres]
     A --> UC15[Superviser]
+    A --> UC20
+    
+    SB --> UC16
 ```
 
 ### Spécifications détaillées
@@ -268,19 +281,22 @@ graph TB
         RAG[RAG Google Embeddings]
     end
     subgraph Externe
-        FCM[FCM]
-        Maps[Maps]
+        FCM[FCM / Expo Push]
+        Maps[Maps / OSM / Leaflet]
     end
     Mobile --> API
     Mobile --> Auth
+    Mobile <-->|SSE Chat| CenterWeb
     CenterWeb --> API
     CenterWeb --> Auth
     CenterWeb --> Groq
     AdminWeb --> API
     AdminWeb --> Auth
     API --> DB
+    DB -->|Webhook pg_net| EF
     EF --> DB
-    EF --> FCM
+    EF -->|Expo Push API| FCM
+    FCM -->|Push Notification| Mobile
     Mobile --> Maps
     Groq --> RAG
 ```
@@ -448,22 +464,25 @@ Boold_link/
 
 ```mermaid
 classDiagram
-    class Profile { +UUID id +string full_name +BloodType blood_type +UserRole role +isEligible() }
-    class Center { +UUID id +string name +float lat/lng +createAlert() +validateDonation() }
-    class Alert { +UUID id +BloodType blood_type_required +UrgencyLevel urgency_level +matchDonors() }
+    class Profile { +UUID id +string full_name +string phone +BloodType blood_type +UserRole role +next_donation_date date +isEligible() }
+    class Center { +UUID id +string name +float lat/lng +admin_id UUID +createAlert() +validateDonation() }
+    class Alert { +UUID id +BloodType blood_type_required +UrgencyLevel urgency_level +int radius_km +deadline datetime +matchDonors() }
     class Appointment { +UUID id +datetime scheduled_date +AppointmentStatus status +confirm() }
     class Donation { +UUID id +DonationStatus status +validate() }
-    class Notification { +UUID id +string title/body +markAsRead() }
-    class AlertShare { +UUID id +string short_code +int click_count +int conversion_count }
+    class Notification { +UUID id +string title +string body +markAsRead() }
+    class AlertShare { +UUID id +string short_code +string original_url +JSONB share_data +int click_count +int conversion_count }
+    class ShareActivity { +UUID id +string share_link_id +string activity_type +string platform }
     class KnowledgeBase { +UUID id +string content +vector embedding +string category }
+    class AppSettings { +string key +string value }
     Profile "1" --> "*" Appointment : prend
     Profile "1" --> "*" Donation : effectue
+    Profile "1" --> "*" Notification : reçoit
+    Profile "1" --> "*" AlertShare : crée
     Center "1" --> "*" Alert : publie
     Center "1" --> "*" Appointment : gère
     Alert "1" --> "*" Appointment : génère
     Appointment "1" --> "0..1" Donation : produit
-    Alert "1" --> "*" AlertShare : partage
-    Profile "1" --> "*" AlertShare : crée
+    AlertShare "1" --> "*" ShareActivity : génère
 ```
 
 ---
@@ -472,18 +491,16 @@ classDiagram
 
 ```mermaid
 erDiagram
-    PROFILES ||--o{ APPOINTMENTS : prend
-    PROFILES ||--o{ DONATIONS : effectue
-    PROFILES ||--o{ NOTIFICATIONS : recoit
-    PROFILES ||--o{ ALERT_SHARES : cree
-    CENTERS ||--o| PROFILES : administre
-    CENTERS ||--o{ ALERTS : publie
-    CENTERS ||--o{ APPOINTMENTS : accueille
-    ALERTS ||--o{ APPOINTMENTS : genere
-    ALERTS ||--o{ ALERT_SHARES : partage
-    ALERT_SHARES ||--o{ SHARE_ACTIVITIES : tracke
-    APPOINTMENTS ||--o| DONATIONS : produit
-    KNOWLEDGE_BASE ||--o{ RAG_SEARCH : utilise
+    PROFILES ||--o{ APPOINTMENTS : "prend (donor_id)"
+    PROFILES ||--o{ DONATIONS : "effectue (donor_id)"
+    PROFILES ||--o{ NOTIFICATIONS : "recoit (user_id)"
+    PROFILES ||--o{ ALERT_SHARES : "cree (user_id)"
+    CENTERS ||--o| PROFILES : "administre (admin_id)"
+    CENTERS ||--o{ ALERTS : "publie (center_id)"
+    CENTERS ||--o{ APPOINTMENTS : "accueille (center_id)"
+    ALERTS ||--o{ APPOINTMENTS : "genere (alert_id)"
+    ALERT_SHARES ||--o{ SHARE_ACTIVITIES : "tracke (share_link_id)"
+    APPOINTMENTS ||--o| DONATIONS : "produit (appointment_id)"
 ```
 
 ---
@@ -493,20 +510,24 @@ erDiagram
 ```mermaid
 sequenceDiagram
     participant C as Centre
-    participant SB as Supabase
+    participant DB as Supabase DB
+    participant pg as Extension pg_net
     participant EF as EdgeFn (send-push)
-    participant FCM as Firebase / Expo
+    participant Expo as Expo Push API
     participant D as Donneur
-    C->>SB: Créer alerte (INSERT)
-    SB->>EF: Webhook (AFTER INSERT)
-    EF->>SB: get_compatible_donors_for_alert()
-    EF->>FCM: Push ciblé (Expo Push API)
-    FCM-->>D: Notification reçue
-    D->>SB: Prendre RDV
-    C->>SB: Confirmer RDV
-    C->>SB: Valider don
-    SB->>SB: Trigger MAJ éligibilité (RM08)
-    SB->>FCM: Notif push donneur
+    C->>DB: Créer alerte (INSERT alerts)
+    DB->>pg: Déclencher trg_alert_insert_webhook
+    pg->>EF: HTTP POST asynchrone (/functions/v1/send-push)
+    EF->>DB: get_compatible_donors_for_alert()
+    DB-->>EF: Liste des donneurs compatibles (FCM tokens & distances)
+    EF->>DB: INSERT public.notifications (In-app)
+    EF->>Expo: Envoi push en lots (Expo Push API)
+    Expo-->>D: Notification reçue sur le mobile
+    D->>DB: Prendre RDV (INSERT appointments)
+    C->>DB: Confirmer RDV (UPDATE status='confirmed')
+    C->>DB: Valider don (INSERT donations)
+    DB->>DB: Trigger update_donor_eligibility (RM08: MAJ next_donation_date)
+    DB->>Expo: Notif push de validation au donneur
 ```
 
 ---
@@ -689,5 +710,5 @@ Mobile (useChat) ──POST──► /api/chat ──► JWT verify
 
 ---
 
-*Fin du cahier des charges BloodLink v2.1 — MVP 6 semaines.*
-*Dernière mise à jour : 2026-05-21 (Intégration push notifications automatisées)*
+*Fin du cahier des charges BloodLink v2.2 — MVP 6 semaines.*
+*Dernière mise à jour : 2026-05-24 (Analyse complète des 3 apps, intégration RAG IA et push via pg_net)*

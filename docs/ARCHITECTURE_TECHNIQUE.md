@@ -11,7 +11,7 @@
 
 | Couche | Technologie | Rôle |
 |--------|-------------|------|
-| **Base de données** | PostgreSQL (Supabase) | Stockage relationnel, géospatial (PostGIS), triggers, vector search (pgvector) |
+| **Base de données** | PostgreSQL (Supabase) | Stockage relationnel, géospatial (formule de Haversine), triggers, vector search (pgvector, pg_net) |
 | **Auth & Session** | Supabase Auth | Register, login, logout, JWT, reset password, email confirmation |
 | **API** | Supabase REST + Edge Functions + Next.js API Routes | CRUD auto + logique métier + IA chat streaming |
 | **Temps réel** | Supabase Realtime | Notifications in-app, mises à jour live |
@@ -20,7 +20,7 @@
 | **Web Centre** | Next.js 15.4 + TypeScript + Tailwind 4 + shadcn/ui | Dashboard centre + IA SangBot |
 | **Web Admin** | Next.js 16.2 + TypeScript + Tailwind 4 + shadcn/ui | Dashboard super_admin |
 | **IA Chat** | Vercel AI SDK v6 + Groq (Llama 3.3 70B) | Assistant SangBot avec streaming SSE, tool calling, RAG |
-| **Notifications push** | expo-notifications + Firebase FCM | Alertes ciblées sur mobile |
+| **Notifications push** | expo-notifications + Firebase FCM / Expo Push | Alertes ciblées sur mobile |
 | **Cartographie mobile** | react-native-maps | Affichage des centres et alertes géolocalisées |
 | **Cartographie admin** | Leaflet + react-leaflet | Carte centres dans admin |
 | **i18n** | next-intl (fr/en/de/es) | Internationalisation centre web |
@@ -236,7 +236,7 @@ Extension métier de `auth.users`. Créée automatiquement par trigger à l'insc
 - `INSERT` : `auth.uid() = center_admin` du centre (seul le centre crée un don).
 - `UPDATE` : `auth.uid() = center_admin` ET `status` transition autorisée.
 
-**Trigger** : `update_donor_eligibility()` — quand `status` passe à `validated`, met `profiles.next_donation_date = donation_date + 56 jours`.
+**Trigger** : `update_donor_eligibility()` — quand `status` passe à `validated`, met `profiles.next_donation_date = donation_date + 56 jours` (Norme US Croix-Rouge; Note : au Maroc, le délai de carence réglementaire est de 60 jours pour les hommes et 90 jours pour les femmes. Cette adaptation selon le genre constitue une cible d'évolution réglementaire post-MVP).
 
 ### 4.6. `notifications`
 
@@ -356,6 +356,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.status = 'validated' AND OLD.status != 'validated' THEN
     UPDATE public.profiles
+    -- Note : Utilise 56 jours par défaut pour le MVP (cible d'adaptation réglementaire marocaine 60/90j post-MVP)
     SET next_donation_date = NEW.donation_date + INTERVAL '56 days',
         updated_at = NOW()
     WHERE id = NEW.donor_id;
@@ -709,7 +710,7 @@ S6 — Tests + Déploiement
 
 | Règle | Où implémentée | Comment |
 |-------|---------------|---------|
-| **RM01** (56 jours) | Trigger SQL | `update_donor_eligibility()` |
+| **RM01** (56 jours) | Trigger SQL | `update_donor_eligibility()` (Note : 56 jours par défaut pour le MVP, extension à 60j/90j post-MVP pour conformité CNTS Maroc) |
 | **RM02** (18 ans, 50kg) | App mobile + Edge Function | Validation formulaire + `check-eligibility` |
 | **RM03** (pas d'auto-inscription centre) | RLS + Edge Function | `INSERT centers` bloqué pour `donor` ; création via `create-center` |
 | **RM04** (alerte date limite) | Trigger / Cron | `expire_old_alerts()` |
@@ -760,7 +761,7 @@ flowchart TB
     end
 
     subgraph External_Services
-        FCM[Firebase Cloud Messaging<br/>Push Notifications]
+        FCM[Firebase / Expo Push Service<br/>Push Notifications]
         MAPRN[react-native-maps<br/>Cartographie Mobile]
         MAPL[Leaflet<br/>Cartographie Admin]
     end
@@ -771,6 +772,7 @@ flowchart TB
     MOB -->|Invoke| EF
     MOB -->|SDK| FCM
     MOB -->|SDK| MAPRN
+    MOB <-->|SSE Chat streaming| CW
 
     CW -->|SSR Auth| AUTH
     CW -->|Server Client| DB
@@ -785,10 +787,10 @@ flowchart TB
     AW -->|SDK| MAPL
 
     EF -->|Query| DB
-    EF -->|HTTP| FCM
+    EF -->|HTTP POST Expo Push API| FCM
 
     AUTH -->|Trigger| DB
-    DB -->|Trigger| DB
+    DB -->|Webhook pg_net| EF
 ```
 
 ### 14.2. Flux de données - Inscription à Don
@@ -799,54 +801,59 @@ sequenceDiagram
     actor Center as Centre
     actor Admin as Super Admin
     participant Mobile as App Mobile
+    participant CenterWeb as Centre Web
     participant AdminWeb as Admin Web
-    participant Supa as Supabase
+    participant DB as Supabase DB
+    participant pg as pg_net (DB webhook)
     participant EF as Edge Functions
-    participant FCM as Firebase FCM
+    participant FCM as Firebase / Expo Push
 
     rect rgb(230, 245, 255)
-        Note over Admin,Supa: Phase 1: Setup (S1-S2)
+        Note over Admin,DB: Phase 1: Setup (S1-S2)
         Admin->>AdminWeb: Crée compte Centre
-        AdminWeb->>EF: POST create-center
-        EF->>Supa: INSERT auth.users + profiles + centers
+        AdminWeb->>EF: POST create-center-account
+        EF->>DB: INSERT auth.users + profiles + centers
         EF->>Center: Email avec mot de passe temporaire
     end
 
     rect rgb(255, 245, 230)
-        Note over Donor,Supa: Phase 2: Inscription (S1)
+        Note over Donor,DB: Phase 2: Inscription (S1)
         Donor->>Mobile: Formulaire Register
-        Mobile->>Supa: auth.signUp()
-        Supa->>Supa: Trigger: INSERT profiles
-        Supa-->>Mobile: JWT + User
-        Mobile->>Supa: PATCH profiles (compléter profil)
+        Mobile->>DB: auth.signUp()
+        DB->>DB: Trigger: INSERT profiles
+        DB-->>Mobile: JWT + User
+        Mobile->>DB: PATCH profiles (compléter profil)
     end
 
     rect rgb(255, 230, 230)
-        Note over Center,Supa: Phase 3: Alerte (S3)
-        Center->>Mobile: Créer alerte
-        Mobile->>Supa: INSERT alerts
-        Supa->>EF: Trigger match-alerts
-        EF->>Supa: SELECT donneurs compatibles
-        EF->>Supa: INSERT notifications
-        EF->>FCM: Envoi push
-        FCM-->>Mobile: Notification reçue
+        Note over Center,DB: Phase 3: Alerte (S3-S4)
+        Center->>CenterWeb: Créer alerte (formulaire)
+        CenterWeb->>DB: INSERT alerts (public.alerts)
+        DB->>pg: Trigger: trg_alert_insert_webhook
+        pg->>EF: HTTP POST (send-push)
+        EF->>DB: get_compatible_donors_for_alert()
+        DB-->>EF: Donneurs compatibles
+        EF->>DB: INSERT notifications (in-app)
+        EF->>FCM: Envoi push (Expo Push API)
+        FCM-->>Mobile: Notification push reçue
     end
 
     rect rgb(230, 255, 230)
-        Note over Donor,Supa: Phase 4: RDV (S4)
+        Note over Donor,DB: Phase 4: RDV (S4)
         Donor->>Mobile: Prendre RDV
         Mobile->>EF: check-eligibility
         EF-->>Mobile: OK (éligible)
-        Mobile->>Supa: INSERT appointments
-        Supa->>FCM: Notif au centre
+        Mobile->>DB: INSERT appointments
+        DB-->>CenterWeb: Notification temps réel (Realtime)
     end
 
     rect rgb(240, 230, 255)
-        Note over Center,Supa: Phase 5: Validation (S5)
-        Center->>Mobile: Valider don
-        Mobile->>Supa: INSERT donations + UPDATE appointments
-        Supa->>Supa: Trigger: UPDATE next_donation_date
-        Supa->>FCM: Notif confirmation
+        Note over Center,DB: Phase 5: Validation (S5)
+        Center->>CenterWeb: Scanner QR / Valider don
+        CenterWeb->>EF: POST verify-donation-qr
+        EF->>DB: INSERT donations + UPDATE appointments
+        DB->>DB: Trigger: update_donor_eligibility (RM08)
+        DB->>FCM: Envoi notification push donneur
     end
 ```
 
@@ -1314,7 +1321,7 @@ interface AppError {
 
 {
   "code": "ELIGIBILITY_COOLING_PERIOD",
-  "message": "Vous devez attendre 56 jours entre deux dons",
+  "message": "Vous devez attendre 56 jours entre deux dons (cible Maroc post-MVP: 60 jours pour les hommes / 90 jours pour les femmes)",
   "rule": "RM01",
   "details": {
     "next_donation_date": "2026-06-15",
@@ -1675,5 +1682,5 @@ vercel --prod
 
 ---
 
-*Document version 2.2 — BloodLink Architecture Complète.*  
-*Dernière mise à jour: 2026-05-21 (Intégration push notifications automatisées)*
+*Document version 2.3 — BloodLink Architecture Complète.*  
+*Dernière mise à jour: 2026-05-24 (Analyse complète des 3 apps, intégration RAG IA et push via pg_net)*
