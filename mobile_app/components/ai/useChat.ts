@@ -277,8 +277,45 @@ export function useChat(options: UseChatOptions = {}) {
           throw new Error(`Erreur ${response.status}`);
         }
 
-        if (!response.body) {
-          throw new Error("Réponse vide");
+        if (!response.body || typeof response.body.getReader !== "function") {
+          // Fallback for React Native (no streaming support in native fetch)
+          const text = await response.text();
+          const lines = text.split("\n");
+          let accumulatedText = "";
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6).trim();
+              if (data === "[DONE]") continue;
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.type === "text-delta" && parsed.delta) {
+                  accumulatedText += parsed.delta;
+                } else if (parsed.type === "error") {
+                  setError(sanitizeChatError(parsed.errorText));
+                }
+              } catch {
+                // Ignore parsing errors
+              }
+            }
+          }
+          if (accumulatedText) {
+            const finalText = normalizeStreamText(accumulatedText);
+            const assistantId = generateId();
+            const withAssistant = [
+              ...updatedMessages,
+              { id: assistantId, role: "assistant" as const, content: finalText },
+            ];
+            setMessages(syncRef(withAssistant));
+            if (convId) {
+              void persistMessage(convId, { id: assistantId, role: "assistant", content: finalText });
+              refreshConversationsSoon();
+            }
+          } else {
+            throw new Error("Réponse vide");
+          }
+          setIsLoading(false);
+          sendingRef.current = false;
+          return;
         }
 
         const assistantId = generateId();
