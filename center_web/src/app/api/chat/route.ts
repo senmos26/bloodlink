@@ -102,57 +102,65 @@ async function buildDirectDonorProfileAnswer({
     return "Je n'arrive pas à accéder à votre session BloodLink. Reconnectez-vous puis réessayez pour que je puisse vérifier votre profil et votre éligibilité.";
   }
 
-  let { data: profile, error } = await supabaseAdmin
-    .from("profiles")
-    .select("full_name, phone, blood_type, date_of_birth, weight_kg, next_donation_date, latitude, longitude, is_active")
-    .eq("id", userId)
-    .single();
+  let profile: any = null;
+  let error: any = null;
 
-  if ((error || !profile) && authToken) {
-    const supabaseUserClient = createSupabaseClient(supabaseUrl, anonKey, {
-      global: {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      },
-    });
-    const fallback = await supabaseUserClient
+  try {
+    const firstQuery = await supabaseAdmin
       .from("profiles")
       .select("full_name, phone, blood_type, date_of_birth, weight_kg, next_donation_date, latitude, longitude, is_active")
       .eq("id", userId)
       .single();
-    profile = fallback.data;
-    error = fallback.error;
+    profile = firstQuery.data;
+    error = firstQuery.error;
+
+    if ((error || !profile) && authToken) {
+      const supabaseUserClient = createSupabaseClient(supabaseUrl, anonKey, {
+        global: {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        },
+      });
+      const fallback = await supabaseUserClient
+        .from("profiles")
+        .select("full_name, phone, blood_type, date_of_birth, weight_kg, next_donation_date, latitude, longitude, is_active")
+        .eq("id", userId)
+        .single();
+      profile = fallback.data;
+      error = fallback.error;
+    }
+
+    if (error || !profile) {
+      return "Je n'arrive pas à récupérer votre profil BloodLink pour le moment. Vérifiez que vous êtes connecté, puis réessayez.";
+    }
+
+    const missingFields = [
+      !profile.full_name ? "nom complet" : null,
+      !profile.phone ? "téléphone" : null,
+      !profile.blood_type ? "groupe sanguin" : null,
+      !profile.date_of_birth ? "date de naissance" : null,
+      !profile.weight_kg ? "poids" : null,
+      profile.latitude === null || profile.longitude === null ? "localisation" : null,
+    ].filter(Boolean);
+    const waitingDays = daysUntil(profile.next_donation_date);
+    const canDonate = Boolean(profile.is_active) && missingFields.length === 0 && waitingDays === 0;
+
+    if (canDonate) {
+      return `Oui, votre profil BloodLink semble complet et vous êtes éligible pour donner du sang maintenant. Votre groupe sanguin est ${profile.blood_type}. Vous pouvez passer à la réservation d'un rendez-vous.`;
+    }
+
+    const reasons = [];
+    if (!profile.is_active) reasons.push("votre compte n'est pas actif");
+    if (missingFields.length > 0) reasons.push(`il manque : ${missingFields.join(", ")}`);
+    if (waitingDays > 0) {
+      reasons.push(`votre prochain don est possible à partir du ${profile.next_donation_date}`);
+    }
+
+    return `Pas encore. ${reasons.join("; ")}. Complétez ces informations dans votre profil BloodLink avant de prendre rendez-vous.`;
+  } catch (err: any) {
+    throw new Error(`[buildDirectDonorProfileAnswer Error] ${err.message || err}. State - profile: ${JSON.stringify(profile)}, error: ${JSON.stringify(error)}`);
   }
-
-  if (error || !profile) {
-    console.warn(`[chat] Direct profile lookup failed: ${error?.message ?? "profile not found"}`);
-    return "Je n'arrive pas à récupérer votre profil BloodLink pour le moment. Vérifiez que vous êtes connecté, puis réessayez.";
-  }
-
-  const missingFields = [
-    !profile.full_name ? "nom complet" : null,
-    !profile.phone ? "téléphone" : null,
-    !profile.blood_type ? "groupe sanguin" : null,
-    !profile.date_of_birth ? "date de naissance" : null,
-    !profile.weight_kg ? "poids" : null,
-    profile.latitude === null || profile.longitude === null ? "localisation" : null,
-  ].filter(Boolean);
-  const waitingDays = daysUntil(profile.next_donation_date);
-  const canDonate = Boolean(profile.is_active) && missingFields.length === 0 && waitingDays === 0;
-
-  if (canDonate) {
-    return `Oui, votre profil BloodLink semble complet et vous êtes éligible pour donner du sang maintenant. Votre groupe sanguin est ${profile.blood_type}. Vous pouvez passer à la réservation d'un rendez-vous.`;
-  }
-
-  const reasons = [];
-  if (!profile.is_active) reasons.push("votre compte n'est pas actif");
-  if (missingFields.length > 0) reasons.push(`il manque : ${missingFields.join(", ")}`);
-  if (waitingDays > 0) {
-    reasons.push(`votre prochain don est possible à partir du ${profile.next_donation_date}`);
-  }
-
-  return `Pas encore. ${reasons.join("; ")}. Complétez ces informations dans votre profil BloodLink avant de prendre rendez-vous.`;
 }
 
 async function buildLiveDonorContext(userId: string | undefined, message: string) {
