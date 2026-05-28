@@ -3,10 +3,19 @@ import { useEffect, useRef } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import Markdown from "react-native-markdown-display";
 
+// Imports des widgets d'UI riches
+import EligibilityBadge from "./widgets/EligibilityBadge";
+import DonorStatsCard from "./widgets/DonorStatsCard";
+import CentersCarousel from "./widgets/CentersCarousel";
+import TimeSlotsGrid from "./widgets/TimeSlotsGrid";
+import AppointmentsList from "./widgets/AppointmentsList";
+import DonationsHistoryList from "./widgets/DonationsHistoryList";
+
 interface Props {
   role: "user" | "assistant";
   content: string;
   isStreaming?: boolean;
+  onSendMessage?: (text: string) => void;
 }
 
 // ─── Animated cursor (ChatGPT-style blinking bar) ────────────────────
@@ -35,13 +44,13 @@ function StreamingCursor() {
   );
 }
 
-// ─── Markdown styles (ChatGPT-like) ──────────────────────────────────
+// ─── Markdown styles ─────────────────────────────────────────────────
 
 const markdownStyle = {
   body: { color: "#1e1e1e", fontSize: 14, lineHeight: 20 },
-  heading1: { fontSize: 18, fontWeight: "700" as const, marginBottom: 6, color: "#111" },
-  heading2: { fontSize: 16, fontWeight: "600" as const, marginBottom: 4, color: "#222" },
-  heading3: { fontSize: 15, fontWeight: "600" as const, color: "#333" },
+  heading1: { fontSize: 17, fontWeight: "700" as const, marginBottom: 6, color: "#111" },
+  heading2: { fontSize: 15, fontWeight: "600" as const, marginBottom: 4, color: "#222" },
+  heading3: { fontSize: 14, fontWeight: "600" as const, color: "#333" },
   paragraph: { marginTop: 0, marginBottom: 8 },
   bullet_list: { marginTop: 2, marginBottom: 2 },
   ordered_list: { marginTop: 2, marginBottom: 2 },
@@ -58,16 +67,87 @@ const markdownStyle = {
   link: { color: "#b80035", textDecorationLine: "underline" as const },
 };
 
-// ─── Component ───────────────────────────────────────────────────────
+// ─── Content Parser (XML to Native Widgets) ──────────────────────────
 
-export default function ChatMessageBubble({ role, content, isStreaming }: Props) {
+interface ContentSegment {
+  type: "text" | "widget";
+  text?: string;
+  widgetName?: string;
+  props?: Record<string, any>;
+}
+
+function parseContent(content: string): ContentSegment[] {
+  const segments: ContentSegment[] = [];
+  const regex = /<([A-Za-z0-9-]+)\s+([^>]+)\/>/g;
+  
+  let lastIndex = 0;
+  let match;
+  
+  while ((match = regex.exec(content)) !== null) {
+    const matchIndex = match.index;
+    const widgetName = match[1];
+    const attributesStr = match[2];
+    
+    if (matchIndex > lastIndex) {
+      segments.push({
+        type: "text",
+        text: content.substring(lastIndex, matchIndex),
+      });
+    }
+    
+    const props: Record<string, any> = {};
+    const attrRegex = /([a-zA-Z0-9]+)\s*=\s*(?:'([^']*)'|"([^"]*)"|\{([^}]+)\})/g;
+    let attrMatch;
+    
+    while ((attrMatch = attrRegex.exec(attributesStr)) !== null) {
+      const key = attrMatch[1];
+      const val = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4];
+      
+      if (val === "true") {
+        props[key] = true;
+      } else if (val === "false") {
+        props[key] = false;
+      } else if (!isNaN(Number(val)) && val.trim() !== "") {
+        props[key] = Number(val);
+      } else if ((val.startsWith("[") && val.endsWith("]")) || (val.startsWith("{") && val.endsWith("}"))) {
+        try {
+          props[key] = JSON.parse(val);
+        } catch {
+          props[key] = val;
+        }
+      } else {
+        props[key] = val;
+      }
+    }
+    
+    segments.push({
+      type: "widget",
+      widgetName,
+      props,
+    });
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  if (lastIndex < content.length) {
+    segments.push({
+      type: "text",
+      text: content.substring(lastIndex),
+    });
+  }
+  
+  return segments;
+}
+
+// ─── Main Component ──────────────────────────────────────────────────
+
+export default function ChatMessageBubble({ role, content, isStreaming, onSendMessage }: Props) {
   const isUser = role === "user";
 
-  // User message: right-aligned colored bubble
   if (isUser) {
     return (
       <View className="flex-row justify-end mb-3 px-4">
-        <View className="max-w-[80%] bg-[#b80035] rounded-2xl rounded-br-md px-4 py-2.5">
+        <View className="max-w-[85%] bg-[#b80035] rounded-2xl rounded-br-md px-4 py-2.5 shadow-xs">
           <Text className="text-[14px] leading-[20px] text-white">
             {content}
           </Text>
@@ -76,7 +156,8 @@ export default function ChatMessageBubble({ role, content, isStreaming }: Props)
     );
   }
 
-  // Assistant message: full-width, no bubble, markdown rendered
+  const segments = parseContent(content);
+
   return (
     <View className="flex-row mb-4 px-4">
       {/* Avatar */}
@@ -86,12 +167,80 @@ export default function ChatMessageBubble({ role, content, isStreaming }: Props)
 
       {/* Content */}
       <View className="flex-1 min-w-0">
-        {content ? (
-          <View className="flex-row flex-wrap items-end">
-            <View className="flex-1 min-w-0">
-              <Markdown style={markdownStyle}>{content}</Markdown>
-            </View>
-            {isStreaming && <StreamingCursor />}
+        {segments.length > 0 ? (
+          <View className="gap-1">
+            {segments.map((seg, idx) => {
+              if (seg.type === "text" && seg.text) {
+                const isLastSegment = idx === segments.length - 1;
+                return (
+                  <View key={idx} className="flex-row flex-wrap items-end">
+                    <View className="flex-1 min-w-0">
+                      <Markdown style={markdownStyle}>{seg.text}</Markdown>
+                    </View>
+                    {isStreaming && isLastSegment && <StreamingCursor />}
+                  </View>
+                );
+              } else if (seg.type === "widget" && seg.widgetName) {
+                switch (seg.widgetName) {
+                  case "EligibilityBadge":
+                    return (
+                      <EligibilityBadge
+                        key={idx}
+                        eligible={seg.props?.eligible ?? false}
+                        reason={seg.props?.reason}
+                        missingFields={seg.props?.missingFields}
+                        nextDonationDate={seg.props?.nextDonationDate}
+                      />
+                    );
+                  case "DonorStatsCard":
+                    return (
+                      <DonorStatsCard
+                        key={idx}
+                        count={seg.props?.count ?? 0}
+                        lives={seg.props?.lives}
+                        nextDate={seg.props?.nextDate}
+                        bloodType={seg.props?.bloodType}
+                      />
+                    );
+                  case "CentersCarousel":
+                    return (
+                      <CentersCarousel
+                        key={idx}
+                        data={seg.props?.data ?? []}
+                        onSendMessage={onSendMessage}
+                      />
+                    );
+                  case "TimeSlotsGrid":
+                    return (
+                      <TimeSlotsGrid
+                        key={idx}
+                        slots={seg.props?.slots ?? []}
+                        centerId={seg.props?.centerId ?? ""}
+                        date={seg.props?.date ?? ""}
+                        onSendMessage={onSendMessage}
+                      />
+                    );
+                  case "AppointmentsList":
+                    return (
+                      <AppointmentsList
+                        key={idx}
+                        data={seg.props?.data ?? []}
+                        onSendMessage={onSendMessage}
+                      />
+                    );
+                  case "DonationsHistoryList":
+                    return (
+                      <DonationsHistoryList
+                        key={idx}
+                        data={seg.props?.data ?? []}
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              }
+              return null;
+            })}
           </View>
         ) : isStreaming ? (
           <View className="flex-row items-center">

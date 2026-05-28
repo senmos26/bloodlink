@@ -230,6 +230,7 @@ export default function ChatDrawer({ visible, onClose, userId, accessToken, loca
                   role={item.role}
                   content={item.content}
                   isStreaming={isStreaming && item.role === "assistant" && item === messages[messages.length - 1]}
+                  onSendMessage={append}
                 />
               )}
               contentContainerStyle={{ paddingTop: 12, paddingBottom: 8 }}

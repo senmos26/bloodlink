@@ -135,7 +135,7 @@ export function useChat(options: UseChatOptions = {}) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
-  const abortRef = useRef<AbortController | null>(null);
+  const abortRef = useRef<{ abort: () => void } | null>(null);
   const sendingRef = useRef(false);
   const messagesRef = useRef<ChatMessage[]>([]);
 
