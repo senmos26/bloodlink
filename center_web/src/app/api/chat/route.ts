@@ -239,12 +239,8 @@ export async function POST(req: NextRequest) {
   const t0 = Date.now();
   const reqId = `chat-${t0.toString(36)}`;
 
-  // CORS headers for mobile app / Expo web
-  const origin = req.headers.get("origin") ?? "";
-  const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
-
   const corsHeaders: Record<string, string> = {
-    "Access-Control-Allow-Origin": isLocalhost ? origin : "",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
