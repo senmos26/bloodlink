@@ -438,10 +438,7 @@ export async function POST(req: NextRequest) {
     const totalMs = Date.now() - t0;
     console.error(`[${reqId}] ❌ Error (${totalMs}ms):`, error);
     return NextResponse.json(
-      { 
-        error: "Internal server error", 
-        details: error instanceof Error ? { message: error.message, stack: error.stack } : String(error) 
-      },
+      { error: "Internal server error" },
       { status: 500, headers: corsHeaders }
     );
   }
