@@ -224,8 +224,18 @@ export function useChat(options: UseChatOptions = {}) {
         content,
       };
 
+      const assistantId = generateId();
+      const assistantMsg: ChatMessage = {
+        id: assistantId,
+        role: "assistant",
+        content: "",
+      };
+
       const updatedMessages = [...messagesRef.current, userMsg];
-      setMessages(syncRef(updatedMessages));
+      const streamingMessages = [...updatedMessages, assistantMsg];
+      
+      // Update local state with both user message and empty assistant message
+      setMessages(syncRef(streamingMessages));
       setInput("");
       setIsLoading(true);
       setIsStreaming(false);
@@ -249,150 +259,118 @@ export function useChat(options: UseChatOptions = {}) {
       if (convId) void persistMessage(convId, userMsg);
 
       if (abortRef.current) abortRef.current.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
+      const xhr = new XMLHttpRequest();
+      abortRef.current = { abort: () => xhr.abort() };
 
-      try {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "text/event-stream",
-            ...(options.accessToken
-              ? { Authorization: `Bearer ${options.accessToken}` }
-              : {}),
-          },
-          body: JSON.stringify({
-            messages: updatedMessages.map((m) => ({
-              role: m.role,
-              content: m.content,
-            })),
-            userId: options.userId,
-            location: options.location,
-          }),
-          signal: controller.signal,
-        });
+      let offset = 0;
+      let accumulated = "";
+      let lastRendered = "";
+      let lastRenderAt = 0;
 
-        if (!response.ok) {
-          throw new Error(`Erreur ${response.status}`);
-        }
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 3 || xhr.readyState === 4) {
+          if (xhr.status >= 400) {
+            setError(sanitizeChatError(`Erreur ${xhr.status}`));
+            setIsLoading(false);
+            setIsStreaming(false);
+            sendingRef.current = false;
+            if (!accumulated) {
+              messagesRef.current = messagesRef.current.filter((m) => m.id !== assistantId);
+              setMessages(syncRef(messagesRef.current));
+            }
+            return;
+          }
 
-        if (!response.body || typeof response.body.getReader !== "function") {
-          // Fallback for React Native (no streaming support in native fetch)
-          const text = await response.text();
-          const lines = text.split("\n");
-          let accumulatedText = "";
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
+          const responseText = xhr.responseText;
+          const chunk = responseText.slice(offset);
+          offset = responseText.length;
+
+          if (chunk) {
+            setIsStreaming(true);
+            const lines = chunk.split("\n");
+            for (const line of lines) {
+              if (!line.startsWith("data: ")) continue;
               const data = line.slice(6).trim();
               if (data === "[DONE]") continue;
+
               try {
                 const parsed = JSON.parse(data);
                 if (parsed.type === "text-delta" && parsed.delta) {
-                  accumulatedText += parsed.delta;
+                  accumulated += parsed.delta;
+                  let currentText = normalizeStreamText(accumulated);
+                  accumulated = currentText;
+                  if (currentText === lastRendered) continue;
+                  lastRendered = currentText;
+
+                  const now = Date.now();
+                  if (now - lastRenderAt > 32 || xhr.readyState === 4) {
+                    lastRenderAt = now;
+                    messagesRef.current = messagesRef.current.map((m) =>
+                      m.id === assistantId ? { ...m, content: currentText } : m
+                    );
+                    setMessages([...messagesRef.current]);
+                  }
                 } else if (parsed.type === "error") {
                   setError(sanitizeChatError(parsed.errorText));
+                  if (!accumulated) {
+                    messagesRef.current = messagesRef.current.filter((m) => m.id !== assistantId);
+                    setMessages(syncRef(messagesRef.current));
+                  }
                 }
               } catch {
-                // Ignore parsing errors
+                // Ignore incomplete JSON chunk errors
               }
             }
           }
-          if (accumulatedText) {
-            const finalText = normalizeStreamText(accumulatedText);
-            const assistantId = generateId();
-            const withAssistant = [
-              ...updatedMessages,
-              { id: assistantId, role: "assistant" as const, content: finalText },
-            ];
-            setMessages(syncRef(withAssistant));
-            if (convId) {
-              void persistMessage(convId, { id: assistantId, role: "assistant", content: finalText });
-              refreshConversationsSoon();
-            }
-          } else {
-            throw new Error("Réponse vide");
+        }
+
+        if (xhr.readyState === 4) {
+          const finalText = normalizeStreamText(accumulated);
+          messagesRef.current = messagesRef.current.map((m) =>
+            m.id === assistantId ? { ...m, content: finalText } : m
+          );
+          setMessages(syncRef(messagesRef.current));
+
+          if (convId && finalText) {
+            void persistMessage(convId, { id: assistantId, role: "assistant", content: finalText });
+            refreshConversationsSoon();
           }
+
           setIsLoading(false);
+          setIsStreaming(false);
+          abortRef.current = null;
           sendingRef.current = false;
-          return;
         }
+      };
 
-        const assistantId = generateId();
-        const withAssistant = [...updatedMessages, { id: assistantId, role: "assistant" as const, content: "" }];
-        setMessages(syncRef(withAssistant));
-        setIsStreaming(true);
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let accumulated = "";
-        let lastRendered = "";
-        let lastRenderAt = 0;
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const data = line.slice(6).trim();
-            if (data === "[DONE]") continue;
-
-            try {
-              const parsed = JSON.parse(data);
-
-              // UI Message Stream protocol (AI SDK)
-              if (parsed.type === "text-delta" && parsed.delta) {
-                accumulated += parsed.delta;
-                let currentText = normalizeStreamText(accumulated);
-                accumulated = currentText;
-                if (currentText === lastRendered) continue;
-                lastRendered = currentText;
-                const now = Date.now();
-                if (now - lastRenderAt > 32) {
-                  lastRenderAt = now;
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === assistantId ? { ...m, content: currentText } : m
-                    )
-                  );
-                }
-              } else if (parsed.type === "error") {
-                setError(sanitizeChatError(parsed.errorText));
-              }
-              // Tool call results are handled server-side and included in text
-              // No special client handling needed — they appear as text-delta
-            } catch {
-              // skip malformed chunks
-            }
-          }
-        }
-
-        // Final sync + persist assistant message
-        const finalText = normalizeStreamText(accumulated);
-        messagesRef.current = messagesRef.current.map((m) =>
-          m.id === assistantId ? { ...m, content: finalText } : m
-        );
-        setMessages(syncRef(messagesRef.current));
-
-        if (convId && finalText) {
-          void persistMessage(convId, { id: assistantId, role: "assistant", content: finalText });
-          refreshConversationsSoon();
-        }
-      } catch (err) {
-        if ((err as Error).name === "AbortError") return;
-        setError(sanitizeChatError(err instanceof Error ? err.message : undefined));
-      } finally {
+      xhr.onerror = () => {
+        setError(sanitizeChatError("Network request failed"));
         setIsLoading(false);
         setIsStreaming(false);
-        abortRef.current = null;
         sendingRef.current = false;
+        if (!accumulated) {
+          messagesRef.current = messagesRef.current.filter((m) => m.id !== assistantId);
+          setMessages(syncRef(messagesRef.current));
+        }
+      };
+
+      xhr.open("POST", apiUrl);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.setRequestHeader("Accept", "text/event-stream");
+      if (options.accessToken) {
+        xhr.setRequestHeader("Authorization", `Bearer ${options.accessToken}`);
       }
+
+      xhr.send(
+        JSON.stringify({
+          messages: updatedMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          userId: options.userId,
+          location: options.location,
+        })
+      );
     },
     [apiUrl, options.userId, options.accessToken, options.location, activeConversationId, isLoading, syncRef, persistMessage, refreshConversationsSoon]
   );
@@ -405,7 +383,14 @@ export function useChat(options: UseChatOptions = {}) {
     setIsLoading(false);
     setIsStreaming(false);
     sendingRef.current = false;
-  }, []);
+
+    // Remove empty assistant message if streaming was stopped before receiving data
+    const lastMsg = messagesRef.current[messagesRef.current.length - 1];
+    if (lastMsg && lastMsg.role === "assistant" && !lastMsg.content.trim()) {
+      messagesRef.current = messagesRef.current.slice(0, -1);
+      setMessages(syncRef(messagesRef.current));
+    }
+  }, [syncRef]);
 
   const clear = useCallback(() => {
     stop();
