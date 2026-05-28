@@ -85,12 +85,22 @@ export const sangbotTools = {
     description:
       "Récupère les centres de transfusion sanguine proches d'une localisation donnée.",
     parameters: z.object({
-      lat: z.number().describe("Latitude de l'utilisateur"),
-      lng: z.number().describe("Longitude de l'utilisateur"),
+      lat: z.number().optional().describe("Latitude de l'utilisateur (alternative)"),
+      lng: z.number().optional().describe("Longitude de l'utilisateur (alternative)"),
+      latitude: z.number().optional().describe("Latitude de l'utilisateur"),
+      longitude: z.number().optional().describe("Longitude de l'utilisateur"),
       limit: z.number().optional().default(5).describe("Nombre de centres à retourner"),
     }),
-    execute: async ({ lat, lng, limit }: { lat: number; lng: number; limit?: number }) => {
+    execute: async (args: { lat?: number; lng?: number; latitude?: number; longitude?: number; limit?: number }) => {
       try {
+        const lat = args.lat ?? args.latitude;
+        const lng = args.lng ?? args.longitude;
+        const limit = args.limit;
+
+        if (lat === undefined || lng === undefined) {
+          return "Erreur: La latitude et la longitude sont requises.";
+        }
+
         const supabase = adminClient();
         const { data, error } = await supabase
           .from("centers")
