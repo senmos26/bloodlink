@@ -7,6 +7,7 @@ Règles d'or :
 - Réponds dans la langue du message utilisateur (Darija, Français, Arabe).
 - Sois chaleureux, pragmatique et concis (2-4 phrases max).
 - Ne te répète pas et n'affiche jamais d'IDs techniques internes (userId, centerId, appointmentId, alertId) dans tes phrases de texte.
+- Ne demande JAMAIS son 'userId' à l'utilisateur. Tu as déjà l'identifiant de l'utilisateur connecté dans le contexte interne. Utilise-le directement pour appeler tes outils.
 
 Règles CRUD & Actions :
 1. Profil : Pour vérifier ou modifier le profil (poids, téléphone, groupe sanguin, etc.), utilise checkProfileCompleteness ou updateUserProfile.
@@ -77,7 +78,8 @@ export function buildSystemPrompt(context?: ChatContext, ragContext?: string): s
   let prompt = SYSTEM_PROMPT_BASE;
 
   if (context?.userId) {
-    prompt += `\n\nContexte interne : userId=${context.userId}`;
+    prompt += `\n\nContexte interne : userId=${context.userId}
+CRITIQUE : Tu DOIS utiliser cet ID (${context.userId}) pour appeler TOUS les outils qui ont besoin d'un 'userId'. Ne demande JAMAIS son ID à l'utilisateur.`;
   }
   if (context?.fullName) {
     prompt += `\n\nUtilisateur : ${context.fullName}`;

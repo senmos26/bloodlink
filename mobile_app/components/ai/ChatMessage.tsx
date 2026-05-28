@@ -171,8 +171,8 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <EligibilityBadge
                         key={idx}
-                        eligible={seg.props?.eligible ?? false}
-                        reason={seg.props?.reason}
+                        eligible={seg.props?.eligible ?? seg.props?.complete ?? false}
+                        reason={seg.props?.reason ?? (seg.props?.complete ? "Votre profil est complet." : undefined)}
                         missingFields={seg.props?.missingFields}
                         nextDonationDate={seg.props?.nextDonationDate}
                       />
@@ -181,9 +181,9 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <DonorStatsCard
                         key={idx}
-                        count={seg.props?.count ?? 0}
-                        lives={seg.props?.lives}
-                        nextDate={seg.props?.nextDate}
+                        count={seg.props?.count ?? seg.props?.donationCount ?? 0}
+                        lives={seg.props?.lives ?? seg.props?.livesSaved}
+                        nextDate={seg.props?.nextDate ?? seg.props?.nextDonationDate}
                         bloodType={seg.props?.bloodType}
                       />
                     );
@@ -199,7 +199,7 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <TimeSlotsGrid
                         key={idx}
-                        slots={seg.props?.slots ?? []}
+                        slots={seg.props?.slots ?? seg.props?.availableSlots ?? []}
                         centerId={seg.props?.centerId ?? ""}
                         date={seg.props?.date ?? ""}
                         onSendMessage={onSendMessage}
