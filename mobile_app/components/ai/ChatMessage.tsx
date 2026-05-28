@@ -67,18 +67,18 @@ const markdownStyle = {
   link: { color: "#b80035", textDecorationLine: "underline" as const },
 };
 
-// ─── Content Parser (XML to Native Widgets) ──────────────────────────
+// ─── Content Parser (XML with JSON Body to Native Widgets) ───────────
 
 interface ContentSegment {
   type: "text" | "widget";
   text?: string;
   widgetName?: string;
-  props?: Record<string, any>;
+  props?: any;
 }
 
 function parseContent(content: string): ContentSegment[] {
   const segments: ContentSegment[] = [];
-  const regex = /<([A-Za-z0-9-]+)\s+([^>]+)\/>/g;
+  const regex = /<(CentersCarousel|AppointmentsList|DonationsHistoryList|TimeSlotsGrid|EligibilityBadge|DonorStatsCard)>([\s\S]*?)<\/\1>/gi;
   
   let lastIndex = 0;
   let match;
@@ -86,7 +86,7 @@ function parseContent(content: string): ContentSegment[] {
   while ((match = regex.exec(content)) !== null) {
     const matchIndex = match.index;
     const widgetName = match[1];
-    const attributesStr = match[2];
+    const bodyText = match[2].trim();
     
     if (matchIndex > lastIndex) {
       segments.push({
@@ -95,28 +95,13 @@ function parseContent(content: string): ContentSegment[] {
       });
     }
     
-    const props: Record<string, any> = {};
-    const attrRegex = /([a-zA-Z0-9]+)\s*=\s*(?:'([^']*)'|"([^"]*)"|\{([^}]+)\})/g;
-    let attrMatch;
-    
-    while ((attrMatch = attrRegex.exec(attributesStr)) !== null) {
-      const key = attrMatch[1];
-      const val = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4];
-      
-      if (val === "true") {
-        props[key] = true;
-      } else if (val === "false") {
-        props[key] = false;
-      } else if (!isNaN(Number(val)) && val.trim() !== "") {
-        props[key] = Number(val);
-      } else if ((val.startsWith("[") && val.endsWith("]")) || (val.startsWith("{") && val.endsWith("}"))) {
-        try {
-          props[key] = JSON.parse(val);
-        } catch {
-          props[key] = val;
-        }
-      } else {
-        props[key] = val;
+    let props: any = {};
+    if (bodyText) {
+      try {
+        props = JSON.parse(bodyText);
+      } catch (e) {
+        console.warn(`[parseContent] Failed to parse JSON inside <${widgetName}>:`, e);
+        props = { rawData: bodyText };
       }
     }
     
@@ -206,7 +191,7 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <CentersCarousel
                         key={idx}
-                        data={seg.props?.data ?? []}
+                        data={seg.props}
                         onSendMessage={onSendMessage}
                       />
                     );
@@ -224,7 +209,7 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <AppointmentsList
                         key={idx}
-                        data={seg.props?.data ?? []}
+                        data={seg.props}
                         onSendMessage={onSendMessage}
                       />
                     );
@@ -232,7 +217,7 @@ export default function ChatMessageBubble({ role, content, isStreaming, onSendMe
                     return (
                       <DonationsHistoryList
                         key={idx}
-                        data={seg.props?.data ?? []}
+                        data={seg.props}
                       />
                     );
                   default:
