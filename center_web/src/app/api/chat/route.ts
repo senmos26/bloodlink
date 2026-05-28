@@ -246,6 +246,7 @@ async function buildLiveDonorContext(userId: string | undefined, message: string
 export async function POST(req: NextRequest) {
   const t0 = Date.now();
   const reqId = `chat-${t0.toString(36)}`;
+  const origin = req.headers.get("origin") ?? "";
 
   const corsHeaders: Record<string, string> = {
     "Access-Control-Allow-Origin": "*",
@@ -446,10 +447,7 @@ export async function POST(req: NextRequest) {
     const totalMs = Date.now() - t0;
     console.error(`[${reqId}] ❌ Error (${totalMs}ms):`, error);
     return NextResponse.json(
-      { 
-        error: "Internal server error", 
-        details: error instanceof Error ? { message: error.message, stack: error.stack } : String(error) 
-      },
+      { error: "Internal server error" },
       { status: 500, headers: corsHeaders }
     );
   }
