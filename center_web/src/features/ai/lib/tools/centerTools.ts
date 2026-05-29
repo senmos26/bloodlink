@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { adminClient, json, distanceKm, daysUntil } from "./utils";
 
 export const centerTools = {
