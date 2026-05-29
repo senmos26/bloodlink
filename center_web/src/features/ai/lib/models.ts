@@ -28,7 +28,7 @@ const openrouter = createOpenAI({
  */
 function pickChatModel() {
   if (process.env.GROQ_API_KEY) {
-    return groq("llama-3.1-8b-instant");
+    return groq("llama-3.3-70b-versatile");
   }
   if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     return google("gemini-2.0-flash");
