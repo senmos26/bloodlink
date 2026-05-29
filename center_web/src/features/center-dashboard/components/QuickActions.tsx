@@ -1,30 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale } from "next-intl";
-import { Plus, Bell, CalendarDays, Droplets } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Bell, CalendarDays, Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function QuickActions() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.centerHome.quickActions");
 
   const actions = [
     {
-      label: "Nouveau RDV",
+      label: t("newAppointment"),
       href: `/${locale}/appointments`,
       icon: CalendarDays,
       color: "text-blue-600",
       bg: "bg-blue-50 hover:bg-blue-100",
     },
     {
-      label: "Enregistrer don",
+      label: t("recordDonation"),
       href: `/${locale}/donations`,
       icon: Droplets,
       color: "text-rose-600",
       bg: "bg-rose-50 hover:bg-rose-100",
     },
     {
-      label: "Créer alerte",
+      label: t("createAlert"),
       href: `/${locale}/alerts`,
       icon: Bell,
       color: "text-purple-600",

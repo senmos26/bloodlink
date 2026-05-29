@@ -1,9 +1,9 @@
 "use client";
 
-import { CalendarDays, Droplets, Bell, Clock, TrendingUp, Activity } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { CalendarDays, Droplets, Bell, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTodayStats } from "@/features/center-dashboard/lib/hooks";
+import { useTranslations } from "next-intl";
 
 interface KPICardProps {
   title: string;
@@ -44,43 +44,44 @@ function KPICard({ title, value, icon, gradient, iconBg, subtitle, isLoading }: 
 
 export function DashboardKPICards() {
   const { data: stats, isLoading } = useTodayStats();
+  const t = useTranslations("dashboard.centerHome.kpis");
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       <KPICard
-        title="Rendez-vous"
+        title={t("appointments.title")}
         value={stats?.todayAppointmentsCount ?? 0}
         icon={<CalendarDays className="h-4 w-4 text-white" />}
         gradient="from-blue-500 to-blue-600"
         iconBg="bg-blue-400/30"
-        subtitle="aujourd'hui"
+        subtitle={t("appointments.subtitle")}
         isLoading={isLoading}
       />
       <KPICard
-        title="En attente"
+        title={t("pending.title")}
         value={stats?.pendingAppointmentsCount ?? 0}
         icon={<Clock className="h-4 w-4 text-white" />}
         gradient="from-amber-500 to-orange-500"
         iconBg="bg-amber-400/30"
-        subtitle="à confirmer"
+        subtitle={t("pending.subtitle")}
         isLoading={isLoading}
       />
       <KPICard
-        title="Dons validés"
+        title={t("validated.title")}
         value={stats?.validatedDonationsCount ?? 0}
         icon={<Droplets className="h-4 w-4 text-white" />}
         gradient="from-rose-500 to-red-600"
         iconBg="bg-rose-400/30"
-        subtitle="aujourd'hui"
+        subtitle={t("validated.subtitle")}
         isLoading={isLoading}
       />
       <KPICard
-        title="Alertes actives"
+        title={t("alerts.title")}
         value={stats?.activeAlertsCount ?? 0}
         icon={<Bell className="h-4 w-4 text-white" />}
         gradient="from-purple-500 to-violet-600"
         iconBg="bg-purple-400/30"
-        subtitle="à traiter"
+        subtitle={t("alerts.subtitle")}
         isLoading={isLoading}
       />
     </div>

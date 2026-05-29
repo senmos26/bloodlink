@@ -7,8 +7,6 @@ import {
   Bell,
   Users,
   Settings,
-  ChevronLeft,
-  ChevronRight,
   LogOut,
   Droplets,
 } from "lucide-react";
@@ -16,7 +14,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useLayout } from "@/features/dashboard/lib/LayoutContext";
 import { cn } from "@/lib/utils";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import {
   Tooltip,
@@ -31,11 +29,13 @@ interface SidebarProps {
   onToggle?: () => void;
 }
 
-export function Sidebar({ collapsed: collapsedProp, onToggle }: SidebarProps) {
-  const { config, toggleSidebar, isMobileSidebarOpen, toggleMobileSidebar } =
+export function Sidebar({ collapsed: collapsedProp, onToggle: _onToggle }: SidebarProps) {
+  const { config, isMobileSidebarOpen, toggleMobileSidebar } =
     useLayout();
+  void _onToggle;
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("dashboard.sidebarCenter");
   const sidebarRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -43,7 +43,6 @@ export function Sidebar({ collapsed: collapsedProp, onToggle }: SidebarProps) {
 
   // Use the global collapsed state from context
   const collapsed = collapsedProp ?? config.sidebar.collapsed;
-  const toggle = () => (onToggle ? onToggle() : toggleSidebar());
 
   // Détecter si on est sur mobile
   useEffect(() => {
@@ -149,57 +148,57 @@ export function Sidebar({ collapsed: collapsedProp, onToggle }: SidebarProps) {
     }[];
   }[] = [
       {
-        title: "Opérations",
+        title: t("operations"),
         items: [
           {
             key: "dashboard",
-            label: "Tableau de bord",
+            label: t("dashboard"),
             icon: LayoutDashboard,
             href: `/${locale}/`,
           },
           {
             key: "appointments",
-            label: "Rendez-vous",
+            label: t("appointments"),
             icon: CalendarDays,
             href: `/${locale}/appointments`,
           },
           {
             key: "donations",
-            label: "Dons & Prélèvements",
+            label: t("donations"),
             icon: HeartPulse,
             href: `/${locale}/donations`,
           },
           {
             key: "stock",
-            label: "Stock Sanguin",
+            label: t("stock"),
             icon: Droplets,
             href: `/${locale}/stock`,
           },
           {
             key: "alerts",
-            label: "Alertes Urgentes",
+            label: t("alerts"),
             icon: Bell,
             href: `/${locale}/alerts`,
           },
         ],
       },
       {
-        title: "Gestion",
+        title: t("management"),
         items: [
           {
             key: "donors",
-            label: "Base Donneurs",
+            label: t("donors"),
             icon: Users,
             href: `/${locale}/donors`,
           },
         ],
       },
       {
-        title: "Configuration",
+        title: t("configuration"),
         items: [
           {
             key: "settings",
-            label: "Paramètres Centre",
+            label: t("settings"),
             icon: Settings,
             href: `/${locale}/settings`,
           },
@@ -299,7 +298,7 @@ export function Sidebar({ collapsed: collapsedProp, onToggle }: SidebarProps) {
           )}
         >
           <LogOut className="size-5 shrink-0" />
-          {!collapsed && <span>Se déconnecter</span>}
+          {!collapsed && <span>{t("logout")}</span>}
         </button>
       </div>
     </aside>

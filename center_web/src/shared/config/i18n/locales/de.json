@@ -263,6 +263,96 @@
       "messaging": "Nachrichten",
       "aiChat": "KI-Chat-Test",
       "settings": "Einstellungen"
+    },
+    "sidebarCenter": {
+      "operations": "Betrieb",
+      "management": "Verwaltung",
+      "configuration": "Konfiguration",
+      "dashboard": "Dashboard",
+      "appointments": "Termine",
+      "donations": "Spenden & Entnahmen",
+      "stock": "Blutbestand",
+      "alerts": "Dringende Warnungen",
+      "donors": "Spenderdatenbank",
+      "settings": "Zentrumseinstellungen",
+      "logout": "Abmelden"
+    },
+    "centerHome": {
+      "defaultCenterName": "Zentrum",
+      "greeting": "Hallo, {centerName}",
+      "subtitle": "Hier ist ein kurzer Überblick über die heutige Aktivität.",
+      "quickActions": {
+        "newAppointment": "Neuer Termin",
+        "recordDonation": "Spende erfassen",
+        "createAlert": "Warnung erstellen"
+      },
+      "kpis": {
+        "appointments": {
+          "title": "Termine",
+          "subtitle": "heute"
+        },
+        "pending": {
+          "title": "Ausstehend",
+          "subtitle": "zu bestätigen"
+        },
+        "validated": {
+          "title": "Bestätigte Spenden",
+          "subtitle": "heute"
+        },
+        "alerts": {
+          "title": "Aktive Warnungen",
+          "subtitle": "zu bearbeiten"
+        }
+      }
+    },
+    "charts": {
+      "monthlyDonations": "Monatliche Spenden",
+      "bloodGroups": "Blutgruppen",
+      "empty": "Keine Daten verfügbar",
+      "months": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+    },
+    "stock": {
+      "defaultCenterName": "Ihr Zentrum",
+      "title": "Blutbestand",
+      "subtitle": "Schnelle Überwachung der Blutgruppen für {centerName}.",
+      "status": {
+        "criticalCount": "{count} kritische Gruppe(n)",
+        "stable": "Gesamtbestand ist stabil"
+      },
+      "levels": {
+        "critical": "Kritisch",
+        "warning": "Beobachten",
+        "healthy": "Stabil"
+      },
+      "cards": {
+        "totalTracked": {
+          "title": "Gesamt verfolgt",
+          "hint": "Einheiten über 8 Gruppen verteilt"
+        },
+        "stableGroups": {
+          "title": "Stabile Gruppen",
+          "hint": "über dem empfohlenen Schwellenwert"
+        },
+        "warningGroups": {
+          "title": "Zu beobachten",
+          "hint": "Gruppen nahe am niedrigen Schwellenwert"
+        },
+        "activeAlerts": {
+          "title": "Aktive Warnungen",
+          "hint": "laufende dringende Kampagnen"
+        }
+      },
+      "table": {
+        "title": "Verfügbarkeit nach Blutgruppe",
+        "subtitle": "Operative Ansicht, um schnell kritische Niveaus zu erkennen.",
+        "headers": {
+          "group": "Gruppe",
+          "available": "Verfügbar",
+          "target": "Ziel",
+          "coverage": "Abdeckung",
+          "status": "Status"
+        }
+      }
     }
   },
   "auth": {

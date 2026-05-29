@@ -263,6 +263,96 @@
       "messaging": "Messages",
       "aiChat": "AI Assistant",
       "settings": "Configurations"
+    },
+    "sidebarCenter": {
+      "operations": "Operations",
+      "management": "Management",
+      "configuration": "Configuration",
+      "dashboard": "Dashboard",
+      "appointments": "Appointments",
+      "donations": "Donations & Collections",
+      "stock": "Blood Stock",
+      "alerts": "Urgent Alerts",
+      "donors": "Donor Database",
+      "settings": "Center Settings",
+      "logout": "Sign out"
+    },
+    "centerHome": {
+      "defaultCenterName": "Center",
+      "greeting": "Hello, {centerName}",
+      "subtitle": "Here is a quick overview of today's activity.",
+      "quickActions": {
+        "newAppointment": "New appointment",
+        "recordDonation": "Record donation",
+        "createAlert": "Create alert"
+      },
+      "kpis": {
+        "appointments": {
+          "title": "Appointments",
+          "subtitle": "today"
+        },
+        "pending": {
+          "title": "Pending",
+          "subtitle": "to confirm"
+        },
+        "validated": {
+          "title": "Validated donations",
+          "subtitle": "today"
+        },
+        "alerts": {
+          "title": "Active alerts",
+          "subtitle": "to process"
+        }
+      }
+    },
+    "charts": {
+      "monthlyDonations": "Monthly donations",
+      "bloodGroups": "Blood groups",
+      "empty": "No data available",
+      "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    },
+    "stock": {
+      "defaultCenterName": "your center",
+      "title": "Blood stock",
+      "subtitle": "Quick blood group monitoring for {centerName}.",
+      "status": {
+        "criticalCount": "{count} critical group(s)",
+        "stable": "Overall levels are stable"
+      },
+      "levels": {
+        "critical": "Critical",
+        "warning": "Watch",
+        "healthy": "Stable"
+      },
+      "cards": {
+        "totalTracked": {
+          "title": "Total tracked",
+          "hint": "units spread across 8 groups"
+        },
+        "stableGroups": {
+          "title": "Stable groups",
+          "hint": "above the recommended threshold"
+        },
+        "warningGroups": {
+          "title": "Watch list",
+          "hint": "groups close to the low threshold"
+        },
+        "activeAlerts": {
+          "title": "Active alerts",
+          "hint": "urgent campaigns currently running"
+        }
+      },
+      "table": {
+        "title": "Availability by blood group",
+        "subtitle": "Operational view to quickly identify levels that need attention.",
+        "headers": {
+          "group": "Group",
+          "available": "Available",
+          "target": "Target",
+          "coverage": "Coverage",
+          "status": "Status"
+        }
+      }
     }
   },
   "auth": {

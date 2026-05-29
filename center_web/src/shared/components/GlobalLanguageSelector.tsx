@@ -144,8 +144,9 @@ export function GlobalLanguageSelector() {
       // Remove current locale from path
       const pathnameWithoutLocale = pathname.replace(`/${currentLocale}`, "");
 
-      // Navigate to new locale
-      router.push(`/${newLocale}${pathnameWithoutLocale}`);
+      // Navigate to new locale and refresh server-rendered dashboard content.
+      router.replace(`/${newLocale}${pathnameWithoutLocale}`);
+      router.refresh();
 
       setIsOpen(false);
     },

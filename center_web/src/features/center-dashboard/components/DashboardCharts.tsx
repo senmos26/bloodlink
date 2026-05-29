@@ -1,17 +1,15 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useMonthlyDonations, useBloodTypeStats } from "@/features/center-dashboard/lib/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Droplets, BarChart3 } from "lucide-react";
 
-const MONTH_LABELS = [
-  "Jan", "Fév", "Mar", "Avr", "Mai", "Jun",
-  "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc",
-];
-
 function MonthlyChart() {
+  const t = useTranslations("dashboard.charts");
   const { data: monthlyData, isLoading } = useMonthlyDonations();
+  const monthLabels = t.raw("months") as string[];
 
   if (isLoading) {
     return <Skeleton className="h-48 w-full rounded-lg" />;
@@ -21,7 +19,7 @@ function MonthlyChart() {
 
   return (
     <div className="flex items-end gap-1.5 h-48 px-1">
-      {MONTH_LABELS.map((label, i) => {
+      {monthLabels.map((label, i) => {
         const monthData = monthlyData?.find((d) => d.month === i + 1);
         const count = monthData?.donationCount ?? 0;
         const height = maxCount > 0 ? (count / maxCount) * 100 : 0;
@@ -48,6 +46,7 @@ function MonthlyChart() {
 }
 
 function BloodTypeChart() {
+  const t = useTranslations("dashboard.charts");
   const { data: bloodData, isLoading } = useBloodTypeStats();
 
   if (isLoading) {
@@ -85,7 +84,7 @@ function BloodTypeChart() {
       ))}
       {(!bloodData || bloodData.length === 0) && (
         <div className="col-span-4 flex items-center justify-center py-8 text-sm text-slate-400">
-          Aucune donnée disponible
+          {t("empty")}
         </div>
       )}
     </div>
@@ -93,13 +92,15 @@ function BloodTypeChart() {
 }
 
 export function DashboardCharts() {
+  const t = useTranslations("dashboard.charts");
+
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <BarChart3 className="h-4 w-4 text-rose-500" />
-            Dons mensuels
+            {t("monthlyDonations")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -111,7 +112,7 @@ export function DashboardCharts() {
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold">
             <Droplets className="h-4 w-4 text-rose-500" />
-            Groupes sanguins
+            {t("bloodGroups")}
           </CardTitle>
         </CardHeader>
         <CardContent>

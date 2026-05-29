@@ -258,6 +258,96 @@
       "alerts": "Alertes Urgentes",
       "documents": "Rapports",
       "settings": "Configurations"
+    },
+    "sidebarCenter": {
+      "operations": "Opérations",
+      "management": "Gestion",
+      "configuration": "Configuration",
+      "dashboard": "Tableau de bord",
+      "appointments": "Rendez-vous",
+      "donations": "Dons & prélèvements",
+      "stock": "Stock sanguin",
+      "alerts": "Alertes urgentes",
+      "donors": "Base donneurs",
+      "settings": "Paramètres centre",
+      "logout": "Se déconnecter"
+    },
+    "centerHome": {
+      "defaultCenterName": "Centre",
+      "greeting": "Bonjour, {centerName}",
+      "subtitle": "Voici un aperçu rapide de votre activité du jour.",
+      "quickActions": {
+        "newAppointment": "Nouveau RDV",
+        "recordDonation": "Enregistrer don",
+        "createAlert": "Créer alerte"
+      },
+      "kpis": {
+        "appointments": {
+          "title": "Rendez-vous",
+          "subtitle": "aujourd'hui"
+        },
+        "pending": {
+          "title": "En attente",
+          "subtitle": "à confirmer"
+        },
+        "validated": {
+          "title": "Dons validés",
+          "subtitle": "aujourd'hui"
+        },
+        "alerts": {
+          "title": "Alertes actives",
+          "subtitle": "à traiter"
+        }
+      }
+    },
+    "charts": {
+      "monthlyDonations": "Dons mensuels",
+      "bloodGroups": "Groupes sanguins",
+      "empty": "Aucune donnée disponible",
+      "months": ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"]
+    },
+    "stock": {
+      "defaultCenterName": "votre centre",
+      "title": "Stock sanguin",
+      "subtitle": "Suivi rapide des groupes sanguins pour {centerName}.",
+      "status": {
+        "criticalCount": "{count} groupe(s) critique(s)",
+        "stable": "Niveaux globalement stables"
+      },
+      "levels": {
+        "critical": "Critique",
+        "warning": "À surveiller",
+        "healthy": "Stable"
+      },
+      "cards": {
+        "totalTracked": {
+          "title": "Total suivi",
+          "hint": "unités réparties sur 8 groupes"
+        },
+        "stableGroups": {
+          "title": "Groupes stables",
+          "hint": "au-dessus du seuil recommandé"
+        },
+        "warningGroups": {
+          "title": "À surveiller",
+          "hint": "groupes proches du seuil bas"
+        },
+        "activeAlerts": {
+          "title": "Alertes actives",
+          "hint": "campagnes urgentes en cours"
+        }
+      },
+      "table": {
+        "title": "Disponibilité par groupe sanguin",
+        "subtitle": "Vue opérationnelle pour repérer rapidement les niveaux à surveiller.",
+        "headers": {
+          "group": "Groupe",
+          "available": "Disponibilité",
+          "target": "Objectif",
+          "coverage": "Couverture",
+          "status": "État"
+        }
+      }
     }
   },
   "auth": {
