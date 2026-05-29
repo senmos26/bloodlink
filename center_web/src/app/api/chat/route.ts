@@ -170,11 +170,40 @@ export async function POST(req: NextRequest) {
     let toolCalls: string[] = [];
     let finishReason = "unknown";
 
+    // Wrap tools to inject authenticated userId dynamically and safely
+    const authorizedTools = Object.fromEntries(
+      Object.entries(sangbotTools).map(([name, tool]) => {
+        let parameters = tool.parameters;
+        if (parameters && "shape" in parameters && "userId" in (parameters as any).shape) {
+          parameters = (parameters as any).extend({
+            userId: z.string().optional().describe("ID du donneur (géré automatiquement par le serveur)"),
+          });
+        }
+
+        const wrappedExecute = async (args: any) => {
+          const finalArgs = { ...args };
+          if (userId) {
+            finalArgs.userId = userId;
+          }
+          return (tool.execute as any)(finalArgs);
+        };
+
+        return [
+          name,
+          {
+            ...tool,
+            parameters,
+            execute: wrappedExecute,
+          },
+        ];
+      })
+    );
+
     const result = streamText({
       model: defaultChatModel as any,
       system: systemPrompt,
       messages: chatMessages,
-      tools: sangbotTools as any,
+      tools: authorizedTools as any,
       stopWhen: stepCountIs(3),
       maxRetries: 1,
       maxOutputTokens: 500,
