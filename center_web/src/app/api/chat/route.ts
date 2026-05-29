@@ -62,7 +62,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages, location } = parsed.data;
-    let userId = parsed.data.userId;
     const lastUserMsg = messages.slice().reverse().find((m) => m.role === "user")?.content ?? "";
 
     // ── 0. Supabase clients ──
@@ -74,12 +73,23 @@ export async function POST(req: NextRequest) {
     // Service role client for server-side data access
     const supabaseAdmin = createSupabaseClient(supabaseUrl, supabaseServiceKey);
 
-    if (!userId && authToken) {
+    // Secure userId extraction: NEVER trust userId from request body without validating a JWT token.
+    // If authToken is present, verify it using Supabase. If invalid, reject the request (401).
+    // If authToken is missing, set userId = undefined (anonymous session).
+    let verifiedUserId: string | undefined = undefined;
+    if (authToken) {
       const { data, error } = await supabaseAdmin.auth.getUser(authToken);
-      if (!error && data.user?.id) {
-        userId = data.user.id;
+      if (error || !data.user?.id) {
+        console.warn(`[${reqId}] ❌ Invalid or expired auth token:`, error?.message);
+        return NextResponse.json(
+          { error: "Session expirée ou invalide. Veuillez vous reconnecter." },
+          { status: 401, headers: corsHeaders }
+        );
       }
+      verifiedUserId = data.user.id;
     }
+
+    const userId = verifiedUserId;
     console.log(`[${reqId}] 📩 Incoming: "${lastUserMsg.substring(0, 80)}${lastUserMsg.length > 80 ? "…" : ""}" | user=${userId ?? "anon"} | msgs=${messages.length}`);
 
     // Direct answer for simple profile/eligibility check (fallback/fast-path)
@@ -174,7 +184,9 @@ export async function POST(req: NextRequest) {
     const authorizedTools = Object.fromEntries(
       Object.entries(sangbotTools).map(([name, tool]) => {
         let parameters = tool.parameters;
-        if (parameters && "shape" in parameters && "userId" in (parameters as any).shape) {
+        const hasUserIdParam = parameters && "shape" in parameters && "userId" in (parameters as any).shape;
+
+        if (hasUserIdParam) {
           parameters = (parameters as any).extend({
             userId: z.string().optional().describe("ID du donneur (géré automatiquement par le serveur)"),
           });
@@ -182,9 +194,14 @@ export async function POST(req: NextRequest) {
 
         const wrappedExecute = async (args: any) => {
           const finalArgs = { ...args };
-          if (userId) {
+
+          if (hasUserIdParam) {
+            if (!userId) {
+              return "Erreur: Cette action nécessite d'être connecté à un compte BloodLink.";
+            }
             finalArgs.userId = userId;
           }
+
           return (tool.execute as any)(finalArgs);
         };
 
