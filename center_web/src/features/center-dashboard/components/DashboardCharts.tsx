@@ -25,19 +25,27 @@ function MonthlyChart() {
         const height = maxCount > 0 ? (count / maxCount) * 100 : 0;
 
         return (
-          <div key={label} className="flex flex-1 flex-col items-center gap-1">
-            <span className="text-[10px] font-medium text-slate-500">
+          <div 
+            key={label} 
+            className="flex flex-1 flex-col items-center h-full justify-end group p-0.5 rounded-lg hover:bg-slate-50/50 transition-colors duration-200"
+          >
+            <span className="text-[10px] font-semibold text-slate-500 mb-1 group-hover:text-rose-600 group-hover:scale-110 transition-all duration-200">
               {count > 0 ? count : ""}
             </span>
-            <div
-              className={`w-full rounded-t-md transition-all duration-300 ${
-                count > 0
-                  ? "bg-gradient-to-t from-rose-500 to-rose-400"
-                  : "bg-slate-100"
-              }`}
-              style={{ height: `${Math.max(height, 4)}%` }}
-            />
-            <span className="text-[9px] text-slate-400">{label}</span>
+            <div className="w-full flex-1 flex items-end bg-slate-50/40 border border-slate-100/50 rounded-t-lg p-0.5 relative min-h-[30px]">
+              {/* Glow overlay on hover */}
+              <div className="absolute inset-x-0 bottom-0 top-0 bg-gradient-to-t from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-lg pointer-events-none" />
+              
+              <div
+                className={`w-full rounded-t-md transition-all duration-500 ease-out ${
+                  count > 0
+                    ? "bg-gradient-to-t from-rose-600 to-rose-400 shadow-[0_2px_8px_rgba(244,63,94,0.2)] group-hover:from-rose-500 group-hover:to-rose-300"
+                    : "bg-slate-100/60"
+                }`}
+                style={{ height: `${Math.max(height, 4)}%` }}
+              />
+            </div>
+            <span className="text-[9px] font-medium text-slate-400 mt-1.5 group-hover:text-rose-600 transition-colors duration-200">{label}</span>
           </div>
         );
       })}
