@@ -309,38 +309,40 @@ export default function AppointmentsPage() {
   };
 
   // Filters logic
-  const filteredAppointments = appointments.filter((appt) => {
-    // 1. Search Query filter
-    const query = searchQuery.toLowerCase().trim();
-    if (query) {
-      const nameMatch = appt.donorFullName?.toLowerCase().includes(query) ?? false;
-      const phoneMatch = appt.donorPhone?.toLowerCase().includes(query) ?? false;
-      const bloodMatch = appt.donorBloodType?.toLowerCase().includes(query) ?? false;
-      const notesMatch = appt.notes?.toLowerCase().includes(query) ?? false;
-      if (!nameMatch && !phoneMatch && !bloodMatch && !notesMatch) return false;
-    }
+  const filteredAppointments = appointments
+    .filter((appt) => {
+      // 1. Search Query filter
+      const query = searchQuery.toLowerCase().trim();
+      if (query) {
+        const nameMatch = appt.donorFullName?.toLowerCase().includes(query) ?? false;
+        const phoneMatch = appt.donorPhone?.toLowerCase().includes(query) ?? false;
+        const bloodMatch = appt.donorBloodType?.toLowerCase().includes(query) ?? false;
+        const notesMatch = appt.notes?.toLowerCase().includes(query) ?? false;
+        if (!nameMatch && !phoneMatch && !bloodMatch && !notesMatch) return false;
+      }
 
-    // 2. Status filter
-    if (statusFilter !== "all" && appt.status !== statusFilter) {
-      return false;
-    }
+      // 2. Status filter
+      if (statusFilter !== "all" && appt.status !== statusFilter) {
+        return false;
+      }
 
-    // 3. Date filter
-    const apptDateStr = new Date(appt.scheduledDate).toLocaleDateString("en-CA");
-    if (dateFilterType === "today") {
-      const todayStr = new Date().toLocaleDateString("en-CA");
-      if (apptDateStr !== todayStr) return false;
-    } else if (dateFilterType === "custom") {
-      if (apptDateStr !== selectedDate) return false;
-    }
+      // 3. Date filter
+      const apptDateStr = new Date(appt.scheduledDate).toLocaleDateString("en-CA");
+      if (dateFilterType === "today") {
+        const todayStr = new Date().toLocaleDateString("en-CA");
+        if (apptDateStr !== todayStr) return false;
+      } else if (dateFilterType === "custom") {
+        if (apptDateStr !== selectedDate) return false;
+      }
 
-    // 4. Blood Type filter
-    if (bloodTypeFilter !== "all" && appt.donorBloodType !== bloodTypeFilter) {
-      return false;
-    }
+      // 4. Blood Type filter
+      if (bloodTypeFilter !== "all" && appt.donorBloodType !== bloodTypeFilter) {
+        return false;
+      }
 
-    return true;
-  });
+      return true;
+    })
+    .sort((a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime());
 
   const formattedHeaderDate = new Date(selectedDate).toLocaleDateString("fr-FR", {
     weekday: "long",
