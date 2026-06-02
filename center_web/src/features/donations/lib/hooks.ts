@@ -38,7 +38,11 @@ export function useCreateDonation() {
       const formData = new FormData();
       formData.append("appointmentId", appointmentId);
       if (notes) formData.append("notes", notes);
-      return createDonation(formData);
+      const res = await createDonation(formData);
+      if (res && "error" in res && res.error) {
+        throw new Error(res.error);
+      }
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["donations"] });

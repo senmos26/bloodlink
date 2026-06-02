@@ -48,16 +48,18 @@ export default function DonationsPage() {
 
   const handleCreateDonation = () => {
     if (!selectedAppt) return;
+    const toastId = toast.loading("Validation du don...");
     createDonation.mutate(
       { appointmentId: selectedAppt, notes: notes || undefined },
       {
         onSuccess: () => {
           setSelectedAppt(null);
           setNotes("");
-          toast.success("Don validé avec succès");
+          toast.success("Don validé avec succès", { id: toastId });
         },
-        onError: () => {
-          toast.error("Erreur lors de la validation");
+        onError: (err: unknown) => {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          toast.error(`Erreur lors de la validation : ${errMsg}`, { id: toastId });
         },
       }
     );
