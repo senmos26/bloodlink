@@ -280,7 +280,7 @@
     "centerHome": {
       "defaultCenterName": "Zentrum",
       "greeting": "Hallo, {centerName}",
-      "subtitle": "Hier ist ein kurzer Überblick über die heutige Aktivität.",
+      "subtitle": "Hier ist ein kurzer Überblick über Ihre Aktivität.",
       "quickActions": {
         "newAppointment": "Neuer Termin",
         "recordDonation": "Spende erfassen",
@@ -289,7 +289,7 @@
       "kpis": {
         "appointments": {
           "title": "Termine",
-          "subtitle": "heute"
+          "subtitle": "gesamt"
         },
         "pending": {
           "title": "Ausstehend",
@@ -297,7 +297,7 @@
         },
         "validated": {
           "title": "Bestätigte Spenden",
-          "subtitle": "heute"
+          "subtitle": "gesamt"
         },
         "alerts": {
           "title": "Aktive Warnungen",

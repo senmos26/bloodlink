@@ -280,7 +280,7 @@
     "centerHome": {
       "defaultCenterName": "Center",
       "greeting": "Hello, {centerName}",
-      "subtitle": "Here is a quick overview of today's activity.",
+      "subtitle": "Here is a quick overview of your activity.",
       "quickActions": {
         "newAppointment": "New appointment",
         "recordDonation": "Record donation",
@@ -289,7 +289,7 @@
       "kpis": {
         "appointments": {
           "title": "Appointments",
-          "subtitle": "today"
+          "subtitle": "total"
         },
         "pending": {
           "title": "Pending",
@@ -297,7 +297,7 @@
         },
         "validated": {
           "title": "Validated donations",
-          "subtitle": "today"
+          "subtitle": "total"
         },
         "alerts": {
           "title": "Active alerts",
