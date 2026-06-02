@@ -44,9 +44,7 @@ export async function getTodayStats(): Promise<TodayStats> {
       .from("appointments")
       .select("*", { count: "exact", head: true })
       .eq("center_id", centerId)
-      .eq("status", "pending")
-      .gte("scheduled_date", dateOnly)
-      .lt("scheduled_date", nextDateOnly),
+      .eq("status", "pending"),
     supabase
       .from("donations")
       .select("*", { count: "exact", head: true })
