@@ -135,3 +135,47 @@ export async function createCenterAccount(payload: {
   revalidatePath("/admin/profiles");
   return { success: true, userId: data.userId, centerId: data.centerId };
 }
+
+export async function deleteCenter(centerId: string) {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non authentifié." };
+
+  const { data: callerProfile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (!callerProfile || callerProfile.role !== "super_admin") {
+    return { error: "Seul un super administrateur peut supprimer un centre." };
+  }
+
+  // 1. Get the center to retrieve its admin_id
+  const { data: center } = await supabase
+    .from("centers")
+    .select("admin_id")
+    .eq("id", centerId)
+    .single();
+
+  // 2. Delete the center from the table
+  const { error: deleteError } = await supabase
+    .from("centers")
+    .delete()
+    .eq("id", centerId);
+
+  if (deleteError) return { error: deleteError.message };
+
+  // 3. Delete the associated user profile
+  if (center?.admin_id) {
+    await supabase
+      .from("profiles")
+      .delete()
+      .eq("id", center.admin_id);
+  }
+
+  revalidatePath("/admin/centers");
+  revalidatePath("/admin/profiles");
+  return { success: true };
+}

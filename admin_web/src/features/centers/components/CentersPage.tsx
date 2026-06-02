@@ -12,6 +12,7 @@ import {
   PowerOff,
   Eye,
   Plus,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -32,7 +33,7 @@ import {
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import dynamic from "next/dynamic";
-import { toggleCenterActive, createCenterAccount } from "@/features/centers/lib/actions";
+import { toggleCenterActive, createCenterAccount, deleteCenter } from "@/features/centers/lib/actions";
 import type { Center } from "@/types/database";
 
 const LocationPicker = dynamic(
@@ -108,6 +109,25 @@ export function CentersPage({ initialCenters }: CentersPageProps) {
       setCenters((prev) =>
         prev.map((c) => (c.id === centerId ? { ...c, is_active: !isActive } : c))
       );
+    }
+    setActionLoading(null);
+  }
+
+  async function handleDelete(centerId: string) {
+    const ok = window.confirm(
+      "Attention : Supprimer ce centre supprimera définitivement tous ses rendez-vous, alertes et prélèvements associés. Voulez-vous continuer ?"
+    );
+    if (!ok) return;
+
+    setActionLoading(centerId);
+    const result = await deleteCenter(centerId);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Centre supprimé avec succès.");
+      setCenters((prev) => prev.filter((c) => c.id !== centerId));
+      setIsDrawerOpen(false);
+      setSelectedCenter(null);
     }
     setActionLoading(null);
   }
@@ -273,6 +293,19 @@ export function CentersPage({ initialCenters }: CentersPageProps) {
                 Activer
               </Button>
             )}
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 hover:border-red-300 disabled:opacity-40"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(c.id);
+              }}
+              disabled={isLoading}
+              title="Supprimer le centre"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         );
       },
@@ -358,24 +391,34 @@ export function CentersPage({ initialCenters }: CentersPageProps) {
         fields={drawerFields}
         actions={
           selectedCenter ? (
-            <Button
-              variant={selectedCenter.is_active ? "destructive" : "default"}
-              size="sm"
-              onClick={() => {
-                handleToggleActive(selectedCenter.id, selectedCenter.is_active);
-                setIsDrawerOpen(false);
-              }}
-            >
-              {selectedCenter.is_active ? (
-                <>
-                  <PowerOff className="mr-2 h-4 w-4" /> Désactiver
-                </>
-              ) : (
-                <>
-                  <Power className="mr-2 h-4 w-4" /> Activer
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={selectedCenter.is_active ? "destructive" : "default"}
+                size="sm"
+                onClick={() => {
+                  handleToggleActive(selectedCenter.id, selectedCenter.is_active);
+                  setIsDrawerOpen(false);
+                }}
+              >
+                {selectedCenter.is_active ? (
+                  <>
+                    <PowerOff className="mr-2 h-4 w-4" /> Désactiver
+                  </>
+                ) : (
+                  <>
+                    <Power className="mr-2 h-4 w-4" /> Activer
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={() => handleDelete(selectedCenter.id)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" /> Supprimer
+              </Button>
+            </div>
           ) : null
         }
       />
