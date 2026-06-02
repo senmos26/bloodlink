@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Megaphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,12 +66,21 @@ export default function AlertsPage() {
     status: "all",
   });
 
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(filters.searchTerm);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [filters.searchTerm]);
+
   // Real data hooks
   const { data: alerts = [], isLoading, isFetching } = useFilteredAlerts({
     status: (filters.status || "all") as AlertStatus | "all",
     bloodType: filters.bloodType,
     urgencyLevel: (filters.urgency || "all") as UrgencyLevel | "all",
-    searchTerm: filters.searchTerm,
+    searchTerm: debouncedSearchTerm,
   });
 
   const { data: stats } = useAlertStats();

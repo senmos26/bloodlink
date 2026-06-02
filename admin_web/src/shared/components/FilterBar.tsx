@@ -83,7 +83,7 @@ export function FilterBar({
       if (trimmed === currentQ) return;
       if (trimmed.length === 0) {
         updateFilter("q", "");
-      } else if (trimmed.length >= 2) {
+      } else {
         updateFilter("q", trimmed);
       }
     }, 400);

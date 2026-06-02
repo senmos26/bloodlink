@@ -264,6 +264,7 @@ export default function AppointmentsPage() {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [bloodTypeFilter, setBloodTypeFilter] = useState<string>("all");
 
   const { data: appointments = [], isLoading } = useAllAppointments();
   const updateStatusMutation = useUpdateAppointmentStatus();
@@ -331,6 +332,11 @@ export default function AppointmentsPage() {
       if (apptDateStr !== todayStr) return false;
     } else if (dateFilterType === "custom") {
       if (apptDateStr !== selectedDate) return false;
+    }
+
+    // 4. Blood Type filter
+    if (bloodTypeFilter !== "all" && appt.donorBloodType !== bloodTypeFilter) {
+      return false;
     }
 
     return true;
@@ -571,6 +577,40 @@ export default function AppointmentsPage() {
               </span>
             </div>
           )}
+        </div>
+
+        {/* Row 3: Blood Group Filter */}
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-slate-200/60 pt-3">
+          <span className="text-xs font-semibold text-slate-500 mr-2">{"Groupe sanguin :"}</span>
+          <Button
+            size="sm"
+            variant={bloodTypeFilter === "all" ? "default" : "outline"}
+            className={cn(
+              "h-7 text-xs font-medium px-2.5 transition-all",
+              bloodTypeFilter === "all"
+                ? "bg-rose-600 text-white hover:bg-rose-700 border-rose-600 shadow-sm"
+                : "bg-white hover:bg-slate-50 border-slate-200"
+            )}
+            onClick={() => setBloodTypeFilter("all")}
+          >
+            {"Tous"}
+          </Button>
+          {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bt) => (
+            <Button
+              key={bt}
+              size="sm"
+              variant={bloodTypeFilter === bt ? "default" : "outline"}
+              className={cn(
+                "h-7 text-xs font-medium px-2.5 transition-all",
+                bloodTypeFilter === bt
+                  ? "bg-rose-600 text-white hover:bg-rose-700 border-rose-600 shadow-sm"
+                  : "bg-white hover:bg-slate-50 border-slate-200"
+              )}
+              onClick={() => setBloodTypeFilter(bt === bloodTypeFilter ? "all" : bt)}
+            >
+              {bt}
+            </Button>
+          ))}
         </div>
       </div>
 

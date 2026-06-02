@@ -22,6 +22,7 @@ export default function DonationsPage() {
   const [selectedAppt, setSelectedAppt] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
+  const [bloodTypeFilter, setBloodTypeFilter] = useState<string>("all");
 
   const { data: appointments, isLoading: apptsLoading } = useCompletedAppointments();
   const { data: donations, isLoading: donationsLoading } = useTodayDonations();
@@ -30,13 +31,19 @@ export default function DonationsPage() {
   const selectedApptData = appointments?.find((a: { id: string }) => a.id === selectedAppt);
 
   const filteredAppointments = appointments?.filter(
-    (a: { donorFullName: string | null }) =>
-      !search || a.donorFullName?.toLowerCase().includes(search.toLowerCase())
+    (a: { donorFullName: string | null; donorBloodType: string | null }) => {
+      const matchesSearch = !search || a.donorFullName?.toLowerCase().includes(search.toLowerCase());
+      const matchesBloodType = bloodTypeFilter === "all" || a.donorBloodType === bloodTypeFilter;
+      return matchesSearch && matchesBloodType;
+    }
   );
 
   const filteredDonations = donations?.filter(
-    (d: Donation) =>
-      !search || d.donorFullName?.toLowerCase().includes(search.toLowerCase())
+    (d: Donation) => {
+      const matchesSearch = !search || d.donorFullName?.toLowerCase().includes(search.toLowerCase());
+      const matchesBloodType = bloodTypeFilter === "all" || d.donorBloodType === bloodTypeFilter;
+      return matchesSearch && matchesBloodType;
+    }
   );
 
   const handleCreateDonation = () => {
@@ -83,6 +90,40 @@ export default function DonationsPage() {
             />
           </div>
         </div>
+      </div>
+
+      {/* Filters Toolbar */}
+      <div className="flex flex-wrap items-center gap-1.5 p-4 rounded-xl bg-slate-50 border border-slate-200/60 shadow-sm">
+        <span className="text-xs font-semibold text-slate-500 mr-2">{"Groupe sanguin :"}</span>
+        <Button
+          size="sm"
+          variant={bloodTypeFilter === "all" ? "default" : "outline"}
+          className={cn(
+            "h-7 text-xs font-medium px-2.5 transition-all",
+            bloodTypeFilter === "all"
+              ? "bg-rose-600 text-white hover:bg-rose-700 border-rose-600 shadow-sm"
+              : "bg-white hover:bg-slate-50 border-slate-200"
+          )}
+          onClick={() => setBloodTypeFilter("all")}
+        >
+          {"Tous"}
+        </Button>
+        {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bt) => (
+          <Button
+            key={bt}
+            size="sm"
+            variant={bloodTypeFilter === bt ? "default" : "outline"}
+            className={cn(
+              "h-7 text-xs font-medium px-2.5 transition-all",
+              bloodTypeFilter === bt
+                ? "bg-rose-600 text-white hover:bg-rose-700 border-rose-600 shadow-sm"
+                : "bg-white hover:bg-slate-50 border-slate-200"
+            )}
+            onClick={() => setBloodTypeFilter(bt === bloodTypeFilter ? "all" : bt)}
+          >
+            {bt}
+          </Button>
+        ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">

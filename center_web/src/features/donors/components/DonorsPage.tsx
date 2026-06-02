@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Users, Search, Droplets, Phone, Calendar, Grid3X3, List } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -133,10 +133,18 @@ function DonorListItem({ donor }: { donor: Donor }) {
 
 export default function DonorsPage() {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedBloodType, setSelectedBloodType] = useState<BloodType | undefined>(undefined);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { data: donors, isLoading } = useSearchDonors(query, selectedBloodType);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  const { data: donors, isLoading } = useSearchDonors(debouncedQuery, selectedBloodType);
 
   const gridSkeletons = (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
