@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   CheckCheck,
@@ -71,6 +73,23 @@ export function NotificationDropdown() {
   const [activeTab, setActiveTab] = React.useState<"unread" | "all">("unread");
   const [dismissingIds, setDismissingIds] = React.useState<Set<string>>(new Set());
   const { data: activeAlertsCount = 0 } = useActiveAlertsCount();
+  const locale = useLocale();
+  const router = useRouter();
+
+  async function handleClickNotification(notification: NotificationItem) {
+    if (!notification.is_read) {
+      await handleMarkRead(notification.id);
+    }
+    setOpen(false);
+
+    if (notification.type === "appointment") {
+      router.push(`/${locale}/appointments`);
+    } else if (notification.type === "alert") {
+      router.push(`/${locale}/alerts`);
+    } else if (notification.type === "donation") {
+      router.push(`/${locale}/donations`);
+    }
+  }
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const totalBadge = unreadCount + activeAlertsCount;
@@ -292,8 +311,9 @@ export function NotificationDropdown() {
                 return (
                   <div
                     key={notification.id}
+                    onClick={() => handleClickNotification(notification)}
                     className={cn(
-                      "group relative flex items-start gap-3 p-3 transition-all duration-300 ease-in-out hover:bg-slate-50",
+                      "group relative flex items-start gap-3 p-3 cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-50",
                       !notification.is_read && "bg-primary/5",
                       isDismissing && "opacity-0 max-h-0 p-0 overflow-hidden border-0"
                     )}
@@ -329,7 +349,10 @@ export function NotificationDropdown() {
                         </span>
                         {!notification.is_read && (
                           <button
-                            onClick={() => handleMarkRead(notification.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMarkRead(notification.id);
+                            }}
                             className="text-[10px] font-semibold text-primary hover:text-primary-dark transition-colors duration-200"
                           >
                             Marquer lu
@@ -359,7 +382,7 @@ export function NotificationDropdown() {
         <DropdownMenuSeparator className="m-0 bg-slate-100" />
         <DropdownMenuItem asChild className="cursor-pointer focus:bg-slate-50">
           <Link
-            href="/notifications"
+            href={`/${locale}/notifications`}
             className="flex items-center justify-center py-3 text-xs font-semibold text-primary hover:bg-primary/5 transition-colors w-full"
             onClick={() => setOpen(false)}
           >
