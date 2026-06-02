@@ -47,3 +47,16 @@ export async function markAllNotificationsAsRead() {
   if (error) return { error: error.message };
   return { success: true };
 }
+
+export async function deleteNotification(notificationId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("notifications")
+    .delete()
+    .eq("id", notificationId);
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
