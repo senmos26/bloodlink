@@ -14,7 +14,8 @@
       "backgroundColor": "#fff7f8"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.senmosdev.bloodlink"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
