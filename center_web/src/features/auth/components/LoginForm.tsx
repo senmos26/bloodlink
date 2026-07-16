@@ -48,17 +48,17 @@ export function LoginForm() {
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
-      router.push(`/new-password?code=${code}`);
+      window.location.replace(`/new-password?code=${code}`);
       return;
     }
 
     if (typeof window !== "undefined") {
       const hash = window.location.hash;
       if (hash && (hash.includes("access_token=") || hash.includes("type=invite") || hash.includes("type=recovery"))) {
-        router.push(`/new-password${hash}`);
+        window.location.replace(`/new-password${hash}`);
       }
     }
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   // Handle success messages from query params (e.g., email confirmation)
   useEffect(() => {
