@@ -44,11 +44,19 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Redirect to new-password if an invitation/recovery code is detected in URL
+  // Redirect to new-password if an invitation/recovery code is detected in URL or hash fragment
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
       router.push(`/new-password?code=${code}`);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash && (hash.includes("access_token=") || hash.includes("type=invite") || hash.includes("type=recovery"))) {
+        router.push(`/new-password${hash}`);
+      }
     }
   }, [searchParams, router]);
 
