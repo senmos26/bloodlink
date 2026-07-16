@@ -12,7 +12,7 @@
 import { useState, useEffect } from "react";
 import { useActionState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Lock, Mail, Eye, EyeOff, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -42,6 +42,15 @@ export function LoginForm() {
   const [state, formAction, pending] = useActionState(login, initialState);
   const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Redirect to new-password if an invitation/recovery code is detected in URL
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      router.push(`/new-password?code=${code}`);
+    }
+  }, [searchParams, router]);
 
   // Handle success messages from query params (e.g., email confirmation)
   useEffect(() => {
