@@ -22,6 +22,12 @@ function NewPasswordForm() {
   const [checking, setChecking] = React.useState(true);
 
   React.useEffect(() => {
+    console.log("[NEW_PASSWORD] useEffect trigger. code query param:", code);
+    if (typeof window !== "undefined") {
+      console.log("[NEW_PASSWORD] window.location.href:", window.location.href);
+      console.log("[NEW_PASSWORD] window.location.hash present:", !!window.location.hash);
+    }
+
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -30,9 +36,14 @@ function NewPasswordForm() {
     let isMounted = true;
 
     async function checkSession() {
+      console.log("[NEW_PASSWORD] Executing checkSession()");
+      
       // 1. Check if session already exists
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log("[NEW_PASSWORD] Initial getSession() result. Session:", !!session, "Error:", sessionError?.message || "none");
+      
       if (session && isMounted) {
+        console.log("[NEW_PASSWORD] Active session found at startup. Transitioning to setHasSession(true)");
         setHasSession(true);
         setChecking(false);
         return;
@@ -40,34 +51,44 @@ function NewPasswordForm() {
 
       // 2. If no session, check if there is a query code (?code=...)
       if (!session && code) {
+        console.log("[NEW_PASSWORD] No session but query code present. Verifying OTP via verifyOtp...");
         try {
-          await supabase.auth.verifyOtp({ token_hash: code, type: "recovery" });
+          const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: code, type: "recovery" });
+          console.log("[NEW_PASSWORD] verifyOtp finished. Error:", otpError?.message || "none");
+          
           const refreshed = await supabase.auth.getSession();
+          console.log("[NEW_PASSWORD] getSession() after verifyOtp. Session:", !!refreshed.data.session);
+          
           if (refreshed.data.session && isMounted) {
             setHasSession(true);
             setChecking(false);
             return;
           }
         } catch (err) {
-          console.error("OTP verification failed:", err);
+          console.error("[NEW_PASSWORD] OTP verification crashed:", err);
         }
       }
 
       // 3. Wait a little bit for the hash parsing if there's a hash in the URL
       if (typeof window !== "undefined" && window.location.hash) {
+        console.log("[NEW_PASSWORD] Hash present in URL. Waiting 1.5 seconds for Supabase Client to parse hash...");
         setTimeout(async () => {
           if (!isMounted) return;
-          const { data: { session: delayedSession } } = await supabase.auth.getSession();
+          const { data: { session: delayedSession }, error: delayedError } = await supabase.auth.getSession();
+          console.log("[NEW_PASSWORD] getSession() after 1.5s delay. Session:", !!delayedSession, "Error:", delayedError?.message || "none");
+          
           if (delayedSession) {
             setHasSession(true);
             setChecking(false);
           } else {
+            console.log("[NEW_PASSWORD] No session found after 1.5s delay. Treating link as invalid.");
             toast.error("Lien invalide ou expiré.");
             setChecking(false);
           }
-        }, 1200);
+        }, 1500);
       } else {
         if (isMounted) {
+          console.log("[NEW_PASSWORD] No query code and no hash. Setting checking to false (link invalid).");
           if (!code) {
             toast.error("Lien de réinitialisation invalide ou expiré.");
           } else {
@@ -80,7 +101,9 @@ function NewPasswordForm() {
 
     // Subscribe to auth state changes as a backup
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("[NEW_PASSWORD] onAuthStateChange event fired. Event:", event, "Session:", !!session);
       if (session && isMounted) {
+        console.log("[NEW_PASSWORD] Session received from onAuthStateChange. Transitioning to setHasSession(true)");
         setHasSession(true);
         setChecking(false);
       }
@@ -89,6 +112,7 @@ function NewPasswordForm() {
     checkSession();
 
     return () => {
+      console.log("[NEW_PASSWORD] useEffect cleanup. Unmounting.");
       isMounted = false;
       subscription.unsubscribe();
     };
