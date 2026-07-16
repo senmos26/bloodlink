@@ -22,30 +22,76 @@ function NewPasswordForm() {
   const [checking, setChecking] = React.useState(true);
 
   React.useEffect(() => {
-    async function init() {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-      let { data: { session } } = await supabase.auth.getSession();
+    let isMounted = true;
 
-      if (!session && code) {
-        await supabase.auth.verifyOtp({ token_hash: code, type: "recovery" });
-        const refreshed = await supabase.auth.getSession();
-        session = refreshed.data.session;
-      }
-
-      if (session) {
+    async function checkSession() {
+      // 1. Check if session already exists
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && isMounted) {
         setHasSession(true);
-      } else if (!code) {
-        toast.error("Lien de réinitialisation invalide ou expiré.");
-      } else {
-        toast.error("Lien expiré ou invalide. Veuillez réessayer.");
+        setChecking(false);
+        return;
       }
-      setChecking(false);
+
+      // 2. If no session, check if there is a query code (?code=...)
+      if (!session && code) {
+        try {
+          await supabase.auth.verifyOtp({ token_hash: code, type: "recovery" });
+          const refreshed = await supabase.auth.getSession();
+          if (refreshed.data.session && isMounted) {
+            setHasSession(true);
+            setChecking(false);
+            return;
+          }
+        } catch (err) {
+          console.error("OTP verification failed:", err);
+        }
+      }
+
+      // 3. Wait a little bit for the hash parsing if there's a hash in the URL
+      if (typeof window !== "undefined" && window.location.hash) {
+        setTimeout(async () => {
+          if (!isMounted) return;
+          const { data: { session: delayedSession } } = await supabase.auth.getSession();
+          if (delayedSession) {
+            setHasSession(true);
+            setChecking(false);
+          } else {
+            toast.error("Lien invalide ou expiré.");
+            setChecking(false);
+          }
+        }, 1200);
+      } else {
+        if (isMounted) {
+          if (!code) {
+            toast.error("Lien de réinitialisation invalide ou expiré.");
+          } else {
+            toast.error("Lien expiré ou invalide. Veuillez réessayer.");
+          }
+          setChecking(false);
+        }
+      }
     }
-    init();
+
+    // Subscribe to auth state changes as a backup
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && isMounted) {
+        setHasSession(true);
+        setChecking(false);
+      }
+    });
+
+    checkSession();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, [code]);
 
   async function handleSubmit(e: React.FormEvent) {
